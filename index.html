@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* Embedding Cairo Font via @import for better reliability */
+        /* Embedding Cairo Font */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         
         /* Custom styles for A4 size and printing */
@@ -18,7 +18,6 @@
         }
 
         body {
-            /* Set Cairo as the primary font with robust fallbacks */
             font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
             background-color: #f0f0f0; 
             padding: 10px; 
@@ -31,22 +30,22 @@
 
         .a4-page {
             width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            /* Use height: 297mm to ensure fixed height and force content compression */
-            height: 297mm;
+            min-height: 297mm; 
+            height: 297mm; /* CRITICAL: Fixed A4 height */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto; 
             position: relative;
-            padding: 1.5cm 1.5cm 1.0cm 1.5cm; 
+            /* CRITICAL: Reduced padding for more content space */
+            padding: 1.2cm 1.5cm 0.8cm 1.5cm; 
             color: #000000; 
-            font-size: 12px; 
+            font-size: 11px; /* Reduced base font size */
             display: flex; 
             flex-direction: column; 
             max-width: 100%; 
             
             /* --- الخلفية الثابتة (BACKGROUND STYLES) --- */
-            background-color: #ffffff; /* Base white color */
-            /* Replace the background-image with a CSS background for better print control */
+            background-color: #ffffff; 
+            /* Placeholder URL for a fixed background image */
             background-image: url('https://d.top4top.io/p_3567auk9h1.jpg'); 
             background-size: cover; 
             background-repeat: no-repeat;
@@ -62,8 +61,7 @@
             flex-grow: 1; 
             display: flex;
             flex-direction: column;
-            gap: 0.05rem; /* VERY tight spacing between sections */
-            /* Allow internal content scrolling if it somehow overflows, but prefer compression */
+            gap: 0; /* CRITICAL: Set gap to 0 for maximum vertical compression */
             overflow-y: hidden; 
         }
 
@@ -76,7 +74,7 @@
             outline: none;
             width: 100%;
             opacity: 1; 
-            font-size: 10px; /* Further reduced font size for tables */
+            font-size: 9px; /* Adjusted font size */
         }
         
         /* Input fields that are readonly/fixed content */
@@ -94,7 +92,7 @@
             color: #ffffff !important; 
             text-align: right;
             font-weight: 800; 
-            font-size: 14px; /* Reduced header font size */
+            font-size: 13px; /* Slightly reduced header font size */
         }
         .header-input::placeholder {
             color: rgba(255, 255, 255, 0.7);
@@ -103,36 +101,36 @@
         /* Main title */
         .h1-title {
             color: #ffffff !important;
-            font-size: 18px; /* Reduced main title font size */
+            font-size: 17px; /* Reduced main title font size */
             margin-bottom: 0; 
         }
 
         /* Section titles */
         .h2-title {
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 1px 6px; /* Reduced padding */
+            padding: 1px 6px; 
             border-radius: 3px;
             color: #000000;
             display: inline-block;
-            margin-bottom: 0; /* No margin bottom */
+            margin-bottom: 0; 
             margin-top: 0.1rem; /* Very small margin top */
-            font-size: 11px; /* Reduced section title font size */
+            font-size: 10px; /* Reduced section title font size */
         }
 
         /* Styling for the tables */
         .report-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0.05rem; /* Very small margin top */
+            margin-top: 0.05rem; /* CRITICAL: Minimal margin top */
             color: #000000; 
-            font-size: 8.5px; /* CRITICAL: Very small font size for data */
+            font-size: 8px; /* CRITICAL: Very small font size for data */
             table-layout: fixed; 
         }
 
         .report-table th, .report-table td {
             border: 1px solid #666666; 
-            padding: 1px; /* CRITICAL: Reduced padding to 1px */
-            height: 18px; /* Fixed row height to control vertical space */
+            padding: 0.5px; /* CRITICAL: Reduced padding to 0.5px */
+            height: 16px; /* CRITICAL: Reduced fixed row height to 16px */
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8); 
         }
@@ -146,20 +144,20 @@
             background-color: #d1f7ee; 
         }
 
-        /* Signature label (Muedd/Mudir/Mushrif) must be black and smaller */
+        /* Signature label */
         .signature-label-text {
             color: #000000; 
-            font-size: 9px; /* Reduced signature label font size */
+            font-size: 8.5px; /* Reduced signature label font size */
             margin-bottom: 0; 
             font-weight: bold;
         }
 
-        /* Signature Input Styling: Name input below the label (Line 1: Name) */
+        /* Signature Input Styling: Name */
         .signature-input-name {
             text-align: center;
             width: 100%;
             color: #000000; 
-            font-size: 10px;
+            font-size: 9px;
             border: none; 
             background-color: transparent;
             outline: none;
@@ -167,12 +165,12 @@
             margin-top: 2px; 
             border-bottom: 1px dashed #666; 
         }
-         /* Signature Input Styling: Job title input (Line 2: Title) */
+         /* Signature Input Styling: Job title */
         .signature-input-title {
             text-align: center;
             width: 100%;
             color: #000000; 
-            font-size: 8px; /* Smaller font for the title */
+            font-size: 7px; /* Smaller font for the title */
             border: none; 
             background-color: transparent;
             outline: none;
@@ -184,18 +182,18 @@
         .signature-footer {
             width: 100%;
             margin-top: 0.1rem; /* Minimal margin top */
-            padding-top: 2px; 
-            padding-bottom: 2px; 
+            padding-top: 1px; /* Reduced padding */
+            padding-bottom: 1px; /* Reduced padding */
             flex-shrink: 0; 
         }
 
-        /* Evidence Box Styling (Container for 4 image slots) */
+        /* Evidence Box Styling */
         .evidence-box {
             background-color: transparent; 
             border: none; 
-            padding: 3px; /* Reduced padding */
+            padding: 1px; /* CRITICAL: Minimal padding */
             text-align: right;
-            min-height: 110px; /* Further reduced height for tighter spacing */
+            min-height: 100px; /* CRITICAL: Reduced min-height to save space */
             flex-shrink: 0; 
         }
 
@@ -208,10 +206,10 @@
             padding-top: 100%; 
             border: 1px dashed #666; 
             background-color: rgba(255, 255, 255, 0.5); 
-            border-radius: 4px; /* Reduced border radius */
+            border-radius: 4px; 
         }
         .image-slot-content {
-            font-size: 7px; /* Reduced font size for image label */
+            font-size: 7px; 
         }
         
         /* Print media query to ensure full-page print with background */
@@ -226,7 +224,6 @@
             .a4-page {
                 margin: 0;
                 box-shadow: none;
-                /* Crucial for printing background image */
                 -webkit-print-color-adjust: exact !important; 
                 color-adjust: exact !important;
                 max-width: none;
@@ -236,7 +233,7 @@
                 display: none;
             }
             .report-table {
-                 table-layout: fixed; /* Keep fixed layout for strict vertical control */
+                 table-layout: fixed; 
             }
         }
     </style>
@@ -333,40 +330,40 @@
                             <td class="fixed-cell">اسم المنصة</td>
                             <td><input type="text" data-key="t3_r1c2" class="fillable-input"></td>
                             <td>جهاز عرض (بروجكتر)</td>
-                            <td><input type="checkbox" data-key="t4_c1" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c1" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                         <!-- Row 2: القناة / كمبيوتر مكتبي -->
                         <tr>
                             <td class="fixed-cell">اسم القناة</td>
                             <td><input type="text" data-key="t3_r2c2" class="fillable-input"></td>
                             <td>جهاز كمبيوتر مكتبي</td>
-                            <td><input type="checkbox" data-key="t4_c2" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c2" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                         <!-- Row 3: البرنامج / لابتوب -->
                         <tr>
                             <td class="fixed-cell">اسم البرنامج</td>
                             <td><input type="text" data-key="t3_r3c2" class="fillable-input"></td>
                             <td>جهاز لابتوب</td>
-                            <td><input type="checkbox" data-key="t4_c3" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c3" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                         <!-- Row 4: أخرى: تذكر / ايباد -->
                         <tr>
                             <td class="fixed-cell font-bold" readonly>أخرى: تذكر</td>
                             <td><input type="text" data-key="t3_r4c2" class="fillable-input"></td>
                             <td>جهاز الايباد</td>
-                            <td><input type="checkbox" data-key="t4_c4" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c4" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                         <!-- Row 5: - / جوال -->
                         <tr>
                             <td colspan="2" class="bg-gray-200 opacity-50">&nbsp;</td>
                             <td>جهاز الجوال</td>
-                            <td><input type="checkbox" data-key="t4_c5" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c5" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                         <!-- Row 6: - / أخرى: إدخال -->
                         <tr>
                             <td colspan="2" class="bg-gray-200 opacity-50">&nbsp;</td>
                             <td>أخرى: <input type="text" data-key="t4_c6_text" class="fillable-input w-40 text-xs"></td>
-                            <td><input type="checkbox" data-key="t4_c6" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                            <td><input type="checkbox" data-key="t4_c6" class="h-3 w-3 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -420,7 +417,7 @@
             <div class="mb-0"> 
                 <h2 class="h2-title">شواهد التفعيل</h2>
                 
-                <div class="evidence-box flex justify-between gap-2 p-2 items-center">
+                <div class="evidence-box flex justify-between gap-2 p-1 items-center">
                     
                     <!-- Image Slot 1 -->
                     <div class="image-slot-container">
@@ -428,7 +425,7 @@
                             <div class="image-slot-content">
                                 <input type="file" id="fileInput1" data-slot="1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
                                 <img id="preview1" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label1" class="p-1 text-black z-0">صورة 1</span>
+                                <span id="label1" class="absolute inset-0 flex items-center justify-center p-1 text-black z-0">صورة 1</span>
                             </div>
                         </div>
                     </div>
@@ -439,7 +436,7 @@
                             <div class="image-slot-content">
                                 <input type="file" id="fileInput2" data-slot="2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
                                 <img id="preview2" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label2" class="p-1 text-black z-0">صورة 2</span>
+                                <span id="label2" class="absolute inset-0 flex items-center justify-center p-1 text-black z-0">صورة 2</span>
                             </div>
                         </div>
                     </div>
@@ -450,7 +447,7 @@
                             <div class="image-slot-content">
                                 <input type="file" id="fileInput3" data-slot="3" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
                                 <img id="preview3" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label3" class="p-1 text-black z-0">صورة 3</span>
+                                <span id="label3" class="absolute inset-0 flex items-center justify-center p-1 text-black z-0">صورة 3</span>
                             </div>
                         </div>
                     </div>
@@ -461,7 +458,7 @@
                             <div class="image-slot-content">
                                 <input type="file" id="fileInput4" data-slot="4" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
                                 <img id="preview4" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label4" class="p-1 text-black z-0">صورة 4</span>
+                                <span id="label4" class="absolute inset-0 flex items-center justify-center p-1 text-black z-0">صورة 4</span>
                             </div>
                         </div>
                     </div>
@@ -477,27 +474,27 @@
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">أمينة مصادر التعلم</p>
                 <!-- Name (Bolded) -->
-                <input type="text" data-key="signature_1_name" class="signature-input-name font-bold">
+                <input type="text" data-key="signature_1_name" class="signature-input-name font-bold" placeholder="الاسم">
                 <!-- Title (الصفة) -->
-                <input type="text" data-key="signature_1_title" class="signature-input-title">
+                <input type="text" data-key="signature_1_title" class="signature-input-title" placeholder="التوقيع">
             </div>
             
             <!-- مشرفة الدعم -->
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">مشرفة الدعم</p>
                 <!-- Name (Bolded) -->
-                <input type="text" data-key="signature_2_name" class="signature-input-name font-bold">
+                <input type="text" data-key="signature_2_name" class="signature-input-name font-bold" placeholder="الاسم">
                 <!-- Title (الصفة) -->
-                <input type="text" data-key="signature_2_title" class="signature-input-title">
+                <input type="text" data-key="signature_2_title" class="signature-input-title" placeholder="التوقيع">
             </div>
             
             <!-- مديرة المدرسة -->
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">مديرة المدرسة</p>
                 <!-- Name (Bolded) -->
-                <input type="text" data-key="signature_3_name" class="signature-input-name font-bold">
+                <input type="text" data-key="signature_3_name" class="signature-input-name font-bold" placeholder="الاسم">
                 <!-- Title (الصفة) -->
-                <input type="text" data-key="signature_3_title" class="signature-input-title">
+                <input type="text" data-key="signature_3_title" class="signature-input-title" placeholder="التوقيع">
             </div>
         </div>
 
@@ -518,7 +515,6 @@
         const REPORT_DOC_ID = 'content'; // Fixed document ID for the report data
 
         // --- DOM Elements ---
-        // Exclude the fixed cells in the combined table from auto-save loop to avoid saving fixed values.
         const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input)'));
 
         let db, auth;
@@ -619,7 +615,6 @@
                     await saveData({ [imageKey]: base64String }, true); // Force save image data
                     
                 } catch (error) {
-                    // Log the error for development purposes
                     console.error("Error reading file:", error.message); 
                     
                     // Clear the slot appearance and the input
@@ -627,10 +622,8 @@
                     previewElement.classList.add('hidden');
                     previewElement.classList.remove('z-10'); 
                     labelElement.classList.remove('hidden');
-                    // Reset the file input so the user can re-select the same file if they resize it externally
                     input.value = ''; 
                     
-                    // Clear the slot in persistence (although usually not needed if it was never saved)
                     await saveData({ [imageKey]: '' }, true);
                 }
             } else {
@@ -690,7 +683,6 @@
                     if (input.type === 'checkbox') {
                         data[key] = input.checked;
                     } else { 
-                        // Inputs without 'readonly' and not of type 'file'
                         data[key] = input.value;
                     }
                 });
