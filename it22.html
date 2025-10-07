@@ -46,13 +46,23 @@
                 display: none !important;
             }
 
-            /* تصفير الهوامش الخارجية للجسم */
+            /*
+            * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+            * تعديلات حاسمة لضغط المحتوى وضمان صفحة واحدة وإلغاء الهوامش الإلزامية للمتصفح (التاريخ/الوقت/الرابط) *
+            * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+            */
+            
+            /* منع ظهور رأس وتذييل الصفحة التلقائيين (يتحكم فيها المتصفح، لكن هذه محاولة لمنعها) */
+            @page {
+                margin: 0cm; /* إلغاء الهوامش التلقائية للمحتوى */
+            }
+            
             body {
                 padding: 0 !important;
                 margin: 0 !important;
                 background-color: white !important;
                 font-size: 7px; /* تصغير الخط أكثر ليتسع المحتوى */
-                line-height: 1; /* تقليل التباعد بين الأسطر */
+                line-height: 1.1; /* تقليل التباعد بين الأسطر */
                 justify-content: flex-start;
                 align-items: flex-start;
                 overflow-x: hidden; 
@@ -70,9 +80,9 @@
                 background-color: transparent !important;
                 
                 /* تطبيق الهوامش الداخلية هنا (لترك مساحة بيضاء حول المحتوى) */
-                padding: 1.5cm 1.3cm 1.5cm 1.3cm !important; 
-                display: block; /* تغيير العرض لضمان عمل العناصر المطلقة */
-                position: relative; /* ضروري لربط الأشرطة الثابتة */
+                padding: 1.0cm 1.0cm 1.0cm 1.0cm !important; /* تقليل الهوامش إلى 1 سم */
+                display: block; 
+                position: relative; 
             }
             
             /* ************************************** */
@@ -86,10 +96,10 @@
                 top: 0;
                 right: 0;
                 width: 100%;
-                height: 1.5cm; /* ارتفاع ثابت للرأس */
-                background-color: var(--dark-color) !important; /* اللون الغامق الجديد */
-                background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%) !important; /* التدرج الجديد */
-                background-size: 100% 5px; /* ارتفاع التدرج 5px */
+                height: 1.0cm; /* ارتفاع ثابت للرأس */
+                background-color: var(--dark-color) !important; 
+                background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%) !important;
+                background-size: 100% 3px; 
                 background-repeat: no-repeat;
                 background-position: bottom;
                 z-index: 10;
@@ -102,10 +112,10 @@
                 bottom: 0;
                 right: 0;
                 width: 100%;
-                height: 1.0cm; /* ارتفاع ثابت للتذييل */
-                background-color: var(--dark-color) !important; /* اللون الغامق الجديد */
-                background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%) !important; /* التدرج الجديد */
-                background-size: 100% 5px; /* ارتفاع التدرج 5px */
+                height: 0.8cm; /* ارتفاع ثابت للتذييل */
+                background-color: var(--dark-color) !important; 
+                background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%) !important;
+                background-size: 100% 3px; 
                 background-repeat: no-repeat;
                 background-position: top;
                 z-index: 10;
@@ -119,35 +129,33 @@
             .content-wrapper {
                 margin-top: 0.1cm !important; 
                 margin-bottom: 0.1cm !important; 
-                height: calc(29.7cm - 3.0cm - 2.0cm) !important; 
+                height: calc(29.7cm - 2.0cm - 1.8cm) !important; /* حساب الارتفاع المتبقي */
                 display: flex; 
                 flex-direction: column;
                 justify-content: flex-start;
-                gap: 0.1rem !important;
+                gap: 0.05rem !important; /* تقليل المسافات */
             }
             
             /* تثبيت عناصر الرأس داخل الشريط العلوي */
             .header-info-container {
                 position: absolute !important;
-                top: 0.2cm !important;
-                right: 0.2cm !important;
+                top: 0.1cm !important;
+                right: 0.1cm !important;
                 z-index: 11;
             }
             .header-input {
-                color: white !important; /* لون النص في الشريط الغامق */
-                font-size: 8px !important;
-                background-color: transparent !important;
-                border: none !important;
-                text-align: right !important;
+                color: white !important; 
+                font-size: 7px !important;
+                padding: 0 !important;
             }
             
             /* موقع العنوان بعد إضافة الشعار */
             .h1-title {
                 color: white !important;
-                font-size: 10px !important;
+                font-size: 9px !important;
                 position: absolute !important;
-                top: 0.6cm !important;
-                left: 2.8cm !important; /* تم إزاحة العنوان قليلاً لليمين لإضافة الشعار */
+                top: 0.4cm !important;
+                left: 2.0cm !important; 
                 margin: 0 !important;
                 padding: 0 !important;
                 z-index: 11;
@@ -156,9 +164,9 @@
             /* موقع الشعار في الطباعة */
             .moe-logo {
                 position: absolute !important;
-                top: 0.4cm !important;
-                left: 1.3cm !important; /* يتطابق مع هامش الصفحة الداخلي */
-                height: 18px !important; /* حجم مناسب للطباعة */
+                top: 0.3cm !important;
+                left: 1.0cm !important; 
+                height: 15px !important; 
                 width: auto !important;
                 z-index: 11;
             }
@@ -169,41 +177,62 @@
             
             .report-table th, .report-table td {
                 padding: 0.5px 1px !important; 
-                height: 14px !important; 
-                font-size: 7px !important; 
+                height: 12px !important; /* تقليل ارتفاع الخلايا */
+                font-size: 6.5px !important; /* تصغير الخط */
+            }
+            .fillable-input {
+                padding: 0 2px !important;
+                font-size: 6.5px !important;
             }
             .h2-title {
                 padding: 1px 4px !important; 
-                font-size: 8px !important;
+                font-size: 7.5px !important;
                 margin-top: 0.05rem !important; 
             }
             .signature-label-text {
-                font-size: 7px !important;
+                font-size: 6.5px !important;
             }
             .signature-input-name {
-                 font-size: 7.5px !important;
-                 border-bottom: 1px dashed #000000 !important; /* خط التوقيع */
+                 font-size: 7px !important;
+                 border-bottom: 1px dashed #000000 !important; 
             }
             .signature-footer {
                 position: absolute !important;
-                bottom: 0.2cm !important; /* تثبيته فوق الشريط السفلي */
-                left: 1.3cm !important;
-                right: 1.3cm !important;
+                bottom: 0.1cm !important; 
+                left: 1.0cm !important;
+                right: 1.0cm !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 z-index: 11;
+            }
+            .w-48 {
+                width: 33% !important; /* توزيع التوقيعات بالتساوي */
             }
             
             /* شواهد التفعيل - أقصى ضغط */
             .evidence-box {
                 min-height: 40px !important; 
                 padding: 0 !important;
+                gap: 2px !important;
             }
             .image-slot-aspect {
-                padding-top: 65% !important; 
+                padding-top: 60% !important; /* تقليل نسبة العرض/الارتفاع */
             }
             .image-slot-content {
-                font-size: 7px !important;
+                font-size: 6px !important;
+            }
+            /* تحديث ألوان الخلايا الثابتة للعرض والطباعة */
+            .report-table th {
+                background-color: var(--dark-color) !important; 
+                color: white !important;
+            }
+            .fixed-cell {
+                background-color: var(--grad-start) !important; 
+                color: white !important;
+            }
+            .h2-title {
+                background-color: var(--grad-end) !important;
+                color: white !important;
             }
         }
 
@@ -230,7 +259,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto; 
             position: relative;
-            padding: 1.5cm 1.8cm 1.0cm 1.8cm; 
+            padding: 1.0cm 1.5cm 0.8cm 1.5cm; /* تقليل هوامش المعاينة */
             color: #000000; 
             font-size: 11.5px; 
             display: flex; 
@@ -247,10 +276,10 @@
             top: 0;
             right: 0;
             width: 100%;
-            height: 1.5cm; 
+            height: 1.0cm; /* ارتفاع مطابق للطباعة */
             background-color: var(--dark-color); 
-            background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%); 
-            background-size: 100% 5px; 
+            background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%); 
+            background-size: 100% 3px; 
             background-repeat: no-repeat;
             background-position: bottom;
             z-index: 10;
@@ -263,10 +292,10 @@
             bottom: 0;
             right: 0;
             width: 100%;
-            height: 1.0cm; 
+            height: 0.8cm; /* ارتفاع مطابق للطباعة */
             background-color: var(--dark-color); 
-            background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%); 
-            background-size: 100% 5px; 
+            background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%); 
+            background-size: 100% 3px; 
             background-repeat: no-repeat;
             background-position: top;
             z-index: 10;
@@ -275,8 +304,8 @@
         /* تثبيت موقع بيانات الرأس داخل الشريط */
         .header-info-container {
             position: absolute;
-            top: 0.2cm;
-            right: 1.8cm; 
+            top: 0.1cm;
+            right: 1.5cm; 
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -290,15 +319,15 @@
             color: white !important; 
             text-align: right;
             font-weight: 800; 
-            font-size: 14px; 
+            font-size: 13px; 
         }
         
         .h1-title {
             color: white !important;
-            font-size: 18px; 
+            font-size: 16px; 
             position: absolute;
-            top: 0.6cm;
-            left: 3.5cm; /* تم تعديل الموقع لإتاحة مساحة للشعار في المعاينة */
+            top: 0.4cm;
+            left: 3.0cm; /* تم تعديل الموقع لإتاحة مساحة للشعار في المعاينة */
             margin: 0;
             padding: 0;
             z-index: 20;
@@ -307,9 +336,9 @@
         /* موقع الشعار في المعاينة */
         .moe-logo {
             position: absolute;
-            top: 0.5cm;
-            left: 1.8cm;
-            height: 40px; 
+            top: 0.3cm;
+            left: 1.5cm;
+            height: 30px; /* حجم مناسب للمعاينة */
             width: auto;
             z-index: 20;
         }
@@ -339,12 +368,13 @@
         .h2-title {
             padding: 2px 8px; 
             border-radius: 4px;
-            color: #000000;
             display: inline-block;
             margin-bottom: 0; 
             margin-top: 0.2rem; 
             font-size: 11px; 
-            background-color: #e0f2f1; /* خلفية فاتحة للعناوين */
+            /* الألوان الجديدة */
+            background-color: var(--grad-end);
+            color: white; 
         }
 
         .report-table {
@@ -364,12 +394,17 @@
             background-color: white;
         }
 
+        /* الألوان الجديدة لرؤوس الجداول */
         .report-table th {
-            background-color: #b2ebdd; 
+            background-color: var(--dark-color); 
+            color: white;
         }
         
+        /* الألوان الجديدة للخلايا الثابتة */
         .fixed-cell {
-            background-color: #d1f7ee; 
+            background-color: var(--grad-start); 
+            color: white;
+            font-weight: bold;
         }
 
         .signature-label-text {
