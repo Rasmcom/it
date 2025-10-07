@@ -16,17 +16,18 @@
             --dark-color: #003a47; /* اللون الغامق */
             --grad-start: #2896aa; /* بداية التدرج */
             --grad-end: #36ad7c; /* نهاية التدرج */
+            --header-height-print: 1.8cm; /* ارتفاع الهيدر الجديد للطباعة */
         }
 
         /*
         *****************************************************************
-        قواعد الطباعة المخصصة لصفحة A4 (التصميم الجديد الصارم)
+        قواعد الطباعة المخصصة لصفحة A4
         *****************************************************************
         */
         @page {
             size: A4 portrait;
-            /* تصفير الهامش لضمان أقصى مساحة ممكنة */
-            margin: 0; 
+            /* تصفير الهامش لضمان أقصى مساحة ممكنة ومنع رؤوس وتذييلات المتصفح */
+            margin: 0cm; 
         }
 
         @media print {
@@ -41,21 +42,16 @@
                 display: none !important;
             }
             
-            /* إخفاء الجدول الأول (التاريخ والمكان) كما طلب المستخدم لتوفير المساحة */
+            /* إخفاء الجدول الأول (التاريخ والمكان) */
             .table-date-location {
                 display: none !important;
             }
 
             /*
             * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-            * تعديلات حاسمة لضغط المحتوى وضمان صفحة واحدة وإلغاء الهوامش الإلزامية للمتصفح (التاريخ/الوقت/الرابط) *
+            * تعديلات لضغط المحتوى وضمان صفحة واحدة وإلغاء الهوامش الإلزامية للمتصفح (التاريخ/الوقت/الرابط) *
             * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
             */
-            
-            /* منع ظهور رأس وتذييل الصفحة التلقائيين (يتحكم فيها المتصفح، لكن هذه محاولة لمنعها) */
-            @page {
-                margin: 0cm; /* إلغاء الهوامش التلقائية للمحتوى */
-            }
             
             body {
                 padding: 0 !important;
@@ -79,8 +75,8 @@
                 border: none !important;
                 background-color: transparent !important;
                 
-                /* تطبيق الهوامش الداخلية هنا (لترك مساحة بيضاء حول المحتوى) */
-                padding: 1.0cm 1.0cm 1.0cm 1.0cm !important; /* تقليل الهوامش إلى 1 سم */
+                /* تطبيق الهوامش الداخلية (1 سم من كل جانب) */
+                padding: 1.8cm 1.0cm 0.8cm 1.0cm !important; /* الهامش العلوي 1.8cm ليناسب الهيدر الجديد */
                 display: block; 
                 position: relative; 
             }
@@ -89,14 +85,14 @@
             /* شرائط الرأس والتذييل الثابتة (Fixed Header/Footer Bands) */
             /* ************************************** */
             
-            /* شريط الرأس - ثابت في الأعلى */
+            /* شريط الرأس - ثابت في الأعلى (ارتفاع أكبر) */
             .a4-page::before {
                 content: '';
                 position: absolute;
                 top: 0;
                 right: 0;
                 width: 100%;
-                height: 1.0cm; /* ارتفاع ثابت للرأس */
+                height: var(--header-height-print) !important; /* ارتفاع ثابت للرأس: 1.8cm */
                 background-color: var(--dark-color) !important; 
                 background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%) !important;
                 background-size: 100% 3px; 
@@ -122,64 +118,71 @@
             }
             
             /* ************************************** */
-            /* تعديلات المحتوى الداخلي */
+            /* تعديلات عناصر الرأس الداخلية (تم تبديل اليمين واليسار) */
+            /* ************************************** */
+            
+            /* موقع الشعار - الآن على اليمين */
+            .moe-logo {
+                position: absolute !important;
+                top: 0.2cm !important;
+                right: 1.0cm !important; /* داخل الهامش 1سم */
+                left: auto !important; 
+                height: 20px !important; 
+                width: auto !important;
+                z-index: 11;
+            }
+            
+            /* موقع بيانات المدرسة والإدارة - الآن بجوار الشعار على اليمين */
+            .header-info-container {
+                position: absolute !important;
+                top: 0.2cm !important;
+                right: 3.5cm !important; /* موقع يبدأ بعد الشعار */
+                left: auto !important;
+                z-index: 11;
+                align-items: flex-end !important; /* ضمان محاذاة النص لليمين */
+            }
+            .header-input {
+                color: white !important; 
+                font-size: 7px !important;
+                padding: 0 !important;
+                width: 70mm !important; /* زيادة عرض حقل الإدخال في الطباعة */
+            }
+            
+            /* موقع العنوان الرئيسي - تحت بيانات الإدارة والشعار على اليمين */
+            .h1-title {
+                color: white !important;
+                font-size: 9px !important;
+                position: absolute !important;
+                top: 1.0cm !important; /* أسفل منطقة بيانات الإدارة والشعار */
+                right: 1.0cm !important; 
+                left: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                z-index: 11;
+                text-align: right !important;
+            }
+            
+            /* ************************************** */
+            /* ضغط عناصر المحتوى */
             /* ************************************** */
 
-            /* ترحيل المحتوى ليتناسب مع الرأس */
             .content-wrapper {
-                margin-top: 0.1cm !important; 
+                /* إزالة الهامش العلوي الذي كان يدفع المحتوى ليحل محله padding: 1.8cm العلوي على .a4-page */
+                margin-top: -0.8cm !important; 
                 margin-bottom: 0.1cm !important; 
-                height: calc(29.7cm - 2.0cm - 1.8cm) !important; /* حساب الارتفاع المتبقي */
+                height: calc(29.7cm - 1.8cm - 0.8cm - 1.0cm) !important; /* ارتفاع الورقة - ارتفاع الهيدر - ارتفاع الفوتور - الهوامش المتبقية */
                 display: flex; 
                 flex-direction: column;
                 justify-content: flex-start;
                 gap: 0.05rem !important; /* تقليل المسافات */
             }
             
-            /* تثبيت عناصر الرأس داخل الشريط العلوي */
-            .header-info-container {
-                position: absolute !important;
-                top: 0.1cm !important;
-                right: 0.1cm !important;
-                z-index: 11;
-            }
-            .header-input {
-                color: white !important; 
-                font-size: 7px !important;
-                padding: 0 !important;
-            }
-            
-            /* موقع العنوان بعد إضافة الشعار */
-            .h1-title {
-                color: white !important;
-                font-size: 9px !important;
-                position: absolute !important;
-                top: 0.4cm !important;
-                left: 2.0cm !important; 
-                margin: 0 !important;
-                padding: 0 !important;
-                z-index: 11;
-            }
-            
-            /* موقع الشعار في الطباعة */
-            .moe-logo {
-                position: absolute !important;
-                top: 0.3cm !important;
-                left: 1.0cm !important; 
-                height: 15px !important; 
-                width: auto !important;
-                z-index: 11;
-            }
-            
-            /* ************************************** */
-            /* ضغط عناصر الجدول والتوقيعات */
-            /* ************************************** */
-            
             .report-table th, .report-table td {
                 padding: 0.5px 1px !important; 
-                height: 12px !important; /* تقليل ارتفاع الخلايا */
-                font-size: 6.5px !important; /* تصغير الخط */
+                height: 12px !important; 
+                font-size: 6.5px !important; 
             }
+            /* ... (باقي تنسيقات الضغط كما هي) ... */
             .fillable-input {
                 padding: 0 2px !important;
                 font-size: 6.5px !important;
@@ -206,22 +209,19 @@
                 z-index: 11;
             }
             .w-48 {
-                width: 33% !important; /* توزيع التوقيعات بالتساوي */
+                width: 33% !important; 
             }
-            
-            /* شواهد التفعيل - أقصى ضغط */
             .evidence-box {
                 min-height: 40px !important; 
                 padding: 0 !important;
                 gap: 2px !important;
             }
             .image-slot-aspect {
-                padding-top: 60% !important; /* تقليل نسبة العرض/الارتفاع */
+                padding-top: 60% !important; 
             }
             .image-slot-content {
                 font-size: 6px !important;
             }
-            /* تحديث ألوان الخلايا الثابتة للعرض والطباعة */
             .report-table th {
                 background-color: var(--dark-color) !important; 
                 color: white !important;
@@ -238,28 +238,30 @@
 
         /*
         *****************************************************************
-        تنسيقات الشاشة (Preview) - الخلفية البيضاء مع الشريط العلوي والسفلي
+        تنسيقات الشاشة (Preview) - تم تحديث الهيدر
         *****************************************************************
         */
         body {
             font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
             background-color: #f0f0f0; 
-            padding: 10px; 
+            padding: 0; /* إزالة البادينغ للجوال */
+            margin: 0; /* إزالة الهامش للجوال */
             display: flex; 
             flex-direction: column;
             justify-content: flex-start;
             align-items: center; 
             min-height: 100vh; 
-            overflow-x: auto; 
+            overflow-x: hidden; /* منع التمرير الأفقي في الجوال */
         }
 
         .a4-page {
             width: 210mm; 
             min-height: 297mm; 
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            margin: 0 auto; 
+            margin: 10px auto; /* هامش بسيط في المعاينة */
             position: relative;
-            padding: 1.0cm 1.5cm 0.8cm 1.5cm; /* تقليل هوامش المعاينة */
+            /* الهامش العلوي تم زيادته ليغطي الشريط الجديد */
+            padding: var(--header-height-print) 1.5cm 0.8cm 1.5cm; 
             color: #000000; 
             font-size: 11.5px; 
             display: flex; 
@@ -269,14 +271,14 @@
             overflow: hidden;
         }
 
-        /* محاكاة الشريط العلوي في المعاينة */
+        /* محاكاة الشريط العلوي في المعاينة (ارتفاع أكبر) */
         .a4-page::before {
              content: '';
             position: absolute;
             top: 0;
             right: 0;
             width: 100%;
-            height: 1.0cm; /* ارتفاع مطابق للطباعة */
+            height: var(--header-height-print); /* 1.8cm */
             background-color: var(--dark-color); 
             background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%); 
             background-size: 100% 3px; 
@@ -292,7 +294,7 @@
             bottom: 0;
             right: 0;
             width: 100%;
-            height: 0.8cm; /* ارتفاع مطابق للطباعة */
+            height: 0.8cm; 
             background-color: var(--dark-color); 
             background-image: linear-gradient(to right, var(--grad-start) 0%, var(--grad-end) 100%); 
             background-size: 100% 3px; 
@@ -301,11 +303,22 @@
             z-index: 10;
         }
 
-        /* تثبيت موقع بيانات الرأس داخل الشريط */
+        /* موقع الشعار - الآن على اليمين */
+        .moe-logo {
+            position: absolute;
+            top: 0.2cm;
+            right: 1.5cm; /* يمين حسب هامش المعاينة */
+            left: auto;
+            height: 30px; 
+            z-index: 20;
+        }
+        
+        /* موقع بيانات المدرسة والإدارة - الآن بجوار الشعار على اليمين */
         .header-info-container {
             position: absolute;
-            top: 0.1cm;
-            right: 1.5cm; 
+            top: 0.2cm;
+            right: 4.5cm; /* يسار الشعار */
+            left: auto;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -320,27 +333,21 @@
             text-align: right;
             font-weight: 800; 
             font-size: 13px; 
+            width: 100mm; 
         }
         
+        /* موقع العنوان الرئيسي - تحت بيانات الإدارة والشعار على اليمين */
         .h1-title {
             color: white !important;
             font-size: 16px; 
             position: absolute;
-            top: 0.4cm;
-            left: 3.0cm; /* تم تعديل الموقع لإتاحة مساحة للشعار في المعاينة */
+            top: 1.0cm; /* أسفل منطقة بيانات الإدارة والشعار */
+            right: 1.5cm; /* يمين حسب هامش المعاينة */
+            left: auto; 
             margin: 0;
             padding: 0;
             z-index: 20;
-        }
-        
-        /* موقع الشعار في المعاينة */
-        .moe-logo {
-            position: absolute;
-            top: 0.3cm;
-            left: 1.5cm;
-            height: 30px; /* حجم مناسب للمعاينة */
-            width: auto;
-            z-index: 20;
+            text-align: right;
         }
         
         /* *************** باقي تنسيقات المحتوى *************** */
@@ -350,11 +357,10 @@
             flex-direction: column;
             gap: 0.3rem; 
             overflow-y: hidden; 
-            /* ترك مساحة للرأس والثذييل في المعاينة */
-            margin-top: 0.5cm;
+            margin-top: -0.5cm; /* تعويض المسافة الزائدة بعد تغيير الهامش العلوي لـ .a4-page */
             margin-bottom: 0.5cm;
         }
-
+        /* ... (باقي التنسيقات كما هي) ... */
         .fillable-input {
             border: 1px solid #c0c0c0; 
             color: #000000; 
@@ -372,7 +378,6 @@
             margin-bottom: 0; 
             margin-top: 0.2rem; 
             font-size: 11px; 
-            /* الألوان الجديدة */
             background-color: var(--grad-end);
             color: white; 
         }
@@ -394,13 +399,11 @@
             background-color: white;
         }
 
-        /* الألوان الجديدة لرؤوس الجداول */
         .report-table th {
             background-color: var(--dark-color); 
             color: white;
         }
         
-        /* الألوان الجديدة للخلايا الثابتة */
         .fixed-cell {
             background-color: var(--grad-start); 
             color: white;
@@ -472,22 +475,26 @@
 
     <!-- الحاوية الرئيسية A4 -->
     <div class="a4-page">
+        
+        <!-- Report Title - Fixed position in print mode -->
+        <!-- الموقع الجديد: تحت بيانات المدرسة/الإدارة -->
+        <h1 class="h1-title font-bold">تفعيل المدرسة للتعلم الالكتروني</h1>
+
         <!-- شعار وزارة التعليم (شعار وزارة التعليم) -->
+        <!-- الموقع الجديد: على اليمين -->
         <img id="moeLogo" 
             src="https://salogos.org/wp-content/uploads/2021/11/UntiTtled-1-1300x988.png" 
             alt="شعار وزارة التعليم" 
             class="moe-logo" 
             onerror="this.onerror=null; this.src='https://placehold.co/50x50/003a47/ffffff?text=شعار';">
         
-        <!-- Report Title - Fixed position in print mode -->
-        <h1 class="h1-title text-center font-bold">تفعيل المدرسة للتعلم الالكتروني</h1>
-
         <!-- Header Info Container - Fixed position in print mode -->
+        <!-- الموقع الجديد: بجوار الشعار على اليمين -->
         <div class="header-info-container">
             <!-- اسم الادارة التعليمية -->
-            <input type="text" id="adminName" data-key="adminName" class="header-input text-right w-[100mm]" placeholder="الإدارة التعليمية (سجل هنا اسم الإدارة كاملاً)">
+            <input type="text" id="adminName" data-key="adminName" class="header-input text-right" placeholder="الإدارة التعليمية (سجل هنا اسم الإدارة كاملاً)">
             <!-- اسم المدرسة -->
-            <input type="text" id="schoolName" data-key="schoolName" class="header-input text-right w-[100mm]" placeholder="المدرسة (سجل هنا اسم المدرسة كاملاً)">
+            <input type="text" id="schoolName" data-key="schoolName" class="header-input text-right" placeholder="المدرسة (سجل هنا اسم المدرسة كاملاً)">
         </div>
 
 
@@ -745,7 +752,7 @@
         const REPORT_DOC_ID = 'content'; // Fixed document ID for the report data
 
         // --- DOM Elements ---
-        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input), textarea[data-key]')); // Include textarea
+        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input), textarea[data-key], input[type="checkbox"][data-key]')); 
 
         let db, auth;
         let userId;
