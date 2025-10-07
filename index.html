@@ -11,15 +11,22 @@
         /* Embedding Cairo Font */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         
+        /* تعريف الألوان المخصصة لـ Tailwind */
+        :root {
+            --dark-color: #003a47; /* اللون الغامق */
+            --grad-start: #2896aa; /* بداية التدرج */
+            --grad-end: #36ad7c; /* نهاية التدرج */
+        }
+
         /*
         *****************************************************************
-        قواعد الطباعة المخصصة لصفحة A4 (تم التعديل لضمان الاتساع في صفحة واحدة)
+        قواعد الطباعة المخصصة لصفحة A4 (التصميم الجديد الصارم)
         *****************************************************************
         */
         @page {
             size: A4 portrait;
-            /* هامش 0.3 إنش (لبعض الطابعات) - يمكن تقليله إلى 0.2in في حال استمرار المشكلة */
-            margin: 0.25in; 
+            /* تصفير الهامش لضمان أقصى مساحة ممكنة */
+            margin: 0; 
         }
 
         @media print {
@@ -33,20 +40,10 @@
             .no-print {
                 display: none !important;
             }
-
-            /* الحاوية الخارجية (لتشمل كل المحتوى) */
-            .a4-page {
-                box-shadow: none !important;
-                max-width: 100% !important;
-                margin: 0 auto !important;
-                padding: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                transform: scale(1.0) !important; 
-                transform-origin: top left !important;
-                overflow: visible !important;
-                border: none !important;
-                background-color: transparent !important;
+            
+            /* إخفاء الجدول الأول (التاريخ والمكان) كما طلب المستخدم لتوفير المساحة */
+            .table-date-location {
+                display: none !important;
             }
 
             /* تصفير الهوامش الخارجية للجسم */
@@ -54,85 +51,165 @@
                 padding: 0 !important;
                 margin: 0 !important;
                 background-color: white !important;
-                font-size: 7.5px; /* تصغير الخط أكثر */
-                line-height: 1.1;
+                font-size: 7px; /* تصغير الخط أكثر ليتسع المحتوى */
+                line-height: 1; /* تقليل التباعد بين الأسطر */
                 justify-content: flex-start;
                 align-items: flex-start;
                 overflow-x: hidden; 
             }
             
-            /* خلفية A4 الثابتة: يتم تطبيقها على الحاوية العلوية لضمان الطباعة */
             .a4-page {
-                /* الصورة المرسلة كخلفية */
-                background-image: url('https://d.top4top.io/p_3567auk9h1.jpg'); 
-                background-size: 210mm 297mm; /* تغطية ورقة A4 بالكامل */
-                background-repeat: no-repeat;
-                background-position: center center;
-                /* تقليل الهوامش الداخلية لصفحة الطباعة */
-                padding: 1.0cm 1.5cm 0.8cm 1.5cm !important; 
-                min-height: 297mm;
+                box-shadow: none !important;
+                max-width: 100% !important;
+                width: 210mm !important;
+                min-height: 297mm !important;
+                height: 297mm !important; /* تثبيت الارتفاع */
+                transform: scale(1.0) !important; 
+                overflow: hidden !important; /* منع أي overflow */
+                border: none !important;
+                background-color: transparent !important;
+                
+                /* تطبيق الهوامش الداخلية هنا (لترك مساحة بيضاء حول المحتوى) */
+                padding: 1.5cm 1.3cm 1.5cm 1.3cm !important; 
+                display: block; /* تغيير العرض لضمان عمل العناصر المطلقة */
+                position: relative; /* ضروري لربط الأشرطة الثابتة */
             }
             
-            /* ضغط المسافات بين الأقسام */
-            .content-wrapper {
-                gap: 0.2rem !important; /* تقليل المسافة بين الجداول */
+            /* ************************************** */
+            /* شرائط الرأس والتذييل الثابتة (Fixed Header/Footer Bands) */
+            /* ************************************** */
+            
+            /* شريط الرأس - ثابت في الأعلى */
+            .a4-page::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 100%;
+                height: 1.5cm; /* ارتفاع ثابت للرأس */
+                background-color: var(--dark-color) !important; /* اللون الغامق الجديد */
+                background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%) !important; /* التدرج الجديد */
+                background-size: 100% 5px; /* ارتفاع التدرج 5px */
+                background-repeat: no-repeat;
+                background-position: bottom;
+                z-index: 10;
             }
+            
+            /* شريط التذييل - ثابت في الأسفل */
+            .a4-page::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 100%;
+                height: 1.0cm; /* ارتفاع ثابت للتذييل */
+                background-color: var(--dark-color) !important; /* اللون الغامق الجديد */
+                background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%) !important; /* التدرج الجديد */
+                background-size: 100% 5px; /* ارتفاع التدرج 5px */
+                background-repeat: no-repeat;
+                background-position: top;
+                z-index: 10;
+            }
+            
+            /* ************************************** */
+            /* تعديلات المحتوى الداخلي */
+            /* ************************************** */
 
-            /* تحسين تنسيق الجداول والنصوص للطباعة */
-            .report-table th, .report-table td {
-                padding: 1px !important; /* تقليل البادينج داخل الخلايا */
-                height: 15px !important; /* تقليل ارتفاع الصفوف */
-                font-size: 7px !important; /* تصغير الخط داخل الجداول */
-                background-color: white !important; 
+            /* ترحيل المحتوى ليتناسب مع الرأس */
+            .content-wrapper {
+                margin-top: 0.1cm !important; 
+                margin-bottom: 0.1cm !important; 
+                height: calc(29.7cm - 3.0cm - 2.0cm) !important; 
+                display: flex; 
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 0.1rem !important;
             }
-            .report-table th {
-                background-color: #b2ebdd !important; 
-            }
-            .fixed-cell {
-                background-color: #d1f7ee !important; 
-            }
-            .h2-title {
-                background-color: #f0f0f0 !important; 
-                padding: 1px 6px !important; /* ضغط عنوان القسم */
-                font-size: 8px !important;
-                margin-top: 0.1rem !important; /* ضغط المسافة فوق العنوان */
+            
+            /* تثبيت عناصر الرأس داخل الشريط العلوي */
+            .header-info-container {
+                position: absolute !important;
+                top: 0.2cm !important;
+                right: 0.2cm !important;
+                z-index: 11;
             }
             .header-input {
-                color: #000000 !important; 
+                color: white !important; /* لون النص في الشريط الغامق */
                 font-size: 8px !important;
-            }
-            .h1-title {
-                color: #000000 !important;
-                font-size: 10px !important;
-                margin-top: 0.5rem !important; /* تقليل المسافة أعلى العنوان الرئيسي */
-            }
-            .signature-label-text {
-                font-size: 7.5px !important;
-            }
-            .signature-input-name {
-                 font-size: 8px !important;
-            }
-            .signature-footer {
-                margin-top: 0.3rem !important; /* ضغط المسافة قبل التوقيعات */
+                background-color: transparent !important;
+                border: none !important;
+                text-align: right !important;
             }
             
-            /* تصغير مساحة شواهد التفعيل (الصور) لتقليل الطول */
+            /* موقع العنوان بعد إضافة الشعار */
+            .h1-title {
+                color: white !important;
+                font-size: 10px !important;
+                position: absolute !important;
+                top: 0.6cm !important;
+                left: 2.8cm !important; /* تم إزاحة العنوان قليلاً لليمين لإضافة الشعار */
+                margin: 0 !important;
+                padding: 0 !important;
+                z-index: 11;
+            }
+            
+            /* موقع الشعار في الطباعة */
+            .moe-logo {
+                position: absolute !important;
+                top: 0.4cm !important;
+                left: 1.3cm !important; /* يتطابق مع هامش الصفحة الداخلي */
+                height: 18px !important; /* حجم مناسب للطباعة */
+                width: auto !important;
+                z-index: 11;
+            }
+            
+            /* ************************************** */
+            /* ضغط عناصر الجدول والتوقيعات */
+            /* ************************************** */
+            
+            .report-table th, .report-table td {
+                padding: 0.5px 1px !important; 
+                height: 14px !important; 
+                font-size: 7px !important; 
+            }
+            .h2-title {
+                padding: 1px 4px !important; 
+                font-size: 8px !important;
+                margin-top: 0.05rem !important; 
+            }
+            .signature-label-text {
+                font-size: 7px !important;
+            }
+            .signature-input-name {
+                 font-size: 7.5px !important;
+                 border-bottom: 1px dashed #000000 !important; /* خط التوقيع */
+            }
+            .signature-footer {
+                position: absolute !important;
+                bottom: 0.2cm !important; /* تثبيته فوق الشريط السفلي */
+                left: 1.3cm !important;
+                right: 1.3cm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                z-index: 11;
+            }
+            
+            /* شواهد التفعيل - أقصى ضغط */
             .evidence-box {
-                min-height: 50px !important; /* تقليل الارتفاع الأدنى */
+                min-height: 40px !important; 
                 padding: 0 !important;
             }
             .image-slot-aspect {
-                padding-top: 75% !important; /* تقليل نسبة الارتفاع */
+                padding-top: 65% !important; 
             }
-            .image-slot-container {
-                width: 24.5% !important;
+            .image-slot-content {
+                font-size: 7px !important;
             }
-
         }
 
         /*
         *****************************************************************
-        تنسيقات الشاشة (Preview) - يجب أن تكون مستجيبة ومرئية
+        تنسيقات الشاشة (Preview) - الخلفية البيضاء مع الشريط العلوي والسفلي
         *****************************************************************
         */
         body {
@@ -159,29 +236,82 @@
             display: flex; 
             flex-direction: column; 
             max-width: 100%; 
-            /* الخلفية الشفافة للمعاينة */
-            background-color: rgba(255, 255, 255, 0.9); 
-            background-image: url('https://d.top4top.io/p_3567auk9h1.jpg'); 
-            background-size: cover; 
-            background-repeat: no-repeat;
-            background-position: center center;
+            background-color: white; 
+            overflow: hidden;
         }
 
-        /* العناصر التي يجب أن تكون شفافة أو شبه شفافة على الشاشة */
+        /* محاكاة الشريط العلوي في المعاينة */
+        .a4-page::before {
+             content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 1.5cm; 
+            background-color: var(--dark-color); 
+            background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%); 
+            background-size: 100% 5px; 
+            background-repeat: no-repeat;
+            background-position: bottom;
+            z-index: 10;
+        }
+        
+        /* محاكاة الشريط السفلي في المعاينة */
+        .a4-page::after {
+             content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 1.0cm; 
+            background-color: var(--dark-color); 
+            background-image: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%); 
+            background-size: 100% 5px; 
+            background-repeat: no-repeat;
+            background-position: top;
+            z-index: 10;
+        }
+
+        /* تثبيت موقع بيانات الرأس داخل الشريط */
+        .header-info-container {
+            position: absolute;
+            top: 0.2cm;
+            right: 1.8cm; 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            space-y: 1px;
+            z-index: 20;
+        }
+        
         .header-input {
             background-color: transparent !important;
             border: none; 
-            color: #ffffff !important; 
+            color: white !important; 
             text-align: right;
             font-weight: 800; 
             font-size: 14px; 
         }
+        
         .h1-title {
-            color: #ffffff !important;
+            color: white !important;
             font-size: 18px; 
+            position: absolute;
+            top: 0.6cm;
+            left: 3.5cm; /* تم تعديل الموقع لإتاحة مساحة للشعار في المعاينة */
+            margin: 0;
+            padding: 0;
+            z-index: 20;
         }
-        .fillable-input, .report-table th, .report-table td, .h2-title {
-            background-color: rgba(255, 255, 255, 0.85); /* زيادة الصلابة قليلاً */
+        
+        /* موقع الشعار في المعاينة */
+        .moe-logo {
+            position: absolute;
+            top: 0.5cm;
+            left: 1.8cm;
+            height: 40px; 
+            width: auto;
+            z-index: 20;
         }
         
         /* *************** باقي تنسيقات المحتوى *************** */
@@ -191,10 +321,13 @@
             flex-direction: column;
             gap: 0.3rem; 
             overflow-y: hidden; 
+            /* ترك مساحة للرأس والثذييل في المعاينة */
+            margin-top: 0.5cm;
+            margin-bottom: 0.5cm;
         }
 
         .fillable-input {
-            border: 1px solid #c0c0c0; /* إضافة حدود واضحة لمدخلات الشاشة */
+            border: 1px solid #c0c0c0; 
             color: #000000; 
             padding: 0 4px;
             outline: none;
@@ -211,6 +344,7 @@
             margin-bottom: 0; 
             margin-top: 0.2rem; 
             font-size: 11px; 
+            background-color: #e0f2f1; /* خلفية فاتحة للعناوين */
         }
 
         .report-table {
@@ -227,6 +361,7 @@
             padding: 1px; 
             height: 18px; 
             text-align: center;
+            background-color: white;
         }
 
         .report-table th {
@@ -254,7 +389,7 @@
             outline: none;
             padding-bottom: 0;
             margin-top: 2px; 
-            border-bottom: 1px solid #ccc; /* إضافة خط للمعاينة */
+            border-bottom: 1px solid #ccc; 
         }
          .signature-input-title {
             display: none; 
@@ -266,6 +401,7 @@
             padding-top: 2px; 
             padding-bottom: 2px; 
             flex-shrink: 0; 
+            z-index: 20;
         }
 
         .evidence-box {
@@ -282,7 +418,7 @@
         .image-slot-aspect {
             padding-top: 90%; 
             border: 1px dashed #666; 
-            background-color: rgba(255, 255, 255, 0.9); 
+            background-color: #f8f8f8; 
             border-radius: 4px; 
         }
         .image-slot-content {
@@ -301,24 +437,30 @@
 
     <!-- الحاوية الرئيسية A4 -->
     <div class="a4-page">
-        <!-- Header Section -->
+        <!-- شعار وزارة التعليم (شعار وزارة التعليم) -->
+        <img id="moeLogo" 
+            src="https://salogos.org/wp-content/uploads/2021/11/UntiTtled-1-1300x988.png" 
+            alt="شعار وزارة التعليم" 
+            class="moe-logo" 
+            onerror="this.onerror=null; this.src='https://placehold.co/50x50/003a47/ffffff?text=شعار';">
         
-        <!-- الإدارة والمدرسة - Positioned to the top edge -->
-        <header class="absolute top-[20px] right-[70mm] flex flex-col items-end space-y-1"> 
+        <!-- Report Title - Fixed position in print mode -->
+        <h1 class="h1-title text-center font-bold">تفعيل المدرسة للتعلم الالكتروني</h1>
+
+        <!-- Header Info Container - Fixed position in print mode -->
+        <div class="header-info-container">
             <!-- اسم الادارة التعليمية -->
-            <input type="text" id="adminName" data-key="adminName" class="header-input text-right w-full" placeholder="الإدارة التعليمية (سجل هنا اسم الإدارة كاملاً)">
+            <input type="text" id="adminName" data-key="adminName" class="header-input text-right w-[100mm]" placeholder="الإدارة التعليمية (سجل هنا اسم الإدارة كاملاً)">
             <!-- اسم المدرسة -->
             <input type="text" id="schoolName" data-key="schoolName" class="header-input text-right w-[100mm]" placeholder="المدرسة (سجل هنا اسم المدرسة كاملاً)">
-        </header>
-        
+        </div>
 
-        <!-- Report Title - mt-7 for a slightly raised position, less margin -->
-        <h1 class="h1-title text-right mb-1 py-1 mr-[55mm] mt-7">تفعيل المدرسة للتعلم الالكتروني</h1>
 
         <!-- Content Wrapper to contain all tables and evidence -->
         <div class="content-wrapper">
-            <!-- Table 1: Date and Place -->
-            <div class="mb-0"> 
+            <!-- Table 1: Date and Place - (Hidden in Print Mode) -->
+            <div class="mb-0 table-date-location"> 
+                <h2 class="h2-title">بيانات الزيارة (لإدخال البيانات فقط، لن تظهر في الطباعة)</h2>
                 <table class="report-table">
                     <thead>
                         <tr>
@@ -520,7 +662,7 @@
 
         </div> <!-- End of content-wrapper -->
         
-        <!-- Signature/Name Boxes - Sits right after the content-wrapper -->
+        <!-- Signature/Name Boxes - Fixed position in print mode -->
         <div class="signature-footer flex justify-between px-4">
             
             <!-- أمينة مصادر التعلم -->
