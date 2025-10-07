@@ -30,39 +30,36 @@
 
         .a4-page {
             width: 210mm; /* A4 width */
+            /* CRITICAL: Retain min-height for correct print guidance */
             min-height: 297mm; 
-            height: 297mm; /* CRITICAL: Fixed A4 height */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto; 
             position: relative;
             /* Improved padding for better aesthetics and breathing room */
             padding: 1.5cm 1.8cm 1.0cm 1.8cm; 
             color: #000000; 
-            font-size: 11.5px; /* Restored comfortable base font size */
+            font-size: 11.5px; 
             display: flex; 
             flex-direction: column; 
             max-width: 100%; 
-            
-            /* --- الخلفية الثابتة (BACKGROUND STYLES) --- */
             background-color: #ffffff; 
-            /* Placeholder URL for a fixed background image */
             background-image: url('https://d.top4top.io/p_3567auk9h1.jpg'); 
             background-size: cover; 
             background-repeat: no-repeat;
             background-position: center center;
-            /* CRITICAL for printing image background */
             -webkit-print-color-adjust: exact !important; 
             color-adjust: exact !important;
-            /* --- End Background Styles --- */
         }
         
-        /* Content Wrapper: Restored standard gap for better vertical flow */
+        /* Content Wrapper: FIX - Removed flex-grow: 1 so it only takes space it needs. 
+           This allows the signature footer to sit right below the images. */
         .content-wrapper {
-            flex-grow: 1; 
+            /* flex-grow: 1; was removed here */
             display: flex;
             flex-direction: column;
-            gap: 0.3rem; /* Restored small, comfortable gap between sections */
+            gap: 0.3rem; 
             overflow-y: hidden; 
+            /* flex-grow: 1; was removed here */
         }
 
         /* Input fields inside tables */
@@ -74,7 +71,7 @@
             outline: none;
             width: 100%;
             opacity: 1; 
-            font-size: 10px; /* Comfortable data font size */
+            font-size: 10px; 
         }
         
         /* Input fields that are readonly/fixed content */
@@ -92,7 +89,7 @@
             color: #ffffff !important; 
             text-align: right;
             font-weight: 800; 
-            font-size: 14px; /* Restored header font size */
+            font-size: 14px; 
         }
         .header-input::placeholder {
             color: rgba(255, 255, 255, 0.7);
@@ -101,7 +98,7 @@
         /* Main title */
         .h1-title {
             color: #ffffff !important;
-            font-size: 18px; /* Restored main title font size */
+            font-size: 18px; 
             margin-bottom: 0.25rem; 
         }
 
@@ -114,23 +111,23 @@
             display: inline-block;
             margin-bottom: 0; 
             margin-top: 0.2rem; 
-            font-size: 11px; /* Restored section title font size */
+            font-size: 11px; 
         }
 
         /* Styling for the tables */
         .report-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0.2rem; /* Comfortable margin top */
+            margin-top: 0.2rem; 
             color: #000000; 
-            font-size: 9px; /* Comfortable data font size */
+            font-size: 9px; 
             table-layout: fixed; 
         }
 
         .report-table th, .report-table td {
             border: 1px solid #666666; 
-            padding: 1px; /* Restored standard padding */
-            height: 18px; /* Restored standard row height */
+            padding: 1px; 
+            height: 18px; 
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8); 
         }
@@ -163,37 +160,28 @@
             outline: none;
             padding-bottom: 0;
             margin-top: 2px; 
-            border-bottom: 1px dashed #666; 
         }
-         /* Signature Input Styling: Job title */
+         /* Signature Input Styling: Job title - HIDDEN */
         .signature-input-title {
-            text-align: center;
-            width: 100%;
-            color: #000000; 
-            font-size: 8px; 
-            border: none; 
-            background-color: transparent;
-            outline: none;
-            padding-top: 0;
-            margin-bottom: 1px;
+            display: none; 
         }
         
         /* Signature Footer Container - Tightly constrained */
         .signature-footer {
             width: 100%;
-            margin-top: 0.2rem; /* Minimal margin top */
+            margin-top: 0.4rem; /* Slightly increased margin for visual separation */
             padding-top: 2px; 
             padding-bottom: 2px; 
             flex-shrink: 0; 
         }
 
-        /* Evidence Box Styling - CRITICAL HEIGHT REDUCTION HERE */
+        /* Evidence Box Styling - Tightly constrained */
         .evidence-box {
             background-color: transparent; 
             border: none; 
             padding: 1px; 
             text-align: right;
-            min-height: 85px; /* Reduced min-height to save vertical space for A4 fit */
+            min-height: 85px; 
             flex-shrink: 0; 
         }
 
@@ -203,7 +191,7 @@
             position: relative;
         }
         .image-slot-aspect {
-            padding-top: 90%; /* Vertically compress images slightly */
+            padding-top: 90%; 
             border: 1px dashed #666; 
             background-color: rgba(255, 255, 255, 0.5); 
             border-radius: 4px; 
@@ -227,7 +215,9 @@
                 -webkit-print-color-adjust: exact !important; 
                 color-adjust: exact !important;
                 max-width: none;
-                height: 297mm; /* Ensure fixed A4 height in print */
+                /* NOTE: Keep min-height 297mm for print to guide the printer */
+                min-height: 297mm; 
+                height: auto; /* Allow height to adjust if content is slightly taller */
             }
             .print-button {
                 display: none;
@@ -413,7 +403,7 @@
                 </table>
             </div>
 
-            <!-- Evidence Section (Image Uploads) - Focused height reduction -->
+            <!-- Evidence Section (Image Uploads) - Tightly constrained -->
             <div class="mb-0"> 
                 <h2 class="h2-title">شواهد التفعيل</h2>
                 
@@ -467,33 +457,33 @@
 
         </div> <!-- End of content-wrapper -->
         
-        <!-- Signature/Name Boxes - Tightly spaced to fit on page -->
+        <!-- Signature/Name Boxes - Sits right after the content-wrapper -->
         <div class="signature-footer flex justify-between px-4">
             
             <!-- أمينة مصادر التعلم -->
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">أمينة مصادر التعلم</p>
-                <!-- Name (Bolded) -->
+                <!-- Name (Bolded) - No border-bottom for cleaner look -->
                 <input type="text" data-key="signature_1_name" class="signature-input-name font-bold" placeholder="الاسم">
-                <!-- Title (الصفة) -->
+                <!-- Title (الصفة) - HIDDEN -->
                 <input type="text" data-key="signature_1_title" class="signature-input-title" placeholder="التوقيع">
             </div>
             
             <!-- مشرفة الدعم -->
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">مشرفة الدعم</p>
-                <!-- Name (Bolded) -->
+                <!-- Name (Bolded) - No border-bottom for cleaner look -->
                 <input type="text" data-key="signature_2_name" class="signature-input-name font-bold" placeholder="الاسم">
-                <!-- Title (الصفة) -->
+                <!-- Title (الصفة) - HIDDEN -->
                 <input type="text" data-key="signature_2_title" class="signature-input-title" placeholder="التوقيع">
             </div>
             
             <!-- مديرة المدرسة -->
             <div class="text-center w-48 flex flex-col items-center">
                 <p class="signature-label-text">مديرة المدرسة</p>
-                <!-- Name (Bolded) -->
+                <!-- Name (Bolded) - No border-bottom for cleaner look -->
                 <input type="text" data-key="signature_3_name" class="signature-input-name font-bold" placeholder="الاسم">
-                <!-- Title (الصفة) -->
+                <!-- Title (الصفة) - HIDDEN -->
                 <input type="text" data-key="signature_3_title" class="signature-input-title" placeholder="التوقيع">
             </div>
         </div>
