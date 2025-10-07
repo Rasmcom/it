@@ -35,10 +35,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto; 
             position: relative;
-            /* CRITICAL: Reduced padding for more content space */
-            padding: 1.2cm 1.5cm 0.8cm 1.5cm; 
+            /* Improved padding for better aesthetics and breathing room */
+            padding: 1.5cm 1.8cm 1.0cm 1.8cm; 
             color: #000000; 
-            font-size: 11px; /* Reduced base font size */
+            font-size: 11.5px; /* Restored comfortable base font size */
             display: flex; 
             flex-direction: column; 
             max-width: 100%; 
@@ -56,12 +56,12 @@
             /* --- End Background Styles --- */
         }
         
-        /* Content Wrapper: Adjusted gap for tighter compression */
+        /* Content Wrapper: Restored standard gap for better vertical flow */
         .content-wrapper {
             flex-grow: 1; 
             display: flex;
             flex-direction: column;
-            gap: 0; /* CRITICAL: Set gap to 0 for maximum vertical compression */
+            gap: 0.3rem; /* Restored small, comfortable gap between sections */
             overflow-y: hidden; 
         }
 
@@ -74,7 +74,7 @@
             outline: none;
             width: 100%;
             opacity: 1; 
-            font-size: 9px; /* Adjusted font size */
+            font-size: 10px; /* Comfortable data font size */
         }
         
         /* Input fields that are readonly/fixed content */
@@ -92,7 +92,7 @@
             color: #ffffff !important; 
             text-align: right;
             font-weight: 800; 
-            font-size: 13px; /* Slightly reduced header font size */
+            font-size: 14px; /* Restored header font size */
         }
         .header-input::placeholder {
             color: rgba(255, 255, 255, 0.7);
@@ -101,36 +101,36 @@
         /* Main title */
         .h1-title {
             color: #ffffff !important;
-            font-size: 17px; /* Reduced main title font size */
-            margin-bottom: 0; 
+            font-size: 18px; /* Restored main title font size */
+            margin-bottom: 0.25rem; 
         }
 
         /* Section titles */
         .h2-title {
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 1px 6px; 
-            border-radius: 3px;
+            padding: 2px 8px; 
+            border-radius: 4px;
             color: #000000;
             display: inline-block;
             margin-bottom: 0; 
-            margin-top: 0.1rem; /* Very small margin top */
-            font-size: 10px; /* Reduced section title font size */
+            margin-top: 0.2rem; 
+            font-size: 11px; /* Restored section title font size */
         }
 
         /* Styling for the tables */
         .report-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0.05rem; /* CRITICAL: Minimal margin top */
+            margin-top: 0.2rem; /* Comfortable margin top */
             color: #000000; 
-            font-size: 8px; /* CRITICAL: Very small font size for data */
+            font-size: 9px; /* Comfortable data font size */
             table-layout: fixed; 
         }
 
         .report-table th, .report-table td {
             border: 1px solid #666666; 
-            padding: 0.5px; /* CRITICAL: Reduced padding to 0.5px */
-            height: 16px; /* CRITICAL: Reduced fixed row height to 16px */
+            padding: 1px; /* Restored standard padding */
+            height: 18px; /* Restored standard row height */
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8); 
         }
@@ -147,7 +147,7 @@
         /* Signature label */
         .signature-label-text {
             color: #000000; 
-            font-size: 8.5px; /* Reduced signature label font size */
+            font-size: 9px; 
             margin-bottom: 0; 
             font-weight: bold;
         }
@@ -157,7 +157,7 @@
             text-align: center;
             width: 100%;
             color: #000000; 
-            font-size: 9px;
+            font-size: 10px;
             border: none; 
             background-color: transparent;
             outline: none;
@@ -170,7 +170,7 @@
             text-align: center;
             width: 100%;
             color: #000000; 
-            font-size: 7px; /* Smaller font for the title */
+            font-size: 8px; 
             border: none; 
             background-color: transparent;
             outline: none;
@@ -178,22 +178,22 @@
             margin-bottom: 1px;
         }
         
-        /* Signature Footer Container - Tighter vertical margin */
+        /* Signature Footer Container - Tightly constrained */
         .signature-footer {
             width: 100%;
-            margin-top: 0.1rem; /* Minimal margin top */
-            padding-top: 1px; /* Reduced padding */
-            padding-bottom: 1px; /* Reduced padding */
+            margin-top: 0.2rem; /* Minimal margin top */
+            padding-top: 2px; 
+            padding-bottom: 2px; 
             flex-shrink: 0; 
         }
 
-        /* Evidence Box Styling */
+        /* Evidence Box Styling - CRITICAL HEIGHT REDUCTION HERE */
         .evidence-box {
             background-color: transparent; 
             border: none; 
-            padding: 1px; /* CRITICAL: Minimal padding */
+            padding: 1px; 
             text-align: right;
-            min-height: 100px; /* CRITICAL: Reduced min-height to save space */
+            min-height: 85px; /* Reduced min-height to save vertical space for A4 fit */
             flex-shrink: 0; 
         }
 
@@ -203,13 +203,13 @@
             position: relative;
         }
         .image-slot-aspect {
-            padding-top: 100%; 
+            padding-top: 90%; /* Vertically compress images slightly */
             border: 1px dashed #666; 
             background-color: rgba(255, 255, 255, 0.5); 
             border-radius: 4px; 
         }
         .image-slot-content {
-            font-size: 7px; 
+            font-size: 8px; 
         }
         
         /* Print media query to ensure full-page print with background */
@@ -260,7 +260,7 @@
         
 
         <!-- Report Title - mt-7 for a slightly raised position, less margin -->
-        <h1 class="h1-title text-right mb-1 py-1 mr-[55mm] mt-6">تفعيل المدرسة للتعلم الالكتروني</h1>
+        <h1 class="h1-title text-right mb-1 py-1 mr-[55mm] mt-7">تفعيل المدرسة للتعلم الالكتروني</h1>
 
         <!-- Content Wrapper to contain all tables and evidence -->
         <div class="content-wrapper">
@@ -396,7 +396,7 @@
                 </table>
             </div>
 
-            <!-- Table 6: Objectives and Impact (Reduced to 3 rows to save space) -->
+            <!-- Table 6: Objectives and Impact (3 rows) -->
             <div class="mb-0"> 
                 <table class="report-table">
                     <thead>
@@ -413,7 +413,7 @@
                 </table>
             </div>
 
-            <!-- Evidence Section (Image Uploads) - mb-0 for minimal space before signature -->
+            <!-- Evidence Section (Image Uploads) - Focused height reduction -->
             <div class="mb-0"> 
                 <h2 class="h2-title">شواهد التفعيل</h2>
                 
@@ -603,6 +603,12 @@
             
             if (file) {
                 try {
+                    // Check file size limit (1MB = 1048576 bytes) BEFORE converting to base64
+                    if (file.size > 1048576 * 0.7) { // Using 700KB as a safe buffer for base64 encoding overhead
+                         showCustomAlert("تحذير: قد تكون الصورة كبيرة جداً. يرجى اختيار صورة بحجم أصغر من 700 كيلوبايت لضمان الحفظ.");
+                    }
+
+
                     const base64String = await fileToBase64(file);
                     
                     // Update DOM
