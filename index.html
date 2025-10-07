@@ -13,13 +13,13 @@
         
         /*
         *****************************************************************
-        قواعد الطباعة المخصصة لصفحة A4 (وفق قواعد المستخدم الصارمة)
+        قواعد الطباعة المخصصة لصفحة A4 (تم التعديل لضمان الاتساع في صفحة واحدة)
         *****************************************************************
         */
         @page {
             size: A4 portrait;
-            /* هامش 0.3 إنش (لبعض الطابعات) */
-            margin: 0.3in; 
+            /* هامش 0.3 إنش (لبعض الطابعات) - يمكن تقليله إلى 0.2in في حال استمرار المشكلة */
+            margin: 0.25in; 
         }
 
         @media print {
@@ -46,7 +46,6 @@
                 transform-origin: top left !important;
                 overflow: visible !important;
                 border: none !important;
-                /* إزالة خلفية الشاشة (الشفافة) */
                 background-color: transparent !important;
             }
 
@@ -55,7 +54,7 @@
                 padding: 0 !important;
                 margin: 0 !important;
                 background-color: white !important;
-                font-size: 8px; /* تصغير الخط قليلاً للطباعة */
+                font-size: 7.5px; /* تصغير الخط أكثر */
                 line-height: 1.1;
                 justify-content: flex-start;
                 align-items: flex-start;
@@ -69,16 +68,22 @@
                 background-size: 210mm 297mm; /* تغطية ورقة A4 بالكامل */
                 background-repeat: no-repeat;
                 background-position: center center;
-                /* إعادة تطبيق الهوامش الداخلية بعد إزالة الهوامش الخارجية لـ body */
-                padding: 1.5cm 1.8cm 1.0cm 1.8cm !important; 
+                /* تقليل الهوامش الداخلية لصفحة الطباعة */
+                padding: 1.0cm 1.5cm 0.8cm 1.5cm !important; 
                 min-height: 297mm;
             }
             
+            /* ضغط المسافات بين الأقسام */
+            .content-wrapper {
+                gap: 0.2rem !important; /* تقليل المسافة بين الجداول */
+            }
+
             /* تحسين تنسيق الجداول والنصوص للطباعة */
             .report-table th, .report-table td {
-                padding: 2px !important;
-                font-size: 7.5px !important;
-                background-color: white !important; /* ضمان وضوح النصوص فوق الخلفية */
+                padding: 1px !important; /* تقليل البادينج داخل الخلايا */
+                height: 15px !important; /* تقليل ارتفاع الصفوف */
+                font-size: 7px !important; /* تصغير الخط داخل الجداول */
+                background-color: white !important; 
             }
             .report-table th {
                 background-color: #b2ebdd !important; 
@@ -87,22 +92,42 @@
                 background-color: #d1f7ee !important; 
             }
             .h2-title {
-                background-color: #f0f0f0 !important; /* خلفية صلبة للعناوين الفرعية */
+                background-color: #f0f0f0 !important; 
+                padding: 1px 6px !important; /* ضغط عنوان القسم */
+                font-size: 8px !important;
+                margin-top: 0.1rem !important; /* ضغط المسافة فوق العنوان */
             }
             .header-input {
-                color: #000000 !important; /* جعل نصوص الهيدر باللون الأسود للطباعة */
-                opacity: 1 !important;
-                background-color: transparent !important;
+                color: #000000 !important; 
+                font-size: 8px !important;
             }
             .h1-title {
                 color: #000000 !important;
+                font-size: 10px !important;
+                margin-top: 0.5rem !important; /* تقليل المسافة أعلى العنوان الرئيسي */
             }
             .signature-label-text {
-                font-size: 8px !important;
+                font-size: 7.5px !important;
             }
             .signature-input-name {
-                 font-size: 9px !important;
+                 font-size: 8px !important;
             }
+            .signature-footer {
+                margin-top: 0.3rem !important; /* ضغط المسافة قبل التوقيعات */
+            }
+            
+            /* تصغير مساحة شواهد التفعيل (الصور) لتقليل الطول */
+            .evidence-box {
+                min-height: 50px !important; /* تقليل الارتفاع الأدنى */
+                padding: 0 !important;
+            }
+            .image-slot-aspect {
+                padding-top: 75% !important; /* تقليل نسبة الارتفاع */
+            }
+            .image-slot-container {
+                width: 24.5% !important;
+            }
+
         }
 
         /*
@@ -445,7 +470,7 @@
             <div class="mb-0"> 
                 <h2 class="h2-title">شواهد التفعيل</h2>
                 
-                <div class="evidence-box flex justify-between gap-2 p-1 items-center">
+                <div class="evidence-box flex justify-between gap-1 p-0.5 items-center">
                     
                     <!-- Image Slot 1 -->
                     <div class="image-slot-container">
@@ -543,7 +568,7 @@
         const REPORT_DOC_ID = 'content'; // Fixed document ID for the report data
 
         // --- DOM Elements ---
-        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input)'));
+        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input), textarea[data-key]')); // Include textarea
 
         let db, auth;
         let userId;
