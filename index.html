@@ -26,6 +26,8 @@
             justify-content: center;
             align-items: flex-start; 
             min-height: 100vh; 
+            /* Added for mobile view: allow horizontal scrolling if the A4 content is wider than viewport */
+            overflow-x: auto; 
         }
 
         .a4-page {
@@ -43,6 +45,8 @@
             font-size: 12px; 
             display: flex; 
             flex-direction: column; 
+            /* Ensure it is scrollable on small screens if it's wider than the viewport */
+            max-width: 100%; 
             
         }
         
@@ -66,13 +70,6 @@
             font-size: 11px; /* Slightly reduced font size for tables */
         }
         
-        /* Placeholder styling removed as per request, but kept for general inputs */
-        .fillable-input::placeholder {
-            color: #333333; 
-            opacity: 0.7; 
-            font-size: 10px; 
-        }
-
         /* Input fields that are readonly/fixed content */
         .fixed-input {
             background-color: rgba(240, 240, 240, 0.7); /* Slightly darker background to show they are fixed */
@@ -120,6 +117,8 @@
             margin-top: 0.1rem; 
             color: #000000; 
             font-size: 9px; 
+            /* Ensure tables scroll if necessary on mobile */
+            table-layout: fixed; 
         }
 
         .report-table th, .report-table td {
@@ -131,6 +130,11 @@
 
         .report-table th {
             background-color: #b2ebdd; 
+        }
+        
+        /* Specific styling for the fixed (readonly) cells */
+        .fixed-cell {
+            background-color: #d1f7ee; 
         }
 
         /* Signature label (Muedd/Mudir/Mushrif) must be black and smaller */
@@ -152,6 +156,8 @@
             outline: none;
             padding-bottom: 0;
             margin-top: 4px; 
+            /* Add bottom line for signature */
+            border-bottom: 1px dashed #666; 
         }
          /* Signature Input Styling: Job title input (Line 2: Title) */
         .signature-input-title {
@@ -229,16 +235,21 @@
                 background-color: #ffffff; 
                 justify-content: flex-start;
                 align-items: flex-start;
+                overflow-x: hidden; /* Prevent print issues */
             }
             .a4-page {
                 margin: 0;
                 box-shadow: none;
                 -webkit-print-color-adjust: exact !important; 
                 color-adjust: exact !important;
+                max-width: none;
             }
             /* Hide print button */
             .print-button {
                 display: none;
+            }
+            .report-table {
+                 table-layout: auto; /* Revert to auto on print for better fit */
             }
         }
     </style>
@@ -265,7 +276,7 @@
         
 
         <!-- Report Title - mt-8 for a slightly raised position -->
-        <h1 class="h1-title text-right mb-3 py-1 mr-[55mm] mt-6">تفعيل المدرسة للتعلم الالكتروني</h1>
+        <h1 class="h1-title text-right mb-3 py-1 mr-[55mm] mt-8">تفعيل المدرسة للتعلم الالكتروني</h1>
 
         <!-- Content Wrapper to contain all tables and evidence -->
         <div class="content-wrapper">
@@ -304,55 +315,72 @@
                     </thead>
                     <tbody>
                         <!-- 5 rows for personnel -->
-                        <tr><td>1</td><td><input type="text" data-key="t2_r1c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r1c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>2</td><td><input type="text" data-key="t2_r2c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r2c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>3</td><td><input type="text" data-key="t2_r3c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r3c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>4</td><td><input type="text" data-key="t2_r4c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r4c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>5</td><td><input type="text" data-key="t2_r5c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r5c2" class="fillable-input" placeholder="العمل"></td></tr>
+                        <tr><td>1</td><td><input type="text" data-key="t2_r1c1" class="fillable-input"></td><td><input type="text" data-key="t2_r1c2" class="fillable-input"></td></tr>
+                        <tr><td>2</td><td><input type="text" data-key="t2_r2c1" class="fillable-input"></td><td><input type="text" data-key="t2_r2c2" class="fillable-input"></td></tr>
+                        <tr><td>3</td><td><input type="text" data-key="t2_r3c1" class="fillable-input"></td><td><input type="text" data-key="t2_r3c2" class="fillable-input"></td></tr>
+                        <tr><td>4</td><td><input type="text" data-key="t2_r4c1" class="fillable-input"></td><td><input type="text" data-key="t2_r4c2" class="fillable-input"></td></tr>
+                        <tr><td>5</td><td><input type="text" data-key="t2_r5c1" class="fillable-input"></td><td><input type="text" data-key="t2_r5c2" class="fillable-input"></td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- Table 3: E-Learning Platform Type (Updated fixed labels) -->
+            <!-- Combined Table 3 & 4: Platforms and Devices -->
             <div class="mb-0"> 
-                <h2 class="h2-title">نوع التفعيل الالكتروني المستخدم</h2>
+                <h2 class="h2-title">التفعيل والأجهزة الإلكترونية المستخدمة</h2>
                 <table class="report-table">
                     <thead>
                         <tr>
-                            <th class="w-8">م</th>
-                            <th>اسم المنصة</th>
-                            <th>ملاحظات أو تفاصيل</th> 
+                            <th colspan="2" class="w-1/2">نوع التفعيل الالكتروني المستخدم</th>
+                            <th colspan="2" class="w-1/2">اسم الجهاز الالكتروني المستخدم</th> 
                         </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Fixed Platforms (Readonly) -->
-                        <tr><td>1</td><td><input type="text" data-key="t3_r1c1" class="fillable-input fixed-input" value="اسم المنصة" readonly></td><td><input type="text" data-key="t3_r1c2" class="fillable-input"></td></tr>
-                        <tr><td>2</td><td><input type="text" data-key="t3_r2c1" class="fillable-input fixed-input" value="اسم القناة" readonly></td><td><input type="text" data-key="t3_r2c2" class="fillable-input"></td></tr>
-                        <tr><td>3</td><td><input type="text" data-key="t3_r3c1" class="fillable-input fixed-input" value="اسم البرنامج" readonly></td><td><input type="text" data-key="t3_r3c2" class="fillable-input"></td></tr>
-                        <!-- Other Type (Now fixed in first column) -->
-                        <tr><td>4</td><td><input type="text" data-key="t3_r4c1" class="fillable-input fixed-input" value="أخرى: تذكر" readonly></td><td><input type="text" data-key="t3_r4c2" class="fillable-input"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Table 4: Devices Used -->
-            <div class="mb-0"> 
-                <h2 class="h2-title">اسم الجهاز الالكتروني المستخدم</h2>
-                <table class="report-table">
-                    <thead>
                         <tr>
-                            <th class="w-8">م</th>
-                            <th>اسم الجهاز</th>
-                            <th class="w-20">مربع اختيار</th>
+                            <th class="w-1/4">اسم المنصة/النوع</th>
+                            <th class="w-1/4">ملاحظات أو تفاصيل</th> 
+                            <th class="w-1/4">اسم الجهاز</th>
+                            <th class="w-8">اختيار</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>1</td><td>جهاز عرض (بروجكتر)</td><td><input type="checkbox" data-key="t4_c1" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
-                        <tr><td>2</td><td>جهاز كمبيوتر مكتبي</td><td><input type="checkbox" data-key="t4_c2" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
-                        <tr><td>3</td><td>جهاز لابتوب</td><td><input type="checkbox" data-key="t4_c3" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
-                        <tr><td>4</td><td>جهاز الايباد</td><td><input type="checkbox" data-key="t4_c4" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
-                        <tr><td>5</td><td>جهاز الجوال</td><td><input type="checkbox" data-key="t4_c5" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
-                        <tr><td>6</td><td>أخرى: <input type="text" data-key="t4_c6_text" class="fillable-input w-40 text-xs" placeholder="اسم الجهاز الآخر"></td><td><input type="checkbox" data-key="t4_c6" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td></tr>
+                        <!-- Row 1: المنصة / بروجكتر -->
+                        <tr>
+                            <td class="fixed-cell">اسم المنصة</td>
+                            <td><input type="text" data-key="t3_r1c2" class="fillable-input"></td>
+                            <td>جهاز عرض (بروجكتر)</td>
+                            <td><input type="checkbox" data-key="t4_c1" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
+                        <!-- Row 2: القناة / كمبيوتر مكتبي -->
+                        <tr>
+                            <td class="fixed-cell">اسم القناة</td>
+                            <td><input type="text" data-key="t3_r2c2" class="fillable-input"></td>
+                            <td>جهاز كمبيوتر مكتبي</td>
+                            <td><input type="checkbox" data-key="t4_c2" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
+                        <!-- Row 3: البرنامج / لابتوب -->
+                        <tr>
+                            <td class="fixed-cell">اسم البرنامج</td>
+                            <td><input type="text" data-key="t3_r3c2" class="fillable-input"></td>
+                            <td>جهاز لابتوب</td>
+                            <td><input type="checkbox" data-key="t4_c3" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
+                        <!-- Row 4: أخرى: تذكر / ايباد -->
+                        <tr>
+                            <td class="fixed-cell font-bold" readonly>أخرى: تذكر</td>
+                            <td><input type="text" data-key="t3_r4c2" class="fillable-input"></td>
+                            <td>جهاز الايباد</td>
+                            <td><input type="checkbox" data-key="t4_c4" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
+                        <!-- Row 5: - / جوال -->
+                        <tr>
+                            <td colspan="2" class="bg-gray-200 opacity-50">&nbsp;</td>
+                            <td>جهاز الجوال</td>
+                            <td><input type="checkbox" data-key="t4_c5" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
+                        <!-- Row 6: - / أخرى: إدخال -->
+                        <tr>
+                            <td colspan="2" class="bg-gray-200 opacity-50">&nbsp;</td>
+                            <td>أخرى: <input type="text" data-key="t4_c6_text" class="fillable-input w-40 text-xs"></td>
+                            <td><input type="checkbox" data-key="t4_c6" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -374,11 +402,11 @@
                     <tbody>
                         <tr>
                             <td>1</td>
-                            <td><input type="text" data-key="t5_r1c1" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+                            <td><input type="text" data-key="t5_r1c1" class="fillable-input"></td>
                             <td>2</td>
-                            <td><input type="text" data-key="t5_r1c2" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+                            <td><input type="text" data-key="t5_r1c2" class="fillable-input"></td>
                             <td>3</td>
-                            <td><input type="text" data-key="t5_r1c3" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+                            <td><input type="text" data-key="t5_r1c3" class="fillable-input"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -394,10 +422,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><input type="text" data-key="t6_r1c1" class="fillable-input" placeholder="الهدف 1"></td><td><input type="text" data-key="t6_r1c2" class="fillable-input" placeholder="الأثر 1"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r2c1" class="fillable-input" placeholder="الهدف 2"></td><td><input type="text" data-key="t6_r2c2" class="fillable-input" placeholder="الأثر 2"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r3c1" class="fillable-input" placeholder="الهدف 3"></td><td><input type="text" data-key="t6_r3c2" class="fillable-input" placeholder="الأثر 3"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r4c1" class="fillable-input" placeholder="الهدف 4"></td><td><input type="text" data-key="t6_r4c2" class="fillable-input" placeholder="الأثر 4"></td></tr>
+                        <tr><td><input type="text" data-key="t6_r1c1" class="fillable-input"></td><td><input type="text" data-key="t6_r1c2" class="fillable-input"></td></tr>
+                        <tr><td><input type="text" data-key="t6_r2c1" class="fillable-input"></td><td><input type="text" data-key="t6_r2c2" class="fillable-input"></td></tr>
+                        <tr><td><input type="text" data-key="t6_r3c1" class="fillable-input"></td><td><input type="text" data-key="t6_r3c2" class="fillable-input"></td></tr>
+                        <tr><td><input type="text" data-key="t6_r4c1" class="fillable-input"></td><td><input type="text" data-key="t6_r4c2" class="fillable-input"></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -504,7 +532,8 @@
         const REPORT_DOC_ID = 'content'; // Fixed document ID for the report data
 
         // --- DOM Elements ---
-        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"])'));
+        // Exclude the fixed cells in the combined table from auto-save loop to avoid saving fixed values.
+        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]):not(.fixed-input)'));
 
         let db, auth;
         let userId;
@@ -674,55 +703,58 @@
                     const key = input.getAttribute('data-key');
                     if (input.type === 'checkbox') {
                         data[key] = input.checked;
-                    } else if (!input.hasAttribute('readonly')) { // Only save value if not readonly
+                    } else { 
+                        // Inputs without 'readonly' and not of type 'file'
                         data[key] = input.value;
                     }
-                    // For the special fixed inputs in table 3, we don't save the value as they are fixed text.
                 });
             }
-
-            // Manually handle fixed inputs in Table 3 if needed for persistence, 
-            // but since they are `readonly` and have fixed `value`s, they don't need to be saved
-            // as they are regenerated on load.
 
             Object.assign(data, partialData, { updatedAt: new Date().toISOString() });
 
             const docRef = doc(db, `artifacts/${appId}/users/${userId}/report_data`, REPORT_DOC_ID);
             
-            try {
-                await setDoc(docRef, data, { merge: true });
-            } catch (error) {
-                console.error("Error saving data:", error);
-                
-                // --- Specific error handling for 1MB size limit ---
-                if (error.code === 'invalid-argument' && error.message.includes('longer than 1048487 bytes')) {
-                    // Find which image slot caused the error (only relevant if it's an image save)
-                    const failedImageKey = Object.keys(partialData).find(key => key.startsWith('imageSlot'));
+            // Exponential backoff retry logic for saving data
+            let attempt = 0;
+            const maxRetries = 5;
+
+            while (attempt < maxRetries) {
+                try {
+                    await setDoc(docRef, data, { merge: true });
+                    return; // Success
+                } catch (error) {
+                    attempt++;
+                    console.error(`Error saving data (Attempt ${attempt}):`, error);
                     
-                    if (failedImageKey) {
-                        const slotNumber = failedImageKey.replace('imageSlot', '');
-                        const previewElement = document.getElementById(`preview${slotNumber}`);
-                        const labelElement = document.getElementById(`label${slotNumber}`);
-                        const fileInputElement = document.getElementById(`fileInput${slotNumber}`);
+                    // Specific error handling for 1MB size limit
+                    if (error.code === 'invalid-argument' && error.message.includes('longer than 1048487 bytes')) {
+                        const failedImageKey = Object.keys(partialData).find(key => key.startsWith('imageSlot'));
+                        if (failedImageKey) {
+                            const slotNumber = failedImageKey.replace('imageSlot', '');
+                            const previewElement = document.getElementById(`preview${slotNumber}`);
+                            const labelElement = document.getElementById(`label${slotNumber}`);
+                            const fileInputElement = document.getElementById(`fileInput${slotNumber}`);
 
-                        // 1. Clear the image display
-                        previewElement.src = '';
-                        previewElement.classList.add('hidden');
-                        previewElement.classList.remove('z-10');
-                        labelElement.classList.remove('hidden');
+                            // Clear the image display
+                            previewElement.src = '';
+                            previewElement.classList.add('hidden');
+                            labelElement.classList.remove('hidden');
+                            fileInputElement.value = '';
 
-                        // 2. Clear the file input (optional but helps prevent re-attempting the save)
-                        fileInputElement.value = '';
-
-                        // 3. Show alert to user
-                        showCustomAlert("خطأ في حفظ الصورة: تجاوز حجم الملف الحد الأقصى المسموح به في قاعدة البيانات (1 ميجابايت). الرجاء استخدام صورة أصغر أو ضغطها.");
-                    } else {
-                        // Fallback for general invalid-argument error
-                        showCustomAlert("حدث خطأ في حفظ البيانات. قد يكون بسبب تجاوز حجم حقل بيانات آخر.");
+                            showCustomAlert("خطأ في حفظ الصورة: تجاوز حجم الملف الحد الأقصى المسموح به في قاعدة البيانات (1 ميجابايت). الرجاء استخدام صورة أصغر أو ضغطها.");
+                        } else {
+                            showCustomAlert("حدث خطأ في حفظ البيانات. قد يكون بسبب تجاوز حجم حقل بيانات آخر.");
+                        }
+                        return; // Do not retry on size error, as it won't resolve.
                     }
-                } else {
-                    // Handle other Firebase errors (e.g., permission denied, network issues)
-                    showCustomAlert("حدث خطأ غير متوقع أثناء حفظ البيانات.");
+                    
+                    if (attempt < maxRetries) {
+                        const delay = Math.pow(2, attempt) * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        showCustomAlert("فشل حفظ البيانات بعد عدة محاولات. الرجاء التحقق من اتصالك.");
+                        throw error; // Re-throw the error after all retries fail
+                    }
                 }
             }
         }
@@ -746,7 +778,7 @@
                         if (value !== undefined) {
                             if (input.type === 'checkbox') {
                                 input.checked = value;
-                            } else if (!input.hasAttribute('readonly')) { // Only update value if not readonly
+                            } else { 
                                 input.value = value;
                             }
                         }
@@ -762,7 +794,7 @@
                         if (base64 && base64.startsWith('data:')) {
                             previewElement.src = base64;
                             previewElement.classList.remove('hidden');
-                            previewElement.classList.add('z-10'); // Ensure image is visible over the label
+                            previewElement.classList.add('z-10'); 
                             labelElement.classList.add('hidden');
                         } else {
                             previewElement.src = '';
@@ -792,10 +824,7 @@
 
         // Attach listeners to all persistent inputs
         allPersistentInputs.forEach(input => {
-            // Only attach listener if the input is meant to be editable (i.e., not readonly)
-            if (!input.hasAttribute('readonly')) {
-                input.addEventListener('input', debounceSave);
-            }
+            input.addEventListener('input', debounceSave);
         });
 
         // Initialize everything on window load
