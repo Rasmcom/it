@@ -16,14 +16,15 @@
             --color-navy: #003366;
             --color-blue: #2196F3;
             --color-green: #4CAF50;
-            --header-height: 35mm;
-            --footer-height: 15mm;
+            --header-height: 25mm; /* تم تقليل الارتفاع */
+            --footer-height: 10mm; /* تم تقليل الارتفاع */
+            --page-padding: 1.5cm; /* الهامش الجانبي للورقة A4 */
         }
 
         /* Custom styles for A4 size and printing */
         @page {
             size: A4;
-            margin: 0;
+            margin: 0 !important; /* إلغاء جميع هوامش الطباعة */
         }
 
         body {
@@ -44,7 +45,8 @@
             margin: 0 auto;
             background-color: #ffffff; /* White background for screen view */
             position: relative;
-            padding: 1.5cm 1.5cm 1.0cm 1.5cm;
+            /* الهوامش الداخلية في وضع الشاشة */
+            padding: var(--page-padding) var(--page-padding) 1.0cm var(--page-padding); 
             color: #000000;
             font-size: 12px;
             display: flex;
@@ -64,7 +66,7 @@
             height: var(--header-height);
             background-color: transparent; /* Base color */
             z-index: 10;
-            padding: 0; /* Remove padding */
+            padding: 0;
         }
         /* Footer Container (Screen Only) */
         .fixed-footer-container {
@@ -75,7 +77,7 @@
             height: var(--footer-height);
             background-color: transparent;
             z-index: 10;
-            padding: 0; /* Remove padding */
+            padding: 0;
         }
 
         /* Shared Line Styles */
@@ -86,14 +88,14 @@
         }
 
         .header-line-wide {
-            height: calc(var(--header-height) - 3mm); /* 32mm */
+            height: calc(var(--header-height) - 3mm); /* 22mm */
             width: 100%;
             background-color: var(--color-navy); /* Navy Blue */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 0 15mm; /* Inner padding for content */
+            padding: 0 var(--page-padding); /* Inner padding for content */
         }
 
         .footer-line-thin {
@@ -109,7 +111,7 @@
         }
 
         .footer-line-wide {
-            height: calc(var(--footer-height) - 3mm - 2px); /* ~12mm */
+            height: calc(var(--footer-height) - 3mm - 2px); /* ~5mm */
             width: 100%;
             background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
         }
@@ -155,19 +157,19 @@
             color: #ffffff; /* White text on Navy background */
             text-align: right;
             font-weight: bold;
-            font-size: 14px;
-            padding: 2px 4px;
+            font-size: 12px; /* تم تصغير الخط قليلاً */
+            padding: 1px 4px;
             outline: none;
             width: 100%;
             margin: 0;
-            height: 20px; /* fixed height for consistency */
+            height: 18px; /* fixed height for consistency */
         }
 
         /* Title in Header: CENTERING AND MULTI-LINE SUPPORT */
         .header-title {
             color: white;
             font-weight: 900;
-            font-size: 16px;
+            font-size: 14px; /* تم تصغير الخط قليلاً */
             text-align: center;
             line-height: 1.2;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -315,8 +317,12 @@
                 /* Crucial for printing CSS colors/gradients */
                 -webkit-print-color-adjust: exact !important;
                 color-adjust: exact !important;
-                padding-top: calc(1.5cm + var(--header-height)); /* Space for the header */
-                padding-bottom: calc(1.0cm + var(--footer-height)); /* Space for the footer */
+                /* تعويض ارتفاع الترويسة الثابتة */
+                padding-top: var(--header-height);
+                /* تعويض ارتفاع التذييل الثابتة */
+                padding-bottom: var(--footer-height); 
+                padding-left: 0;
+                padding-right: 0;
                 min-height: 297mm; /* Ensure it stays A4 */
                 width: 210mm; /* Force A4 width for print */
                 overflow-x: hidden; /* Prevent horizontal scroll in print */
@@ -326,16 +332,23 @@
                 display: none !important;
             }
 
-            /* FIX: Remove the top margin of the content wrapper during print */
+            /* FIX: Remove the top margin of the content wrapper during print and set print side padding */
             .content-wrapper {
                  margin-top: 0 !important;
+                 padding-left: var(--page-padding); /* هامش جانبي للطباعة */
+                 padding-right: var(--page-padding); /* هامش جانبي للطباعة */
+            }
+
+            .signature-footer {
+                 padding-left: var(--page-padding) !important; /* هامش جانبي للطباعة */
+                 padding-right: var(--page-padding) !important; /* هامش جانبي للطباعة */
             }
 
             /* --- MANDATORY FIXED PRINT HEADER/FOOTER --- */
 
             /* Print Header (Structure only) */
             .print-header {
-                position: fixed;
+                position: fixed; /* تثبيت في رأس الصفحة */
                 top: 0;
                 left: 0;
                 right: 0;
@@ -352,11 +365,13 @@
             /* Print Header Content Area (Navy Line) */
             .print-header .header-line-wide {
                 background-color: var(--color-navy) !important;
+                /* تطبيق الهامش الداخلي ليتناسب مع محتوى الصفحة */
+                padding: 0 var(--page-padding) !important;
             }
 
             /* Print Footer (Structure only) */
             .print-footer {
-                position: fixed;
+                position: fixed; /* تثبيت في تذييل الصفحة */
                 bottom: 0;
                 left: 0;
                 right: 0;
@@ -370,13 +385,16 @@
 
             /* Force all gradient lines to print with color */
             .header-line-thin, .footer-line-thin, .footer-line-wide {
+                background-image: none !important; /* إلغاء خاصية الصورة إذا وجدت */
                 background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
             }
 
             .footer-line-thin { /* Override with its specific gradient */
+                background-image: none !important;
                 background: linear-gradient(to right, var(--color-green), var(--color-blue)) !important;
             }
             .footer-line-wide { /* Override with its specific gradient */
+                background-image: none !important;
                 background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
             }
 
@@ -404,7 +422,7 @@
                 color: #ffffff !important;
                 border-bottom: none !important;
                 font-weight: 900 !important;
-                font-size: 14px !important;
+                font-size: 12px !important; /* تأكيد حجم الخط المصغر */
             }
             /* Ensure the text is still bold when printed */
             .fillable-input, .signature-input-name {
@@ -507,8 +525,8 @@
         </div>
 
         <!-- Content Wrapper to contain all tables and evidence -->
-        <!-- Start content after the fixed header space (35mm) -->
-        <div class="content-wrapper mt-[35mm] mb-[15mm] p-0">
+        <!-- Start content after the fixed header space (25mm) -->
+        <div class="content-wrapper mt-[25mm] mb-[10mm] p-0">
 
             <!-- Basic Data Block (Below Header) - Fixed 4 columns -->
             <div class="grid grid-cols-4 gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
@@ -723,7 +741,8 @@
         </div> <!-- End of content-wrapper -->
 
         <!-- Signature/Name Boxes - Fixed layout for A4 consistency -->
-        <div class="signature-footer flex justify-between px-4 mt-2 mb-[15mm]">
+        <!-- تم تعديل الهوامش السفلية لتعويض مساحة التذييل الثابتة -->
+        <div class="signature-footer flex justify-between px-4 mt-2 mb-[10mm]">
 
             <!-- أمينة مصادر التعلم -->
             <div class="text-center w-48 flex flex-col items-center">
