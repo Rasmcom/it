@@ -16,12 +16,12 @@
             --color-navy: #003366;
             --color-blue: #2196F3;
             --color-green: #4CAF50;
-            --header-height: 25mm; /* تم تقليل الارتفاع */
-            --footer-height: 10mm; /* تم تقليل الارتفاع */
+            --header-height: 25mm; /* الارتفاع المطلوب للرأس */
+            --footer-height: 10mm; /* الارتفاع المطلوب للتذييل */
             --page-padding: 1.5cm; /* الهامش الجانبي للورقة A4 */
         }
 
-        /* Custom styles for A4 size and printing */
+        /* 1. إعدادات الطباعة الأساسية: إلغاء الهوامش وتحديد حجم A4 */
         @page {
             size: A4;
             margin: 0 !important; /* إلغاء جميع هوامش الطباعة */
@@ -55,7 +55,7 @@
             overflow-x: auto;
         }
 
-        /* --- Header/Footer Lines Structure --- */
+        /* --- Header/Footer Lines Structure (Screen Version) --- */
 
         /* Header Container (Screen Only) */
         .fixed-header-container {
@@ -81,11 +81,17 @@
         }
 
         /* Shared Line Styles */
-        .header-line-thin {
+        .line-thin-blue-green {
             height: 3mm;
             width: 100%;
             background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
         }
+        .line-thin-green-blue {
+            height: 3mm;
+            width: 100%;
+            background: linear-gradient(to right, var(--color-green), var(--color-blue)); /* Green to Blue (Reversed) */
+        }
+
 
         .header-line-wide {
             height: calc(var(--header-height) - 3mm); /* 22mm */
@@ -96,12 +102,6 @@
             justify-content: center;
             align-items: center;
             padding: 0 var(--page-padding); /* Inner padding for content */
-        }
-
-        .footer-line-thin {
-            height: 3mm;
-            width: 100%;
-            background: linear-gradient(to right, var(--color-green), var(--color-blue)); /* Green to Blue (Reversed) */
         }
 
         .footer-separator {
@@ -157,19 +157,19 @@
             color: #ffffff; /* White text on Navy background */
             text-align: right;
             font-weight: bold;
-            font-size: 12px; /* تم تصغير الخط قليلاً */
+            font-size: 12px; 
             padding: 1px 4px;
             outline: none;
             width: 100%;
             margin: 0;
-            height: 18px; /* fixed height for consistency */
+            height: 18px; 
         }
 
         /* Title in Header: CENTERING AND MULTI-LINE SUPPORT */
         .header-title {
             color: white;
             font-weight: 900;
-            font-size: 14px; /* تم تصغير الخط قليلاً */
+            font-size: 14px; 
             text-align: center;
             line-height: 1.2;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -314,18 +314,22 @@
             .a4-page {
                 margin: 0;
                 box-shadow: none;
-                /* Crucial for printing CSS colors/gradients */
+                /* تحديد ارتفاع A4 لإجبار المحتوى على صفحة واحدة إذا أمكن */
+                height: 297mm;
+                min-height: 297mm; 
+                
+                /* **التعديل الهام:** تثبيت الخلفية والألوان لجميع العناصر داخل الصفحة المطبوعة */
                 -webkit-print-color-adjust: exact !important;
                 color-adjust: exact !important;
+                
                 /* تعويض ارتفاع الترويسة الثابتة */
                 padding-top: var(--header-height);
                 /* تعويض ارتفاع التذييل الثابتة */
                 padding-bottom: var(--footer-height); 
                 padding-left: 0;
                 padding-right: 0;
-                min-height: 297mm; /* Ensure it stays A4 */
-                width: 210mm; /* Force A4 width for print */
-                overflow-x: hidden; /* Prevent horizontal scroll in print */
+                width: 210mm; 
+                overflow: hidden; /* Prevent horizontal scroll in print */
             }
             /* Hide print button and screen-only fixed elements */
             .print-button, .fixed-header-container, .fixed-footer-container {
@@ -342,11 +346,12 @@
             .signature-footer {
                  padding-left: var(--page-padding) !important; /* هامش جانبي للطباعة */
                  padding-right: var(--page-padding) !important; /* هامش جانبي للطباعة */
+                 margin-top: 1rem !important; /* تأكيد المسافة العلوية للتوقيعات */
             }
 
             /* --- MANDATORY FIXED PRINT HEADER/FOOTER --- */
-
-            /* Print Header (Structure only) */
+            
+            /* Print Header (Structure only) - ثابت في الطباعة */
             .print-header {
                 position: fixed; /* تثبيت في رأس الصفحة */
                 top: 0;
@@ -358,10 +363,12 @@
                 display: flex !important;
                 flex-direction: column;
                 padding: 0;
-                /* Ensure background is white for the absolute position area */
                 background-color: white; 
+                /* **التعديل الهام:** تثبيت الخلفية والألوان */
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
             }
-
+            
             /* Print Header Content Area (Navy Line) */
             .print-header .header-line-wide {
                 background-color: var(--color-navy) !important;
@@ -369,7 +376,7 @@
                 padding: 0 var(--page-padding) !important;
             }
 
-            /* Print Footer (Structure only) */
+            /* Print Footer (Structure only) - ثابت في الطباعة */
             .print-footer {
                 position: fixed; /* تثبيت في تذييل الصفحة */
                 bottom: 0;
@@ -381,20 +388,23 @@
                 display: flex !important;
                 flex-direction: column;
                 padding: 0;
+                /* **التعديل الهام:** تثبيت الخلفية والألوان */
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
             }
 
             /* Force all gradient lines to print with color */
-            .header-line-thin, .footer-line-thin, .footer-line-wide {
-                background-image: none !important; /* إلغاء خاصية الصورة إذا وجدت */
+            .line-thin-blue-green, .line-thin-green-blue, .footer-line-wide {
+                background-image: none !important; 
+                /* يتم تطبيق التدرج مرة أخرى بـ !important لضمان الطباعة */
+            }
+            .line-thin-blue-green {
                 background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
             }
-
-            .footer-line-thin { /* Override with its specific gradient */
-                background-image: none !important;
+            .line-thin-green-blue { 
                 background: linear-gradient(to right, var(--color-green), var(--color-blue)) !important;
             }
-            .footer-line-wide { /* Override with its specific gradient */
-                background-image: none !important;
+            .footer-line-wide { 
                 background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
             }
 
@@ -408,33 +418,29 @@
 
             /* CRITICAL FIX: Make main-data-input show gray borders and light gray background on print */
             .main-data-input {
-                border: 1px solid #999 !important; /* Gray border on print */
-                background-color: #f5f5f5 !important; /* Light gray background on print */
-                border-radius: 4px !important; /* Keep slight rounding */
+                border: 1px solid #999 !important; 
+                background-color: #f5f5f5 !important; 
+                border-radius: 4px !important; 
                 font-weight: 900 !important;
             }
 
             .report-table td {
                 background-color: transparent !important;
             }
+            
             /* Ensure the header inputs appear white on the printed background */
             .header-input {
                 color: #ffffff !important;
                 border-bottom: none !important;
                 font-weight: 900 !important;
-                font-size: 12px !important; /* تأكيد حجم الخط المصغر */
+                font-size: 12px !important; 
             }
             /* Ensure the text is still bold when printed */
             .fillable-input, .signature-input-name {
                  font-weight: 900 !important;
             }
 
-            /* Ensure the title is centered in print header */
-             .print-header .header-title {
-                 text-align: center !important;
-             }
-
-             /* Ensure checkboxes look good on print */
+            /* Ensure checkboxes look good on print */
              input[type="checkbox"] {
                  -webkit-appearance: none;
                  -moz-appearance: none;
@@ -475,7 +481,7 @@
 
     <!-- Print Header Element (Invisible on screen, only for @media print) -->
     <div class="print-header hidden">
-        <div class="header-line-thin"></div>
+        <div class="line-thin-blue-green"></div>
         <div class="header-line-wide">
              <!-- Content inside the wide line -->
             <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
@@ -487,7 +493,7 @@
     </div>
     <!-- Print Footer Element (Invisible on screen, only for @media print) -->
     <div class="print-footer hidden">
-        <div class="footer-line-thin"></div>
+        <div class="line-thin-green-blue"></div>
         <div class="footer-separator"></div>
         <div class="footer-line-wide"></div>
     </div>
@@ -499,12 +505,11 @@
         </button>
     </div>
 
-    <!-- The main A4 container is FIXED width, which means it will cause horizontal scrolling on mobile, 
-         but this ensures print consistency regardless of the device. -->
+    <!-- The main A4 container -->
     <div class="a4-page">
         <!-- Screen-only fixed header for better visual experience -->
         <div class="fixed-header-container">
-             <div class="header-line-thin"></div>
+             <div class="line-thin-blue-green"></div>
              <div class="header-line-wide">
                 <!-- Content inside the wide line -->
                  <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
@@ -519,7 +524,7 @@
         </div>
         <!-- Screen-only fixed footer -->
         <div class="fixed-footer-container">
-            <div class="footer-line-thin"></div>
+            <div class="line-thin-green-blue"></div>
             <div class="footer-separator"></div>
             <div class="footer-line-wide"></div>
         </div>
