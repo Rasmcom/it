@@ -168,6 +168,50 @@
         .a4-page{ transform: scale(var(--print-scale)); transform-origin: top center; }
       }
     }
+    /* ==== iOS Print – إجبار صفحة واحدة A4 (أصغر بهوامش دقيقة) ==== */
+@media print{
+  /* تصغير عام خفيف + تقليل ارتفاعات الهيدر/الفوتر/التواقيع أثناء الطباعة فقط */
+  :root{
+    --print-scale: 0.95;   /* جرّب 0.95 ثم 0.94 إذا لزم */
+    --header-h: 32mm;      /* كان 35mm */
+    --footer-h: 5mm;       /* كان 6mm */
+    --sig-h: 18mm;         /* كان 22mm */
+  }
+
+  /* تقليل ارتفاع منطقة الصور + حشو الجداول */
+  .image-slot-aspect{ padding-top: 60% !important; }      /* كان 70% */
+  .evidence-box{ min-height: 90px !important; }           /* كان ~110px */
+  .report-table th, .report-table td{
+    padding: 0.6mm !important;
+    line-height: 1.15 !important;
+  }
+
+  /* إعادة حساب أقصى ارتفاع للمحتوى بعد تقليل المتغيّرات */
+  .content-wrapper{
+    margin: calc(var(--header-h) + 2mm) 4mm 0 4mm !important;
+    max-height: calc(297mm - var(--header-h) - var(--footer-h) - var(--sig-h) - 4mm) !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  /* تثبيت التواقيع قريبًا من الفوتر بدون ما تدفش */
+  .signature-footer{
+    position: absolute;
+    left: 4mm; right: 4mm;
+    bottom: calc(var(--footer-h) + 2mm);
+    height: var(--sig-h);
+    margin: 0 !important; padding: 0 !important;
+    z-index: 1;
+  }
+
+  /* تأكيد ثبات الخلفيات الملونة */
+  .a4-page{
+    transform: scale(var(--print-scale));
+    transform-origin: top center;
+    -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+  }
+}
   </style>
 </head>
 <body>
