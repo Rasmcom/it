@@ -1,1046 +1,632 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقرير تفعيل التعلم الإلكتروني</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تقرير تفعيل التعلم الإلكتروني</title>
+  <!-- Tailwind (للعرض فقط؛ الطباعة تعتمد على CSS أدناه) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        /* Embedding Cairo Font via @import for better reliability */
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+  <style>
+    /* خط كايرو */
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 
-        /* Custom colors and settings */
-        :root {
-            --color-navy: #003366;
-            --color-blue: #2196F3;
-            --color-green: #4CAF50;
-            --header-height: 25mm; /* الارتفاع المطلوب للرأس */
-            --footer-height: 10mm; /* الارتفاع المطلوب للتذييل */
-            --page-padding: 1.5cm; /* الهامش الجانبي للورقة A4 */
-        }
+    /* قفل مقياس الصفحة للطباعة */
+    @page { size: A4 portrait; margin: 0; }
 
-        /* 1. إعدادات الطباعة الأساسية: إلغاء الهوامش وتحديد حجم A4 */
-        @page {
-            size: A4;
-            margin: 0 !important; /* إلغاء جميع هوامش الطباعة */
-        }
+    /* أساسيات العرض */
+    body {
+      font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      background-color: #f0f0f0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 10vh;
+      color: #000;
+    }
 
-        body {
-            /* Set Cairo as the primary font with robust fallbacks */
-            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-            background-color: #f0f0f0;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 10vh;
-        }
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      margin: 0 auto;
+      position: relative;
+      padding: 1.5cm 1.5cm 1.0cm 1.5cm;
+      box-shadow: 0 0 10px rgba(0,0,0,.3);
+      display: flex;
+      flex-direction: column;
+    }
 
-        .a4-page {
-            width: 210mm; /* A4 width (Fixed for screen and print) */
-            min-height: 297mm; /* A4 height */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            margin: 0 auto;
-            background-color: #ffffff; /* White background for screen view */
-            position: relative;
-            /* الهوامش الداخلية في وضع الشاشة */
-            padding: var(--page-padding) var(--page-padding) 1.0cm var(--page-padding); 
-            color: #000000;
-            font-size: 12px;
-            display: flex;
-            flex-direction: column;
-            /* Ensure content doesn't break fixed A4 layout on small screens */
-            overflow-x: auto;
-        }
+    /* هيدر وفوتر للعرض (الشاشة) */
+    .fixed-header-container {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 35mm;
+      background-image: url('https://l.top4top.io/p_3571r7e6d1.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center top;
+      z-index: 10;
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+      padding: 5mm 15mm;
+    }
+    .header-title {
+      color: #fff; font-weight: 900; font-size: 16px; text-align: center; line-height: 1.2;
+      text-shadow: 1px 1px 2px rgba(0,0,0,.5); margin: 2mm 0 0;
+      width: 100%;
+    }
+    .fixed-footer-container {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 15mm;
+      background-image: url('https://c.top4top.io/p_35710bpos1.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      z-index: 10;
+    }
 
-        /* --- Header/Footer Lines Structure (Screen Version) --- */
+    /* إدخالات شاشة الهيدر */
+    .header-input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      text-align: right;
+      font-weight: 900;  /* بولد قوي للشاشة */
+      font-size: 14px;
+      padding: 2px 4px;
+      outline: none;
+      width: 100%;
+    }
 
-        /* Header Container (Screen Only) */
-        .fixed-header-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background-color: transparent; /* Base color */
-            z-index: 10;
-            padding: 0;
-        }
-        /* Footer Container (Screen Only) */
-        .fixed-footer-container {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--footer-height);
-            background-color: transparent;
-            z-index: 10;
-            padding: 0;
-        }
+    /* منطقة المحتوى */
+    .content-wrapper { flex-grow: 1; display: flex; flex-direction: column; gap: .1rem; z-index: 20; }
 
-        /* Shared Line Styles */
-        .line-thin-blue-green {
-            height: 3mm;
-            width: 100%;
-            background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
-        }
-        .line-thin-green-blue {
-            height: 3mm;
-            width: 100%;
-            background: linear-gradient(to right, var(--color-green), var(--color-blue)); /* Green to Blue (Reversed) */
-        }
+    /* الحقول الأساسية (الفصل/اليوم/التاريخ/المكان) */
+    .main-data-input {
+      background-color: rgba(245,245,245,0.9);
+      border: 1px solid #ccc;
+      color: #000;
+      text-align: center;
+      font-weight: 900;  /* بولد أقوى من bold */
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
 
+    /* العناوين الثابتة فوق الحقول (labels) — تكبير + بولد */
+    label {
+      font-weight: 900 !important;
+      font-size: 13px !important;
+      color: #000 !important;
+    }
 
-        .header-line-wide {
-            height: calc(var(--header-height) - 3mm); /* 22mm */
-            width: 100%;
-            background-color: var(--color-navy); /* Navy Blue */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0 var(--page-padding); /* Inner padding for content */
-        }
+    .h2-title {
+      background-color: #e0f7fa; padding: 2px 8px; border-radius: 4px;
+      color: #000; display: inline-block; margin: .15rem 0 .05rem;
+      font-size: 14px; font-weight: bold; border-right: 4px solid #00bcd4;
+    }
 
-        .footer-separator {
-            height: 2px;
-            width: 100%;
-            background-color: #ffffff; /* White separator */
-        }
+    /* الجداول */
+    .report-table { width: 100%; border-collapse: collapse; margin-top: .05rem; color: #000; font-size: 10px; }
+    .report-table th, .report-table td { border: 1px solid #666; padding: 2px; text-align: center; background-color: rgba(255,255,255,0.9); }
+    .report-table th { background-color: #b2ebdd; font-size: 11px; }
 
-        .footer-line-wide {
-            height: calc(var(--footer-height) - 3mm - 2px); /* ~5mm */
-            width: 100%;
-            background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
-        }
+    .fillable-input {
+      background-color: rgba(255,255,255,0.8);
+      border: 1px dashed #666;
+      color: #000;
+      padding: 0 4px;
+      outline: none;
+      width: 100%;
+      opacity: 1;
+      font-size: 11px;
+      font-weight: bold;
+    }
 
-        /* Content Wrapper to push the footer/signature down if content is short */
-        .content-wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.1rem;
-            z-index: 20;
-        }
+    .platform-input { border: 1px solid #666 !important; border-radius: 0 !important; }
 
-        /* Input fields inside tables */
-        .fillable-input {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px dashed #666;
-            color: #000000;
-            padding: 0 4px;
-            outline: none;
-            width: 100%;
-            opacity: 1;
-            font-size: 11px;
-            font-weight: bold;
-        }
+    /* الشواهد (الصور) */
+    .evidence-box { background: transparent; border: none; padding: 2px; text-align: right; min-height: 110px; flex-shrink: 0; }
+    .image-slot-container { width: 24.2%; position: relative; }
+    .image-slot-aspect { width: 100%; padding-top: 70%; position: relative; transition: all .2s; cursor: pointer; border: 1px dashed #666; background-color: rgba(240,240,240,.5); border-radius: 6px; overflow: hidden; }
+    .image-slot-aspect:hover { opacity: .9; background-color: rgba(220,220,220,.8); }
+    .image-slot-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 8px; }
+    .image-slot-content img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        /* Header inputs (for the main data block - below the fixed header) */
-        .main-data-input {
-            background-color: rgba(245, 245, 245, 0.9);
-            border: 1px solid #ccc;
-            color: #000000;
-            text-align: center;
-            font-weight: bold;
-            font-size: 14px;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
+    /* التواقيع */
+    .signature-label-text { color: #000; font-size: 10px; margin-bottom: 1px; font-weight: bold; }
+    .signature-input-name {
+      text-align: center; width: 100%; color: #000; font-size: 12px; border: none; background: transparent; outline: none; padding-bottom: 0; margin-top: 4px; font-weight: 900;
+    }
+    .signature-input-title {
+      text-align: center; width: 100%; color: #000; font-size: 10px; border: none; background: transparent; outline: none; padding-top: 0; margin-bottom: 2px; height: 18px;
+    }
+    .signature-footer { width: 100%; margin-top: 1rem; padding: 2px 0; flex-shrink: 0; }
 
-        /* Header inputs for ADMIN/SCHOOL (in the new wide line area) */
-        .header-input {
-            background-color: transparent;
-            border: none;
-            color: #ffffff; /* White text on Navy background */
-            text-align: right;
-            font-weight: bold;
-            font-size: 12px; 
-            padding: 1px 4px;
-            outline: none;
-            width: 100%;
-            margin: 0;
-            height: 18px; 
-        }
+    /* زر الطباعة */
+    .print-button { position: fixed; top: 1rem; left: 1rem; z-index: 50; }
 
-        /* Title in Header: CENTERING AND MULTI-LINE SUPPORT */
-        .header-title {
-            color: white;
-            font-weight: 900;
-            font-size: 14px; 
-            text-align: center;
-            line-height: 1.2;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            margin-top: 1mm;
-            margin-bottom: 0;
-            width: 100%;
-        }
+    /* ====== وضع الطباعة ====== */
+    @media print {
+      /* تحكم سريع بحجم الإخراج لو المحتوى طويل (عدّل القيمة حسب الحاجة) */
+      :root { --print-scale: 1.00; } /* جرّب 0.96 إلى 1.00 */
 
-        /* Black text for section titles (with light background for legibility) */
-        .h2-title {
-            background-color: #e0f7fa;
-            padding: 2px 8px;
-            border-radius: 4px;
-            color: #000000;
-            display: inline-block;
-            margin-bottom: 0.05rem;
-            margin-top: 0.15rem;
-            font-size: 14px;
-            font-weight: bold;
-            border-right: 4px solid #00bcd4;
-        }
+      html, body { height: auto !important; background: #fff !important; }
+      .print-button, .fixed-header-container, .fixed-footer-container { display: none !important; }
 
-        /* Styling for the tables */
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 0.05rem;
-            color: #000000;
-            font-size: 10px;
-        }
+      .a4-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding-top: 38mm !important;   /* مساحة الهيدر */
+        padding-bottom: 15mm !important;/* مساحة الفوتر */
+        overflow: hidden !important;     /* منع الصفحة الثانية */
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+        transform: scale(var(--print-scale));
+        transform-origin: top center;
+        position: relative;
+      }
 
-        .report-table th, .report-table td {
-            border: 1px solid #666666;
-            padding: 2px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.9);
-        }
+      /* الهيدر والفوتر كخلفية ثابتة باستخدام before/after (أكثر ثباتًا على الجوال) */
+      .a4-page::before,
+      .a4-page::after {
+        content: "";
+        position: fixed;
+        left: 0; right: 0;
+        background-repeat: no-repeat;
+        background-size: cover;
+        z-index: 0 !important; /* خلف المحتوى */
+        -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+      }
+      .a4-page::before {
+        top: 0;
+        height: 35mm;
+        background-image: url('https://l.top4top.io/p_3571r7e6d1.png'); /* الهيدر */
+        background-position: center top;
+      }
+      .a4-page::after {
+        bottom: 0;
+        height: 15mm;
+        background-image: url('https://c.top4top.io/p_35710bpos1.png'); /* الفوتر */
+        background-position: center bottom;
+      }
 
-        .report-table th {
-            background-color: #b2ebdd;
-            font-size: 11px;
-        }
+      /* منطقة المحتوى: قصّ أي زيادة */
+      .content-wrapper {
+        margin-top: 0 !important;
+        max-height: calc(297mm - 38mm - 15mm - 8mm) !important; /* 8mm احتياط داخلي */
+        overflow: hidden !important;
+        position: relative;
+        z-index: 1; /* فوق الخلفية */
+        padding: 0 !important;
+      }
 
-        /* Specific styling for platform/channel/program inputs to have table borders */
-        .platform-input {
-            border: 1px solid #666666 !important;
-            border-radius: 0 !important;
-        }
+      /* مظهر الحقول الأساسية في الطباعة */
+      .main-data-input {
+        border: 1px solid #999 !important;
+        background-color: #f5f5f5 !important;
+        border-radius: 4px !important;
+        font-weight: 900 !important; /* فقط بولد (بدون تكبير) */
+        color: #000 !important;
+      }
 
+      /* العناوين الثابتة بولد */
+      label { font-weight: 900 !important; color: #000 !important; }
 
-        /* Signature styling */
-        .signature-label-text {
-            color: #000000;
-            font-size: 10px;
-            margin-bottom: 1px;
-            font-weight: bold;
-        }
-        .signature-input-name {
-            text-align: center;
-            width: 100%;
-            color: #000000;
-            font-size: 12px;
-            border: none;
-            background-color: transparent;
-            outline: none;
-            padding-bottom: 0;
-            margin-top: 4px;
-            font-weight: bold;
-        }
-        .signature-input-title {
-            text-align: center;
-            width: 100%;
-            color: #000000;
-            font-size: 10px;
-            border: none;
-            background-color: transparent;
-            outline: none;
-            padding-top: 0;
-            margin-bottom: 2px;
-            height: 18px;
-        }
-        .signature-footer {
-            width: 100%;
-            margin-top: 1rem;
-            padding-top: 2px;
-            padding-bottom: 2px;
-            flex-shrink: 0;
-        }
+      /* تبديل مدخلات الهيدر للون الأبيض وبولد */
+      .header-input { color: #fff !important; font-weight: 900 !important; }
 
-        /* Evidence Box Styling (Image Slots) */
-        .evidence-box {
-            background-color: transparent;
-            border: none;
-            padding: 2px;
-            text-align: right;
-            min-height: 110px;
-            flex-shrink: 0;
-        }
-        .image-slot-container {
-            width: 24.2%; /* Fixed 4 columns */
-            position: relative;
-        }
-        .image-slot-aspect {
-            width: 100%;
-            padding-top: 70%;
-            position: relative;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: 1px dashed #666;
-            background-color: rgba(240, 240, 240, 0.5);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .image-slot-aspect:hover {
-            opacity: 0.9;
-            background-color: rgba(220, 220, 220, 0.8);
-        }
-        .image-slot-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 8px;
-        }
+      /* تحسين ثبات الصور داخل الشواهد أثناء الطباعة */
+      .image-slot-content input[type="file"] { display: none !important; }
+      .image-slot-content img {
+        display: block !important;
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important; height: 100% !important;
+        object-fit: cover !important;
+      }
 
-        /* ======================================= */
-        /* START: Print Optimization (CRITICAL) */
-        /* ======================================= */
-        @media print {
-            body {
-                padding: 0;
-                background-color: #ffffff;
-                justify-content: flex-start;
-                align-items: flex-start;
-            }
-            .a4-page {
-                margin: 0;
-                box-shadow: none;
-                /* تحديد ارتفاع A4 لإجبار المحتوى على صفحة واحدة إذا أمكن */
-                height: 297mm;
-                min-height: 297mm; 
-                
-                /* **التعديل الهام:** تثبيت الخلفية والألوان لجميع العناصر داخل الصفحة المطبوعة */
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-                
-                /* تعويض ارتفاع الترويسة الثابتة */
-                padding-top: var(--header-height);
-                /* تعويض ارتفاع التذييل الثابتة */
-                padding-bottom: var(--footer-height); 
-                padding-left: 0;
-                padding-right: 0;
-                width: 210mm; 
-                overflow: hidden; /* Prevent horizontal scroll in print */
-            }
-            /* Hide print button and screen-only fixed elements */
-            .print-button, .fixed-header-container, .fixed-footer-container {
-                display: none !important;
-            }
+      /* إزالة خلفيات خلايا الجدول التي قد تتسبب بتقطيع */
+      .report-table td { background-color: transparent !important; }
 
-            /* FIX: Remove the top margin of the content wrapper during print and set print side padding */
-            .content-wrapper {
-                 margin-top: 0 !important;
-                 padding-left: var(--page-padding); /* هامش جانبي للطباعة */
-                 padding-right: var(--page-padding); /* هامش جانبي للطباعة */
-            }
-
-            .signature-footer {
-                 padding-left: var(--page-padding) !important; /* هامش جانبي للطباعة */
-                 padding-right: var(--page-padding) !important; /* هامش جانبي للطباعة */
-                 margin-top: 1rem !important; /* تأكيد المسافة العلوية للتوقيعات */
-            }
-
-            /* --- MANDATORY FIXED PRINT HEADER/FOOTER --- */
-            
-            /* Print Header (Structure only) - ثابت في الطباعة */
-            .print-header {
-                position: fixed; /* تثبيت في رأس الصفحة */
-                top: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: var(--header-height);
-                z-index: 100;
-                display: flex !important;
-                flex-direction: column;
-                padding: 0;
-                background-color: white; 
-                /* **التعديل الهام:** تثبيت الخلفية والألوان */
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-            }
-            
-            /* Print Header Content Area (Navy Line) */
-            .print-header .header-line-wide {
-                background-color: var(--color-navy) !important;
-                /* تطبيق الهامش الداخلي ليتناسب مع محتوى الصفحة */
-                padding: 0 var(--page-padding) !important;
-            }
-
-            /* Print Footer (Structure only) - ثابت في الطباعة */
-            .print-footer {
-                position: fixed; /* تثبيت في تذييل الصفحة */
-                bottom: 0;
-                left: 0;
-                right: 0;
-                width: 100%;
-                height: var(--footer-height);
-                z-index: 100;
-                display: flex !important;
-                flex-direction: column;
-                padding: 0;
-                /* **التعديل الهام:** تثبيت الخلفية والألوان */
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
-            }
-
-            /* Force all gradient lines to print with color */
-            .line-thin-blue-green, .line-thin-green-blue, .footer-line-wide {
-                background-image: none !important; 
-                /* يتم تطبيق التدرج مرة أخرى بـ !important لضمان الطباعة */
-            }
-            .line-thin-blue-green {
-                background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
-            }
-            .line-thin-green-blue { 
-                background: linear-gradient(to right, var(--color-green), var(--color-blue)) !important;
-            }
-            .footer-line-wide { 
-                background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
-            }
-
-
-            /* Ensure inputs look like text on print */
-            .fillable-input {
-                border: none !important;
-                background-color: transparent !important;
-                color: #000000 !important;
-            }
-
-            /* CRITICAL FIX: Make main-data-input show gray borders and light gray background on print */
-            .main-data-input {
-                border: 1px solid #999 !important; 
-                background-color: #f5f5f5 !important; 
-                border-radius: 4px !important; 
-                font-weight: 900 !important;
-            }
-
-            .report-table td {
-                background-color: transparent !important;
-            }
-            
-            /* Ensure the header inputs appear white on the printed background */
-            .header-input {
-                color: #ffffff !important;
-                border-bottom: none !important;
-                font-weight: 900 !important;
-                font-size: 12px !important; 
-            }
-            /* Ensure the text is still bold when printed */
-            .fillable-input, .signature-input-name {
-                 font-weight: 900 !important;
-            }
-
-            /* Ensure checkboxes look good on print */
-             input[type="checkbox"] {
-                 -webkit-appearance: none;
-                 -moz-appearance: none;
-                 appearance: none;
-                 border: 1px solid #999 !important;
-                 width: 12px;
-                 height: 12px;
-                 border-radius: 2px;
-                 vertical-align: middle;
-                 position: relative;
-             }
-             /* Add a checkmark visual if checked */
-             input[type="checkbox"]:checked:before {
-                  content: '✓';
-                  position: absolute;
-                  top: -2px;
-                  left: 1px;
-                  font-size: 10px;
-                  color: #000000; /* Black checkmark */
-                  font-weight: 900;
-             }
-             /* Ensure table cells don't have unnecessary background on print */
-             .report-table th {
-                background-color: #b2ebdd !important; /* Retain table header background */
-             }
-
-             /* Ensure images are not distorted and fit within the A4 print area */
-             .image-slot-aspect {
-                 border: 1px solid #000 !important; /* Solid border for print */
-             }
-        }
-        /* ======================================= */
-        /* END: Print Optimization */
-        /* ======================================= */
-    </style>
+      /* دعم iOS Safari و Android Chrome */
+      @supports (-webkit-touch-callout: none) {
+        .a4-page { transform: scale(var(--print-scale)); transform-origin: top center; }
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- زر طباعة سريع -->
+  <div class="print-button">
+    <button onclick="window.print()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-150">
+      طباعة الصفحة (A4)
+    </button>
+  </div>
 
-    <!-- Print Header Element (Invisible on screen, only for @media print) -->
-    <div class="print-header hidden">
-        <div class="line-thin-blue-green"></div>
-        <div class="header-line-wide">
-             <!-- Content inside the wide line -->
-            <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
-                <input type="text" id="adminName_print" data-key="adminName" class="header-input w-2/3 mb-1 text-right" placeholder="اسم الإدارة التعليمية">
-                <input type="text" id="schoolName_print" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
-                <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
-            </div>
-        </div>
-    </div>
-    <!-- Print Footer Element (Invisible on screen, only for @media print) -->
-    <div class="print-footer hidden">
-        <div class="line-thin-green-blue"></div>
-        <div class="footer-separator"></div>
-        <div class="footer-line-wide"></div>
+  <div class="a4-page">
+    <!-- هيدر العرض -->
+    <div class="fixed-header-container">
+      <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
+        <input type="text" id="adminName_screen" data-key="adminName" class="header-input w-2/3 mb-1 text-right" placeholder="اسم الإدارة التعليمية" />
+        <input type="text" id="schoolName_screen" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة" />
+        <br />
+        <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
+      </div>
     </div>
 
-    <!-- Print Button for convenience -->
-    <div class="fixed top-4 left-4 z-50 print-button">
-        <button onclick="window.print()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-150">
-            طباعة الصفحة (A4)
-        </button>
+    <!-- فوتر العرض -->
+    <div class="fixed-footer-container"></div>
+
+    <!-- المحتوى -->
+    <div class="content-wrapper mt-[25mm] mb-[8mm] p-0">
+      <!-- البلوك الأساسي -->
+      <div class="grid grid-cols-4 gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
+        <div>
+          <label class="block text-xs text-gray-700 mb-1">الفصل الدراسي</label>
+          <input type="text" data-key="t1_col1" class="main-data-input w-full text-center" placeholder="مثال: الأول / الثاني">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-700 mb-1">اليوم</label>
+          <input type="text" data-key="t1_col2" class="main-data-input w-full text-center" placeholder="مثال: الأحد">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-700 mb-1">التاريخ</label>
+          <input type="text" data-key="t1_col3" class="main-data-input w-full text-center" placeholder="مثال: 01-01-2025">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-700 mb-1">المكان</label>
+          <input type="text" data-key="t1_col4" class="main-data-input w-full text-center" placeholder="مثال: مركز مصادر التعلم">
+        </div>
+      </div>
+
+      <!-- جدول 1: الكادر -->
+      <div class="mb-0 mt-1">
+        <h2 class="h2-title">الكادر المفعل للتعليم الإلكتروني</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th class="w-8">م</th>
+              <th class="w-1/2">اسم الكادر المفعل للتعليم الالكتروني</th>
+              <th class="w-1/2">عمله داخل المدرسة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><input type="text" data-key="t2_r1c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r1c2" class="fillable-input" placeholder="العمل"></td></tr>
+            <tr><td>2</td><td><input type="text" data-key="t2_r2c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r2c2" class="fillable-input" placeholder="العمل"></td></tr>
+            <tr><td>3</td><td><input type="text" data-key="t2_r3c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r3c2" class="fillable-input" placeholder="العمل"></td></tr>
+            <tr><td>4</td><td><input type="text" data-key="t2_r4c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r4c2" class="fillable-input" placeholder="العمل"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- جدول 2: المنصة والأجهزة -->
+      <div class="mb-0">
+        <h2 class="h2-title">نوع التفعيل الإلكتروني المستخدم واسم الجهاز</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th class="w-1/2">نوع التفعيل الإلكتروني المستخدم (المنصة/القناة/البرنامج)</th>
+              <th class="w-1/2">اسم الجهاز الإلكتروني المستخدم (اختر الأجهزة)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="p-0 align-top">
+                <table class="report-table border-0 w-full">
+                  <tr class="border-0">
+                    <td class="border w-1/3 font-bold text-xs text-right">اسم المنصة:</td>
+                    <td class="border w-2/3 p-0"><input type="text" data-key="t3_r1c2" class="fillable-input platform-input text-right" placeholder="مثال: منصة مدرستي"></td>
+                  </tr>
+                  <tr class="border-0">
+                    <td class="border w-1/3 font-bold text-xs text-right">اسم القناة/المصدر:</td>
+                    <td class="border w-2/3 p-0"><input type="text" data-key="t3_r2c2" class="fillable-input platform-input text-right" placeholder="مثال: قناة عين"></td>
+                  </tr>
+                  <tr class="border-0">
+                    <td class="border w-1/3 font-bold text-xs text-right">اسم البرنامج:</td>
+                    <td class="border w-2/3 p-0"><input type="text" data-key="t3_r3c2" class="fillable-input platform-input text-right" placeholder="مثال: Teams / Zoom"></td>
+                  </tr>
+                  <tr class="border-0">
+                    <td class="border w-1/3 font-bold text-xs text-right">أخرى:</td>
+                    <td class="border w-2/3 p-0"><input type="text" data-key="t3_r4c2" class="fillable-input platform-input text-right" placeholder="حدد نوع التفعيل الآخر"></td>
+                  </tr>
+                </table>
+              </td>
+              <td class="p-0">
+                <table class="report-table border-0 w-full">
+                  <tbody>
+                    <tr class="border-0">
+                      <td class="border-0 w-1/2 text-right">جهاز عرض (بروجكتر)</td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c1" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                      <td class="border-0 w-1/4 text-right">جهاز كمبيوتر مكتبي</td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c2" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                    </tr>
+                    <tr class="border-0">
+                      <td class="border-0 w-1/2 text-right">جهاز لابتوب</td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c3" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                      <td class="border-0 w-1/4 text-right">جهاز الايباد</td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c4" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                    </tr>
+                    <tr class="border-0">
+                      <td class="border-0 w-1/2 text-right">جهاز الجوال</td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c5" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                      <td class="border-0 w-1/4 text-right">
+                        أخرى: <input type="text" data-key="t4_c6_text" class="fillable-input w-20 text-xs text-right" placeholder="جهاز آخر">
+                      </td>
+                      <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c6" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- جدول 3: الفئة المستهدفة -->
+      <div class="mb-0">
+        <h2 class="h2-title">الفئة المستهدفة</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th class="w-1/6">رقم</th>
+              <th class="w-1/3">تحديد الفئة</th>
+              <th class="w-1/6">رقم</th>
+              <th class="w-1/3">تحديد الفئة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><input type="text" data-key="t5_r1c1" class="fillable-input" placeholder="الفئة المستهدفة (مثال: طلاب الصف الثالث ثانوي)"></td>
+              <td>2</td>
+              <td><input type="text" data-key="t5_r1c2" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><input type="text" data-key="t5_r1c3" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+              <td>4</td>
+              <td><input type="text" data-key="t5_r1c4" class="fillable-input" placeholder="الفئة المستهدفة"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- جدول 4: الأهداف والأثر -->
+      <div class="mb-0">
+        <h2 class="h2-title">الأهداف والأثر التربوي</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th class="w-1/2">الهدف من استخدام التفعيل الإلكتروني (1 - 4 أهداف)</th>
+              <th class="w-1/2">الأثر الإيجابي التربوي والتعليمي للتفعيل الإلكتروني المذكور</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="text" data-key="t6_r1c1" class="fillable-input" placeholder="الهدف 1"></td><td><input type="text" data-key="t6_r1c2" class="fillable-input" placeholder="الأثر 1"></td></tr>
+            <tr><td><input type="text" data-key="t6_r2c1" class="fillable-input" placeholder="الهدف 2"></td><td><input type="text" data-key="t6_r2c2" class="fillable-input" placeholder="الأثر 2"></td></tr>
+            <tr><td><input type="text" data-key="t6_r3c1" class="fillable-input" placeholder="الهدف 3"></td><td><input type="text" data-key="t6_r3c2" class="fillable-input" placeholder="الأثر 3"></td></tr>
+            <tr><td><input type="text" data-key="t6_r4c1" class="fillable-input" placeholder="الهدف 4"></td><td><input type="text" data-key="t6_r4c2" class="fillable-input" placeholder="الأثر 4"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- الشواهد (صور) -->
+      <div class="mb-0">
+        <h2 class="h2-title">شواهد التفعيل (صور)</h2>
+        <div class="evidence-box flex justify-between gap-2 p-1 items-center border border-dashed border-gray-400 rounded-lg">
+          <div class="image-slot-container">
+            <div id="imageSlot1" class="image-slot-aspect relative">
+              <div class="image-slot-content">
+                <input type="file" id="fileInput1" data-slot="1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
+                <img id="preview1" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+                <span id="label1" class="p-1 text-black z-0 font-bold">صورة 1 (اضغط للتحميل)</span>
+              </div>
+            </div>
+          </div>
+          <div class="image-slot-container">
+            <div id="imageSlot2" class="image-slot-aspect relative">
+              <div class="image-slot-content">
+                <input type="file" id="fileInput2" data-slot="2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
+                <img id="preview2" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+                <span id="label2" class="p-1 text-black z-0 font-bold">صورة 2 (اضغط للتحميل)</span>
+              </div>
+            </div>
+          </div>
+          <div class="image-slot-container">
+            <div id="imageSlot3" class="image-slot-aspect relative">
+              <div class="image-slot-content">
+                <input type="file" id="fileInput3" data-slot="3" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
+                <img id="preview3" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+                <span id="label3" class="p-1 text-black z-0 font-bold">صورة 3 (اضغط للتحميل)</span>
+              </div>
+            </div>
+          </div>
+          <div class="image-slot-container">
+            <div id="imageSlot4" class="image-slot-aspect relative">
+              <div class="image-slot-content">
+                <input type="file" id="fileInput4" data-slot="4" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
+                <img id="preview4" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+                <span id="label4" class="p-1 text-black z-0 font-bold">صورة 4 (اضغط للتحميل)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /content-wrapper -->
+
+    <!-- التواقيع -->
+    <div class="signature-footer flex justify-between px-4 mt-2 mb-[15mm]">
+      <div class="text-center w-48 flex flex-col items-center">
+        <p class="signature-label-text">أمينة مصادر التعلم</p>
+        <input type="text" data-key="signature_1_name" class="signature-input-name" placeholder="الاسم">
+      </div>
+      <div class="text-center w-48 flex flex-col items-center">
+        <p class="signature-label-text">مشرفة الدعم</p>
+        <input type="text" data-key="signature_2_name" class="signature-input-name" placeholder="الاسم">
+      </div>
+      <div class="text-center w-48 flex flex-col items-center">
+        <p class="signature-label-text">مديرة المدرسة</p>
+        <input type="text" data-key="signature_3_name" class="signature-input-name" placeholder="الاسم">
+      </div>
     </div>
+  </div><!-- /a4-page -->
 
-    <!-- The main A4 container -->
-    <div class="a4-page">
-        <!-- Screen-only fixed header for better visual experience -->
-        <div class="fixed-header-container">
-             <div class="line-thin-blue-green"></div>
-             <div class="header-line-wide">
-                <!-- Content inside the wide line -->
-                 <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
-                    <!-- Input for Admin Name in Header -->
-                    <input type="text" id="adminName_screen" data-key="adminName" class="header-input w-2/3 text-right" placeholder="اسم الإدارة التعليمية">
-                    <!-- Input for School Name in Header -->
-                    <input type="text" id="schoolName_screen" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
-                    <!-- Centered, multi-line title -->
-                    <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
-                </div>
-             </div>
+  <!-- منطق الحفظ بالمتصفح -->
+  <script>
+    const DATA_KEY = 'eLearningReportData';
+    const IMAGE_SLOTS = 4;
+
+    const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]), textarea[data-key]'));
+    const screenHeaderInputs = ['adminName', 'schoolName'];
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        if (file.size > 800 * 1024) { reject(new Error("File size exceeds 800 KB limit. Please use a smaller image.")); return; }
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function showCustomAlert(message) {
+      const containerId = 'customAlertContainer';
+      let container = document.getElementById(containerId);
+      if (!container) {
+        container = document.createElement('div');
+        container.id = containerId;
+        container.style.cssText = `
+          position:fixed; top:0; left:0; width:100%; height:100%;
+          background:rgba(0,0,0,0.5); z-index:9999; display:flex;
+          justify-content:center; align-items:center; font-family:'Cairo',sans-serif;
+        `;
+        document.body.appendChild(container);
+      }
+      container.innerHTML = `
+        <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,.7); max-width:90%; text-align:center;">
+          <p style="margin-bottom:15px; color:#333; font-size:14px; font-weight:bold;">${message}</p>
+          <button onclick="document.getElementById('${containerId}').remove()"
+            style="padding:8px 15px; background:#f44336; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">إغلاق</button>
         </div>
-        <!-- Screen-only fixed footer -->
-        <div class="fixed-footer-container">
-            <div class="line-thin-green-blue"></div>
-            <div class="footer-separator"></div>
-            <div class="footer-line-wide"></div>
-        </div>
+      `;
+      container.style.display = 'flex';
+    }
 
-        <!-- Content Wrapper to contain all tables and evidence -->
-        <!-- Start content after the fixed header space (25mm) -->
-        <div class="content-wrapper mt-[25mm] mb-[10mm] p-0">
-
-            <!-- Basic Data Block (Below Header) - Fixed 4 columns -->
-            <div class="grid grid-cols-4 gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
-                <!-- Column 1: الفصل الدراسي -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">الفصل الدراسي</label>
-                    <input type="text" data-key="t1_col1" class="main-data-input w-full text-center" placeholder="مثال: الأول / الثاني">
-                </div>
-                <!-- Column 2: اليوم -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">اليوم</label>
-                    <input type="text" data-key="t1_col2" class="main-data-input w-full text-center" placeholder="مثال: الأحد">
-                </div>
-                <!-- Column 3: التاريخ -->
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">التاريخ</label>
-                    <input type="text" data-key="t1_col3" class="main-data-input w-full text-center" placeholder="مثال: 01-01-2025">
-                </div>
-                <!-- Column 4: مكان التفعيل -->
-                <div class="col-span-1">
-                    <label class="block text-xs font-bold text-gray-700 mb-1">المكان</label>
-                    <input type="text" data-key="t1_col4" class="main-data-input w-full text-center" placeholder="مثال: مركز مصادر التعلم">
-                </div>
-            </div>
-
-            <!-- Table 1: Personnel (5 rows) -->
-            <div class="mb-0 mt-1">
-                <h2 class="h2-title">الكادر المفعل للتعليم الإلكتروني</h2>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th class="w-8">م</th>
-                            <th class="w-1/2">اسم الكادر المفعل للتعليم الالكتروني</th>
-                            <th class="w-1/2">عمله داخل المدرسة</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- 4 rows for personnel -->
-                        <tr><td>1</td><td><input type="text" data-key="t2_r1c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r1c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>2</td><td><input type="text" data-key="t2_r2c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r2c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>3</td><td><input type="text" data-key="t2_r3c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r3c2" class="fillable-input" placeholder="العمل"></td></tr>
-                        <tr><td>4</td><td><input type="text" data-key="t2_r4c1" class="fillable-input" placeholder="الاسم"></td><td><input type="text" data-key="t2_r4c2" class="fillable-input" placeholder="العمل"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Table 2: Merged E-Learning Platform and Devices -->
-            <div class="mb-0">
-                <h2 class="h2-title">نوع التفعيل الإلكتروني المستخدم واسم الجهاز</h2>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th class="w-1/2">نوع التفعيل الإلكتروني المستخدم (المنصة/القناة/البرنامج)</th>
-                            <th class="w-1/2">اسم الجهاز الإلكتروني المستخدم (اختر الأجهزة)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <!-- Column 1: Platform Type (Styled with internal borders) -->
-                            <td class="p-0 align-top">
-                                <table class="report-table border-0 w-full">
-                                    <tr class="border-0">
-                                        <td class="border w-1/3 font-bold text-xs text-right">اسم المنصة:</td>
-                                        <td class="border w-2/3 p-0"><input type="text" data-key="t3_r1c2" class="fillable-input platform-input text-right" placeholder="مثال: منصة مدرستي"></td>
-                                    </tr>
-                                    <tr class="border-0">
-                                        <td class="border w-1/3 font-bold text-xs text-right">اسم القناة/المصدر:</td>
-                                        <td class="border w-2/3 p-0"><input type="text" data-key="t3_r2c2" class="fillable-input platform-input text-right" placeholder="مثال: قناة عين"></td>
-                                    </tr>
-                                    <tr class="border-0">
-                                        <td class="border w-1/3 font-bold text-xs text-right">اسم البرنامج:</td>
-                                        <td class="border w-2/3 p-0"><input type="text" data-key="t3_r3c2" class="fillable-input platform-input text-right" placeholder="مثال: Teams / Zoom"></td>
-                                    </tr>
-                                    <tr class="border-0">
-                                        <td class="border w-1/3 font-bold text-xs text-right">أخرى:</td>
-                                        <td class="border w-2/3 p-0"><input type="text" data-key="t3_r4c2" class="fillable-input platform-input text-right" placeholder="حدد نوع التفعيل الآخر"></td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <!-- Column 2: Devices Used -->
-                            <td class="p-0">
-                                <table class="report-table border-0 w-full">
-                                    <tbody>
-                                        <tr class="border-0">
-                                            <td class="border-0 w-1/2 text-right">جهاز عرض (بروجكتر)</td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c1" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                            <td class="border-0 w-1/4 text-right">جهاز كمبيوتر مكتبي</td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c2" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                        </tr>
-                                        <tr class="border-0">
-                                            <td class="border-0 w-1/2 text-right">جهاز لابتوب</td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c3" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                            <td class="border-0 w-1/4 text-right">جهاز الايباد</td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c4" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                        </tr>
-                                        <tr class="border-0">
-                                            <td class="border-0 w-1/2 text-right">جهاز الجوال</td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c5" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                            <td class="border-0 w-1/4 text-right">
-                                                أخرى: <input type="text" data-key="t4_c6_text" class="fillable-input w-20 text-xs text-right" placeholder="جهاز آخر">
-                                            </td>
-                                            <td class="border-0 w-1/4"><input type="checkbox" data-key="t4_c6" class="h-4 w-4 bg-white border-gray-300 rounded text-blue-600 focus:ring-blue-500"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Table 3: Target Audience -->
-            <div class="mb-0">
-                <h2 class="h2-title">الفئة المستهدفة</h2>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th class="w-1/6">رقم</th>
-                            <th class="w-1/3">تحديد الفئة</th>
-                            <th class="w-1/6">رقم</th>
-                            <th class="w-1/3">تحديد الفئة</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><input type="text" data-key="t5_r1c1" class="fillable-input" placeholder="الفئة المستهدفة (مثال: طلاب الصف الثالث ثانوي)"></td>
-                            <td>2</td>
-                            <td><input type="text" data-key="t5_r1c2" class="fillable-input" placeholder="الفئة المستهدفة"></td>
-                        </tr>
-                         <tr>
-                            <td>3</td>
-                            <td><input type="text" data-key="t5_r1c3" class="fillable-input" placeholder="الفئة المستهدفة"></td>
-                            <td>4</td>
-                            <td><input type="text" data-key="t5_r1c4" class="fillable-input" placeholder="الفئة المستهدفة"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Table 4: Objectives and Impact -->
-            <div class="mb-0">
-                <h2 class="h2-title">الأهداف والأثر التربوي</h2>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th class="w-1/2">الهدف من استخدام التفعيل الإلكتروني (1 - 4 أهداف)</th>
-                            <th class="w-1/2">الأثر الإيجابي التربوي والتعليمي للتفعيل الإلكتروني المذكور</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><input type="text" data-key="t6_r1c1" class="fillable-input" placeholder="الهدف 1"></td><td><input type="text" data-key="t6_r1c2" class="fillable-input" placeholder="الأثر 1"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r2c1" class="fillable-input" placeholder="الهدف 2"></td><td><input type="text" data-key="t6_r2c2" class="fillable-input" placeholder="الأثر 2"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r3c1" class="fillable-input" placeholder="الهدف 3"></td><td><input type="text" data-key="t6_r3c2" class="fillable-input" placeholder="الأثر 3"></td></tr>
-                        <tr><td><input type="text" data-key="t6_r4c1" class="fillable-input" placeholder="الهدف 4"></td><td><input type="text" data-key="t6_r4c2" class="fillable-input" placeholder="الأثر 4"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Evidence Section (Image Uploads) - Fixed 4 columns -->
-            <div class="mb-0">
-                <h2 class="h2-title">شواهد التفعيل (صور)</h2>
-
-                <div class="evidence-box flex justify-between gap-2 p-1 items-center border border-dashed border-gray-400 rounded-lg">
-
-                    <!-- Image Slot 1 -->
-                    <div class="image-slot-container">
-                        <div id="imageSlot1" class="image-slot-aspect relative">
-                            <div class="image-slot-content">
-                                <input type="file" id="fileInput1" data-slot="1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
-                                <img id="preview1" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label1" class="p-1 text-black z-0 font-bold">صورة 1 (اضغط للتحميل)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Image Slot 2 -->
-                    <div class="image-slot-container">
-                        <div id="imageSlot2" class="image-slot-aspect relative">
-                            <div class="image-slot-content">
-                                <input type="file" id="fileInput2" data-slot="2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
-                                <img id="preview2" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label2" class="p-1 text-black z-0 font-bold">صورة 2 (اضغط للتحميل)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Image Slot 3 -->
-                    <div class="image-slot-container">
-                        <div id="imageSlot3" class="image-slot-aspect relative">
-                            <div class="image-slot-content">
-                                <input type="file" id="fileInput3" data-slot="3" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
-                                <img id="preview3" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label3" class="p-1 text-black z-0 font-bold">صورة 3 (اضغط للتحميل)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Image Slot 4 -->
-                    <div class="image-slot-container">
-                        <div id="imageSlot4" class="image-slot-aspect relative">
-                            <div class="image-slot-content">
-                                <input type="file" id="fileInput4" data-slot="4" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleImageUpload(this)">
-                                <img id="preview4" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                                <span id="label4" class="p-1 text-black z-0 font-bold">صورة 4 (اضغط للتحميل)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- End of content-wrapper -->
-
-        <!-- Signature/Name Boxes - Fixed layout for A4 consistency -->
-        <!-- تم تعديل الهوامش السفلية لتعويض مساحة التذييل الثابتة -->
-        <div class="signature-footer flex justify-between px-4 mt-2 mb-[10mm]">
-
-            <!-- أمينة مصادر التعلم -->
-            <div class="text-center w-48 flex flex-col items-center">
-                <p class="signature-label-text">أمينة مصادر التعلم</p>
-                <!-- Name (Bolded, no bottom line) -->
-                <input type="text" data-key="signature_1_name" class="signature-input-name" placeholder="الاسم">
-            </div>
-
-            <!-- مشرفة الدعم -->
-            <div class="text-center w-48 flex flex-col items-center">
-                <p class="signature-label-text">مشرفة الدعم</p>
-                <!-- Name (Bolded, no bottom line) -->
-                <input type="text" data-key="signature_2_name" class="signature-input-name" placeholder="الاسم">
-            </div>
-
-            <!-- مديرة المدرسة -->
-            <div class="text-center w-48 flex flex-col items-center">
-                <p class="signature-label-text">مديرة المدرسة</p>
-                <!-- Name (Bolded, no bottom line) -->
-                <input type="text" data-key="signature_3_name" class="signature-input-name" placeholder="الاسم">
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Persistence Logic using localStorage -->
-    <script>
-
-        const DATA_KEY = 'eLearningReportData';
-        const IMAGE_SLOTS = 4;
-
-        // --- DOM Elements ---
-        const allPersistentInputs = Array.from(document.querySelectorAll('input[data-key]:not([type="file"]), textarea[data-key]'));
-        const screenHeaderInputs = ['adminName', 'schoolName'];
-
-        /**
-         * Converts a File object to a Base64 string.
-         * @param {File} file
-         * @returns {Promise<string>} Base64 string
-         */
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                // Check file size (approx. 1MB limit for localStorage per slot,
-                // though we'll keep it low to be safe)
-                if (file.size > 800 * 1024) { // 800 KB limit for Base64 to be safe in localStorage
-                     reject(new Error("File size exceeds 800 KB limit. Please use a smaller image."));
-                     return;
-                }
-                reader.readAsDataURL(file);
-            });
+    window.handleImageUpload = async function(input) {
+      const slotNumber = input.getAttribute('data-slot');
+      const file = input.files[0];
+      const previewElement = document.getElementById(`preview${slotNumber}`);
+      const labelElement = document.getElementById(`label${slotNumber}`);
+      const imageKey = `imageSlot${slotNumber}`;
+      if (file) {
+        try {
+          const base64String = await fileToBase64(file);
+          previewElement.src = base64String;
+          previewElement.classList.remove('hidden'); previewElement.classList.add('z-10');
+          labelElement.classList.add('hidden');
+          saveData({ [imageKey]: base64String });
+        } catch (error) {
+          console.error("Error reading file:", error.message);
+          previewElement.src = ''; previewElement.classList.add('hidden'); previewElement.classList.remove('z-10');
+          labelElement.classList.remove('hidden');
+          input.value = '';
+          saveData({ [imageKey]: '' });
+          showCustomAlert(`خطأ في تحميل الصورة: ${error.message}.`);
         }
+      } else {
+        previewElement.classList.add('hidden'); previewElement.classList.remove('z-10');
+        labelElement.classList.remove('hidden');
+        saveData({ [imageKey]: '' });
+      }
+    }
 
-        /**
-         * Displays a custom alert/modal message to the user.
-         * @param {string} message The message to display.
-         */
-        function showCustomAlert(message) {
-            const containerId = 'customAlertContainer';
-            let container = document.getElementById(containerId);
+    function saveData(partialData = {}) {
+      const data = {};
+      try {
+        const storedData = localStorage.getItem(DATA_KEY);
+        if (storedData) Object.assign(data, JSON.parse(storedData));
+      } catch (e) { console.error("Error retrieving data from localStorage:", e); }
 
-            if (!container) {
-                container = document.createElement('div');
-                container.id = containerId;
-                // Basic fixed centering style for the modal container
-                container.style.cssText = `
-                    position:fixed;
-                    top:0;
-                    left:0;
-                    width:100%;
-                    height:100%;
-                    background:rgba(0,0,0,0.5);
-                    z-index:9999;
-                    display:flex;
-                    justify-content:center;
-                    align-items:center;
-                    font-family: 'Cairo', sans-serif;
-                `;
-                document.body.appendChild(container);
-            }
-
-            // Modal content structure
-            container.innerHTML = `
-                <div style="
-                    background:white;
-                    padding:20px;
-                    border-radius:10px;
-                    box-shadow:0 0 15px rgba(0,0,0,0.7);
-                    max-width: 90%;
-                    text-align: center;
-                ">
-                    <p style="margin-bottom: 15px; color: #333; font-size: 14px; font-weight: bold;">${message}</p>
-                    <button onclick="document.getElementById('${containerId}').remove()"
-                        style="
-                            padding:8px 15px;
-                            background:#f44336;
-                            color:white;
-                            border:none;
-                            border-radius:5px;
-                            cursor:pointer;
-                            font-weight: bold;
-                        ">إغلاق</button>
-                </div>
-            `;
-            container.style.display = 'flex'; // Ensure it's visible
+      allPersistentInputs.forEach(input => {
+        const key = input.getAttribute('data-key');
+        if (input.type === 'checkbox') {
+          data[key] = input.checked;
+        } else {
+          if (screenHeaderInputs.includes(key)) {
+            data[key] = document.getElementById(`${key}_screen`).value;
+          } else {
+            data[key] = input.value;
+          }
         }
+      });
 
+      Object.assign(data, partialData);
 
-        /**
-         * Handles image file selection, conversion to Base64, and display.
-         * @param {HTMLInputElement} input The file input element
-         */
-        window.handleImageUpload = async function(input) {
-            const slotNumber = input.getAttribute('data-slot');
-            const file = input.files[0];
-            const previewElement = document.getElementById(`preview${slotNumber}`);
-            const labelElement = document.getElementById(`label${slotNumber}`);
-            const imageKey = `imageSlot${slotNumber}`;
+      try {
+        localStorage.setItem(DATA_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error("Error saving data to localStorage:", e);
+        showCustomAlert("خطأ في حفظ البيانات: تجاوزت سعة التخزين المتاحة في المتصفح. الرجاء حذف بعض الصور أو تقليل حجمها.");
+      }
+    }
 
-            if (file) {
-                try {
-                    const base64String = await fileToBase64(file);
+    function loadData() {
+      try {
+        const storedData = localStorage.getItem(DATA_KEY);
+        if (!storedData) return;
+        const data = JSON.parse(storedData);
 
-                    // Update DOM
-                    previewElement.src = base64String;
-                    previewElement.classList.remove('hidden');
-                    previewElement.classList.add('z-10');
-                    labelElement.classList.add('hidden');
-
-                    // Save the Base64 string immediately
-                    saveData({ [imageKey]: base64String });
-
-                } catch (error) {
-                    console.error("Error reading file:", error.message);
-
-                    // Clear the slot appearance and the input
-                    previewElement.src = '';
-                    previewElement.classList.add('hidden');
-                    previewElement.classList.remove('z-10');
-                    labelElement.classList.remove('hidden');
-                    input.value = '';
-
-                    // Clear the slot in persistence
-                    saveData({ [imageKey]: '' });
-
-                    // Show error alert
-                    showCustomAlert(`خطأ في تحميل الصورة: ${error.message}.`);
-                }
-            } else {
-                 // If file is cleared
-                previewElement.classList.add('hidden');
-                previewElement.classList.remove('z-10');
-                labelElement.classList.remove('hidden');
-                saveData({ [imageKey]: '' }); // Clear the slot in persistence
-            }
-        }
-
-        /**
-         * Saves all persistent data to localStorage.
-         * @param {Object} partialData Optional object for specific updates (like images).
-         */
-        function saveData(partialData = {}) {
-            const data = {};
-
-            // 1. Collect existing data from localStorage (important for merging partial updates like images)
-            try {
-                const storedData = localStorage.getItem(DATA_KEY);
-                if (storedData) {
-                    Object.assign(data, JSON.parse(storedData));
-                }
-            } catch (e) {
-                console.error("Error retrieving data from localStorage:", e);
-            }
-
-
-            // 2. Collect all form data (text, textarea, checkbox)
-            allPersistentInputs.forEach(input => {
-                const key = input.getAttribute('data-key');
-                if (input.type === 'checkbox') {
-                    data[key] = input.checked;
-                } else {
-                    // Use the value from the screen version for header inputs
-                    if (screenHeaderInputs.includes(key)) {
-                        data[key] = document.getElementById(`${key}_screen`).value;
-                    } else {
-                        data[key] = input.value;
-                    }
-                }
-            });
-
-            // 3. Merge with partial data (e.g., images)
-            Object.assign(data, partialData);
-
-            // 4. Save to localStorage
-            try {
-                localStorage.setItem(DATA_KEY, JSON.stringify(data));
-            } catch (e) {
-                console.error("Error saving data to localStorage:", e);
-                showCustomAlert("خطأ في حفظ البيانات: تجاوزت سعة التخزين المتاحة في المتصفح. الرجاء حذف بعض الصور أو تقليل حجمها.");
-            }
-        }
-
-        /**
-         * Loads data from localStorage and populates the form.
-         */
-        function loadData() {
-            try {
-                const storedData = localStorage.getItem(DATA_KEY);
-                if (!storedData) {
-                    console.log("No stored data found.");
-                    return;
-                }
-
-                const data = JSON.parse(storedData);
-
-                // Update all persistent inputs (Text, Checkbox, Signature)
-                allPersistentInputs.forEach(input => {
-                    const key = input.getAttribute('data-key');
-                    const value = data[key];
-                    if (value !== undefined) {
-                        if (input.type === 'checkbox') {
-                            input.checked = value;
-                        } else {
-                            // Handle header inputs mirroring (screen vs print)
-                            if (screenHeaderInputs.includes(key)) {
-                                // Mirror value from data to screen-only and print-only versions
-                                document.getElementById(`${key}_screen`).value = value;
-                                const printInput = document.getElementById(`${key}_print`);
-                                if(printInput) printInput.value = value;
-                            } else {
-                                // Standard input update
-                                input.value = value;
-                            }
-                        }
-                    }
-                });
-
-                // Update Image Slots
-                for(let i = 1; i <= IMAGE_SLOTS; i++) {
-                    const imageKey = `imageSlot${i}`;
-                    const base64 = data[imageKey] || '';
-                    const previewElement = document.getElementById(`preview${i}`);
-                    const labelElement = document.getElementById(`label${i}`);
-
-                    if (base64 && base64.startsWith('data:')) {
-                        previewElement.src = base64;
-                        previewElement.classList.remove('hidden');
-                        previewElement.classList.add('z-10');
-                        labelElement.classList.add('hidden');
-                    } else {
-                        previewElement.src = '';
-                        previewElement.classList.add('hidden');
-                        previewElement.classList.remove('z-10');
-                        labelElement.classList.remove('hidden');
-                    }
-                }
-
-            } catch (error) {
-                console.error("Error loading data from localStorage:", error);
-            }
-        }
-
-        // --- Event Listeners for Auto-Save (Debounced for performance) ---
-        let saveTimeout;
-        const DEBOUNCE_DELAY = 500; // 0.5 second delay for smooth input
-
-        function debounceSave() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => saveData(), DEBOUNCE_DELAY);
-        }
-
-        // Attach listeners to all persistent inputs for debounce save
         allPersistentInputs.forEach(input => {
-             input.addEventListener('input', debounceSave);
+          const key = input.getAttribute('data-key');
+          const value = data[key];
+          if (value !== undefined) {
+            if (input.type === 'checkbox') {
+              input.checked = value;
+            } else {
+              if (screenHeaderInputs.includes(key)) {
+                document.getElementById(`${key}_screen`).value = value;
+              } else {
+                input.value = value;
+              }
+            }
+          }
         });
 
-        // Handle mirroring for the header inputs and save
-        document.getElementById('adminName_screen').addEventListener('input', function() {
-            const printInput = document.getElementById('adminName_print');
-            if(printInput) printInput.value = this.value;
-            debounceSave();
-        });
-         document.getElementById('schoolName_screen').addEventListener('input', function() {
-            const printInput = document.getElementById('schoolName_print');
-            if(printInput) printInput.value = this.value;
-            debounceSave();
-        });
+        for (let i = 1; i <= 4; i++) {
+          const imageKey = `imageSlot${i}`;
+          const base64 = data[imageKey] || '';
+          const previewElement = document.getElementById(`preview${i}`);
+          const labelElement = document.getElementById(`label${i}`);
+          if (base64 && base64.startsWith('data:')) {
+            previewElement.src = base64;
+            previewElement.classList.remove('hidden'); previewElement.classList.add('z-10');
+            labelElement.classList.add('hidden');
+          } else {
+            previewElement.src = '';
+            previewElement.classList.add('hidden'); previewElement.classList.remove('z-10');
+            labelElement.classList.remove('hidden');
+          }
+        }
+      } catch (error) { console.error("Error loading data from localStorage:", error); }
+    }
 
-        // Initialize by loading data on window load
-        window.onload = loadData;
+    let saveTimeout;
+    const DEBOUNCE_DELAY = 500;
+    function debounceSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(() => saveData(), DEBOUNCE_DELAY); }
 
-    </script>
+    allPersistentInputs.forEach(input => { input.addEventListener('input', debounceSave); });
+    document.getElementById('adminName_screen').addEventListener('input', debounceSave);
+    document.getElementById('schoolName_screen').addEventListener('input', debounceSave);
+
+    window.onload = loadData;
+  </script>
 </body>
 </html>
