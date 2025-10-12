@@ -29,7 +29,7 @@
         }
 
         .a4-page {
-            width: 210mm; /* A4 width (Default for screen and print) */
+            width: 210mm; /* A4 width (Fixed for screen and print) */
             min-height: 297mm; /* A4 height */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             margin: 0 auto;
@@ -40,6 +40,8 @@
             font-size: 12px;
             display: flex;
             flex-direction: column;
+            /* Ensure content doesn't break fixed A4 layout on small screens */
+            overflow-x: auto;
         }
 
         /* Fixed Header Container (for screen view only) */
@@ -229,7 +231,7 @@
             flex-shrink: 0;
         }
         .image-slot-container {
-            width: 24.2%; /* Default for A4 view (4 columns) */
+            width: 24.2%; /* Fixed 4 columns */
             position: relative;
         }
         .image-slot-aspect {
@@ -262,94 +264,8 @@
         }
 
         /* ======================================= */
-        /* START: Mobile Responsiveness (Screen Only) */
+        /* START: Print Optimization (CRITICAL) */
         /* ======================================= */
-        @media (max-width: 768px) {
-            body {
-                padding: 0; /* Remove body padding on mobile */
-                align-items: stretch; /* Stretch the page to fit screen width */
-            }
-
-            .a4-page {
-                /* Override A4 size for mobile screens */
-                width: 100%;
-                min-height: auto;
-                box-shadow: none; /* Remove shadow on mobile */
-                padding: 10px; /* Adjust padding for mobile */
-                margin: 0;
-                /* Ensure content fits perfectly on screen */
-                overflow-x: hidden;
-            }
-
-            .fixed-header-container, .fixed-footer-container {
-                /* Make header/footer containers relative to the document flow on mobile */
-                position: relative;
-                height: 100px; /* Fixed height for mobile view */
-                margin-bottom: 10px;
-                background-position: center center;
-                /* Adjust padding to look good on narrow screens */
-                padding: 5px 10px;
-            }
-
-            .content-wrapper {
-                /* Remove fixed margin top/bottom that was compensating for fixed header/footer */
-                margin-top: 0 !important;
-                margin-bottom: 0 !important;
-                padding: 5px;
-            }
-
-            /* Basic Data Block: Change to 2 columns on small screens */
-            .basic-data-grid-mobile {
-                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-            }
-
-            /* Image Slots: Change to 2x2 layout on mobile */
-            .evidence-box {
-                flex-wrap: wrap; /* Allow wrapping */
-                justify-center; /* Center items when wrapped */
-            }
-
-            .image-slot-container {
-                width: 48%; /* 2 items per row with gap */
-                margin-bottom: 5px;
-            }
-
-            /* Signature Boxes: Stack them vertically on mobile */
-            .signature-footer {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                margin-top: 10px;
-                margin-bottom: 10px !important;
-            }
-
-            .signature-footer > div {
-                width: 80%; /* Wider signature boxes on mobile */
-            }
-
-            /* Improve readability of table text on mobile */
-            .report-table th, .report-table td {
-                font-size: 9px;
-                padding: 4px 2px;
-            }
-            .header-title {
-                font-size: 14px;
-            }
-            .main-data-input {
-                font-size: 12px;
-                padding: 4px;
-            }
-            .h2-title {
-                font-size: 12px;
-                padding: 4px 6px;
-            }
-        }
-        /* ======================================= */
-        /* END: Mobile Responsiveness */
-        /* ======================================= */
-
-
-        /* Print media query to remove shadows and ensure full-page print */
         @media print {
             body {
                 padding: 0;
@@ -366,6 +282,7 @@
                 padding-bottom: 15mm; /* Space for the footer image */
                 min-height: 297mm; /* Ensure it stays A4 */
                 width: 210mm; /* Force A4 width for print */
+                overflow-x: hidden; /* Prevent horizontal scroll in print */
             }
             /* Hide print button and screen-only fixed elements */
             .print-button, .fixed-header-container, .fixed-footer-container {
@@ -490,7 +407,15 @@
              .report-table th {
                 background-color: #b2ebdd !important; /* Retain table header background */
              }
+
+             /* Ensure images are not distorted and fit within the A4 print area */
+             .image-slot-aspect {
+                 border: 1px solid #000 !important; /* Solid border for print */
+             }
         }
+        /* ======================================= */
+        /* END: Print Optimization */
+        /* ======================================= */
     </style>
 </head>
 <body>
@@ -519,6 +444,8 @@
         </button>
     </div>
 
+    <!-- The main A4 container is FIXED width, which means it will cause horizontal scrolling on mobile, 
+         but this ensures print consistency regardless of the device. -->
     <div class="a4-page">
         <!-- Screen-only fixed header for better visual experience -->
         <div class="fixed-header-container">
@@ -543,8 +470,8 @@
         <!-- Start content after the fixed header space (35mm) -->
         <div class="content-wrapper mt-[25mm] mb-[8mm] p-0">
 
-            <!-- Basic Data Block (Below Header) - Added basic-data-grid-mobile for responsive layout -->
-            <div class="grid grid-cols-4 basic-data-grid-mobile gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
+            <!-- Basic Data Block (Below Header) - Fixed 4 columns -->
+            <div class="grid grid-cols-4 gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
                 <!-- Column 1: الفصل الدراسي -->
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">الفصل الدراسي</label>
@@ -701,11 +628,11 @@
                 </table>
             </div>
 
-            <!-- Evidence Section (Image Uploads) - Added flex-wrap for mobile responsiveness -->
+            <!-- Evidence Section (Image Uploads) - Fixed 4 columns -->
             <div class="mb-0">
                 <h2 class="h2-title">شواهد التفعيل (صور)</h2>
 
-                <div class="evidence-box flex justify-between gap-2 p-1 items-center border border-dashed border-gray-400 rounded-lg flex-wrap">
+                <div class="evidence-box flex justify-between gap-2 p-1 items-center border border-dashed border-gray-400 rounded-lg">
 
                     <!-- Image Slot 1 -->
                     <div class="image-slot-container">
@@ -755,7 +682,7 @@
 
         </div> <!-- End of content-wrapper -->
 
-        <!-- Signature/Name Boxes - Added Tailwind classes for mobile stacking (flex-col) -->
+        <!-- Signature/Name Boxes - Fixed layout for A4 consistency -->
         <div class="signature-footer flex justify-between px-4 mt-2 mb-[15mm]">
 
             <!-- أمينة مصادر التعلم -->
