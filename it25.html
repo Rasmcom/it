@@ -11,6 +11,15 @@
         /* Embedding Cairo Font via @import for better reliability */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 
+        /* Custom colors and settings */
+        :root {
+            --color-navy: #003366;
+            --color-blue: #2196F3;
+            --color-green: #4CAF50;
+            --header-height: 35mm;
+            --footer-height: 15mm;
+        }
+
         /* Custom styles for A4 size and printing */
         @page {
             size: A4;
@@ -44,53 +53,65 @@
             overflow-x: auto;
         }
 
-        /* Fixed Header Container (for screen view only) */
+        /* --- Header/Footer Lines Structure --- */
+
+        /* Header Container (Screen Only) */
         .fixed-header-container {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 35mm;
-            background-image: url('https://l.top4top.io/p_3571r7e6d1.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center top;
+            height: var(--header-height);
+            background-color: transparent; /* Base color */
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 5mm;
-            padding-bottom: 5mm;
-            padding-right: 15mm; /* Compensate for a4-page padding */
-            padding-left: 15mm; /* Compensate for a4-page padding */
+            padding: 0; /* Remove padding */
         }
-
-        /* Title in Header: CENTERING AND MULTI-LINE SUPPORT */
-        .header-title {
-            color: white;
-            font-weight: 900;
-            font-size: 16px;
-            text-align: center;
-            line-height: 1.2;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            margin-top: 2mm;
-            margin-bottom: 0;
-            width: 100%;
-        }
-
-        /* Fixed Footer Container (for screen view only) */
+        /* Footer Container (Screen Only) */
         .fixed-footer-container {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 15mm;
-            background-image: url('https://c.top4top.io/p_35710bpos1.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center bottom;
+            height: var(--footer-height);
+            background-color: transparent;
             z-index: 10;
+            padding: 0; /* Remove padding */
+        }
+
+        /* Shared Line Styles */
+        .header-line-thin {
+            height: 3mm;
+            width: 100%;
+            background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
+        }
+
+        .header-line-wide {
+            height: calc(var(--header-height) - 3mm); /* 32mm */
+            width: 100%;
+            background-color: var(--color-navy); /* Navy Blue */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 15mm; /* Inner padding for content */
+        }
+
+        .footer-line-thin {
+            height: 3mm;
+            width: 100%;
+            background: linear-gradient(to right, var(--color-green), var(--color-blue)); /* Green to Blue (Reversed) */
+        }
+
+        .footer-separator {
+            height: 2px;
+            width: 100%;
+            background-color: #ffffff; /* White separator */
+        }
+
+        .footer-line-wide {
+            height: calc(var(--footer-height) - 3mm - 2px); /* ~12mm */
+            width: 100%;
+            background: linear-gradient(to right, var(--color-blue), var(--color-green)); /* Blue to Green */
         }
 
         /* Content Wrapper to push the footer/signature down if content is short */
@@ -127,16 +148,31 @@
             border-radius: 6px;
         }
 
-        /* Header inputs for ADMIN/SCHOOL (in the fixed header area) */
+        /* Header inputs for ADMIN/SCHOOL (in the new wide line area) */
         .header-input {
             background-color: transparent;
             border: none;
-            color: #ffffff;
+            color: #ffffff; /* White text on Navy background */
             text-align: right;
             font-weight: bold;
             font-size: 14px;
             padding: 2px 4px;
             outline: none;
+            width: 100%;
+            margin: 0;
+            height: 20px; /* fixed height for consistency */
+        }
+
+        /* Title in Header: CENTERING AND MULTI-LINE SUPPORT */
+        .header-title {
+            color: white;
+            font-weight: 900;
+            font-size: 16px;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin-top: 1mm;
+            margin-bottom: 0;
             width: 100%;
         }
 
@@ -276,10 +312,11 @@
             .a4-page {
                 margin: 0;
                 box-shadow: none;
+                /* Crucial for printing CSS colors/gradients */
                 -webkit-print-color-adjust: exact !important;
                 color-adjust: exact !important;
-                padding-top: 38mm; /* Space for the header image */
-                padding-bottom: 15mm; /* Space for the footer image */
+                padding-top: calc(1.5cm + var(--header-height)); /* Space for the header */
+                padding-bottom: calc(1.0cm + var(--footer-height)); /* Space for the footer */
                 min-height: 297mm; /* Ensure it stays A4 */
                 width: 210mm; /* Force A4 width for print */
                 overflow-x: hidden; /* Prevent horizontal scroll in print */
@@ -296,49 +333,58 @@
 
             /* --- MANDATORY FIXED PRINT HEADER/FOOTER --- */
 
-            /* Print Header */
+            /* Print Header (Structure only) */
             .print-header {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 width: 100%;
-                height: 35mm;
+                height: var(--header-height);
                 z-index: 100;
-                display: block !important;
-                background-image: url('https://l.top4top.io/p_3571r7e6d1.png');
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-position: center top;
-                /* Inner content to display on print */
-                display: flex;
+                display: flex !important;
                 flex-direction: column;
-                justify-content: space-between;
-                align-items: center;
-                padding: 5mm 15mm 5mm 15mm;
+                padding: 0;
+                /* Ensure background is white for the absolute position area */
+                background-color: white; 
             }
 
-            /* Print Footer */
+            /* Print Header Content Area (Navy Line) */
+            .print-header .header-line-wide {
+                background-color: var(--color-navy) !important;
+            }
+
+            /* Print Footer (Structure only) */
             .print-footer {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 width: 100%;
-                height: 15mm;
+                height: var(--footer-height);
                 z-index: 100;
-                display: block !important;
-                background-image: url('https://c.top4top.io/p_35710bpos1.png');
-                background-size: cover;
-                background-repeat: no-repeat;
-                background-position: center bottom;
+                display: flex !important;
+                flex-direction: column;
+                padding: 0;
             }
+
+            /* Force all gradient lines to print with color */
+            .header-line-thin, .footer-line-thin, .footer-line-wide {
+                background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
+            }
+
+            .footer-line-thin { /* Override with its specific gradient */
+                background: linear-gradient(to right, var(--color-green), var(--color-blue)) !important;
+            }
+            .footer-line-wide { /* Override with its specific gradient */
+                background: linear-gradient(to right, var(--color-blue), var(--color-green)) !important;
+            }
+
 
             /* Ensure inputs look like text on print */
             .fillable-input {
                 border: none !important;
                 background-color: transparent !important;
-                /* Ensure all text is dark/black */
                 color: #000000 !important;
             }
 
@@ -365,24 +411,13 @@
                  font-weight: 900 !important;
             }
 
-            /* Ensure the platform/channel/program inputs retain their borders when printed */
-             .platform-input {
-                 border: 1px solid #666666 !important;
-             }
-
-            /* Ensure alignment in print header */
-             .print-header .header-group {
-                align-items: flex-end !important; /* Align group content to the right */
-                width: 100%;
-             }
-             /* Ensure title is centered in print header */
+            /* Ensure the title is centered in print header */
              .print-header .header-title {
                  text-align: center !important;
              }
 
              /* Ensure checkboxes look good on print */
              input[type="checkbox"] {
-                 /* Hide actual checkbox and use the custom border/background style for the TD */
                  -webkit-appearance: none;
                  -moz-appearance: none;
                  appearance: none;
@@ -422,20 +457,22 @@
 
     <!-- Print Header Element (Invisible on screen, only for @media print) -->
     <div class="print-header hidden">
-
-        <!-- School Name & Admin Name (Stacked and Right-aligned) -->
-        <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
-            <input type="text" id="adminName_print" data-key="adminName" class="header-input w-2/3 mb-1 text-right" placeholder="اسم الإدارة التعليمية">
-            <input type="text" id="schoolName_print" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
-            <!-- Added 4 breaks to push the title down -->
-           <br>
-            <!-- Centered, multi-line title -->
-            <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
+        <div class="header-line-thin"></div>
+        <div class="header-line-wide">
+             <!-- Content inside the wide line -->
+            <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
+                <input type="text" id="adminName_print" data-key="adminName" class="header-input w-2/3 mb-1 text-right" placeholder="اسم الإدارة التعليمية">
+                <input type="text" id="schoolName_print" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
+                <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
+            </div>
         </div>
-
     </div>
     <!-- Print Footer Element (Invisible on screen, only for @media print) -->
-    <div class="print-footer hidden"></div>
+    <div class="print-footer hidden">
+        <div class="footer-line-thin"></div>
+        <div class="footer-separator"></div>
+        <div class="footer-line-wide"></div>
+    </div>
 
     <!-- Print Button for convenience -->
     <div class="fixed top-4 left-4 z-50 print-button">
@@ -449,26 +486,29 @@
     <div class="a4-page">
         <!-- Screen-only fixed header for better visual experience -->
         <div class="fixed-header-container">
-
-            <!-- School Name & Admin Name (Stacked and Right-aligned) -->
-             <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
-                <!-- Input for Admin Name in Header -->
-                <input type="text" id="adminName_screen" data-key="adminName" class="header-input w-2/3 mb-1 text-right" placeholder="اسم الإدارة التعليمية">
-                <!-- Input for School Name in Header -->
-                <input type="text" id="schoolName_screen" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
-                <!-- Added 4 breaks to push the title down -->
-               <br>
-                 <!-- Centered, multi-line title -->
-                <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
-            </div>
-
+             <div class="header-line-thin"></div>
+             <div class="header-line-wide">
+                <!-- Content inside the wide line -->
+                 <div class="header-group w-full flex flex-col items-end justify-start h-full px-4">
+                    <!-- Input for Admin Name in Header -->
+                    <input type="text" id="adminName_screen" data-key="adminName" class="header-input w-2/3 text-right" placeholder="اسم الإدارة التعليمية">
+                    <!-- Input for School Name in Header -->
+                    <input type="text" id="schoolName_screen" data-key="schoolName" class="header-input w-2/3 text-right" placeholder="اسم المدرسة">
+                    <!-- Centered, multi-line title -->
+                    <p class="header-title text-center">تفعيل المدرسة للتعلم الإلكتروني</p>
+                </div>
+             </div>
         </div>
         <!-- Screen-only fixed footer -->
-        <div class="fixed-footer-container"></div>
+        <div class="fixed-footer-container">
+            <div class="footer-line-thin"></div>
+            <div class="footer-separator"></div>
+            <div class="footer-line-wide"></div>
+        </div>
 
         <!-- Content Wrapper to contain all tables and evidence -->
         <!-- Start content after the fixed header space (35mm) -->
-        <div class="content-wrapper mt-[25mm] mb-[8mm] p-0">
+        <div class="content-wrapper mt-[35mm] mb-[15mm] p-0">
 
             <!-- Basic Data Block (Below Header) - Fixed 4 columns -->
             <div class="grid grid-cols-4 gap-2 p-1 bg-gray-50 border border-gray-200 rounded-lg text-xs">
