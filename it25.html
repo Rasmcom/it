@@ -560,7 +560,8 @@
                 <table class="report-table">
                     <thead>
                         <tr>
-                            <th class="w-1/2">نوع التفعيل الإلكتروني المستخدم (المنصة/القناة/البرنامج)</th>
+                            <!-- تم تعديل العنوان هنا -->
+                            <th class="w-1/2">نوع التفعيل الإلكتروني</th>
                             <th class="w-1/2">اسم الجهاز الإلكتروني المستخدم (اختر الأجهزة)</th>
                         </tr>
                     </thead>
@@ -771,7 +772,7 @@
                 reader.onerror = error => reject(error);
                 // Check file size (approx. 800 KB limit for Base64 to be safe in localStorage)
                 if (file.size > 800 * 1024) { 
-                     reject(new Error("File size exceeds 800 KB limit. Please use a smaller image."));
+                     reject(new Error("حجم الملف يتجاوز الحد الأقصى المسموح به (800 كيلوبايت). يرجى استخدام صورة أصغر."));
                      return;
                 }
                 reader.readAsDataURL(file);
