@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المناوبة للمعلمين/ات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hijri@1.1.2/hijri.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c5aa0; --primary-dark: #1e3a5f; --header-dark: #16445b;
+            --header-light: #0f2a35; --light-bg: #f8f9fa; --border-color: #ddd;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-light) 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: flex-start; gap: 15px; }
+        .input-section input { padding: 4px 8px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.95); color: #333; height: 28px; width: 260px; }
+        .input-section { display: flex; flex-direction: column; gap: 2px; min-width: 280px; }
+        .logo { width: 100px; height: auto; }
+        .title-section { padding: 30px; text-align: center; background: var(--light-bg); border-bottom: 3px solid var(--primary-color); }
+        .main-title { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px; }
+        .period-input-container { font-size: 26px; font-weight: 700; color: var(--primary-color); }
+        .month-input { border: none; background: transparent; font-size: 26px; font-weight: 700; color: var(--primary-color); text-align: center; padding: 8px; border-bottom: 3px solid var(--primary-color); cursor: pointer; width: 300px; }
+        .controls { padding: 25px 30px; background: var(--light-bg); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px; }
+        .names-input { flex: 1; min-width: 350px; }
+        .names-input label { display: block; margin-bottom: 12px; font-weight: 600; font-size: 16px; color: #333; }
+        .names-input textarea { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 16px; resize: vertical; min-height: 120px; transition: border-color 0.3s ease; }
+        .names-input textarea:focus { outline: none; border-color: var(--primary-color); }
+        .btn { padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3); }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3); }
+        .btn-warning { background: #ffc107; color: white; }
+        .btn-warning:hover { background: #e0a800; box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3); }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-info:hover { background: #138496; box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3); }
+        .btn-group { display: flex; flex-direction: column; gap: 15px; }
+        .table-container { padding: 30px; overflow-x: auto; }
+        .main-table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; }
+        .main-table th, .main-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; vertical-align: middle; }
+        .main-table th { font-weight: 700; background: #4a6a8a; color: white; }
+        .main-table .sub-header th { background-color: #e9ecef; color: #333; font-size: 12px; }
+        .main-table th input.header-input { background: transparent; color: white; border: none; font-size: inherit; font-weight: inherit; text-align: center; width: 100%; padding: 5px; }
+        .main-table th input.header-input:focus { outline: 1px dashed #fff; background: rgba(255,255,255,0.1); }
+        .main-table td input, .main-table td select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 14px; box-sizing: border-box; }
+        .date-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .hijri-date-display { font-size: 12px; font-weight: 600; color: var(--primary-dark); min-height: 18px; }
+        .footer, .signature-area { display: flex; align-items: center; }
+        .footer { padding: 30px; background: var(--light-bg); flex-direction: column; gap: 30px; }
+        .signature-area { justify-content: center; flex-wrap: wrap; gap: 20px; width: 100%; }
+        .signature-box { display: flex; flex-direction: column; gap: 15px; min-width: 300px; align-items: center; }
+        .signature-input input { flex: 1; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 16px; font-weight: 700; }
+        .copyright-section { gap: 15px; }
+        .copyright-text { font-size: 14px; color: #555; font-weight: 600; }
+        .footer-logo { height: 50px; width: auto; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 500px; width: 100%; }
+        .modal-header { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .gif-container { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 3px solid var(--header-dark); }
+        .gif-container img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-content h2 { font-size: 28px; color: var(--header-dark); }
+        .modal-content p { line-height: 1.8; margin-bottom: 15px; color: #333; }
+        #hidden-chart-container { position: absolute; left: -9999px; top: -9999px; width: 800px; height: 400px; }
+    </style>
+</head>
+<body>
+    <div id="pledge-modal" class="modal-overlay"></div>
+
+    <div class="container" id="record-page" style="display: none;">
+        <div class="header no-print">
+            <div class="logo-section"><img src="https://salogos.org/wp-content/uploads/2021/11/UntiTtled-1-1300x988.png" alt="شعار وزارة التعليم" class="logo" onerror="this.style.display='none'"></div>
+            <div class="input-section">
+                <input type="text" id="education-dept" placeholder="أدخل الإدارة التعليمية" oninput="saveGlobalData()"><input type="text" id="education-region" placeholder="أدخل المنطقة التعليمية" oninput="saveGlobalData()"><input type="text" id="school-name" placeholder="أدخل المدرسة" oninput="saveGlobalData()">
+            </div>
+        </div>
+        <div class="title-section">
+            <div class="main-title" id="main-title">جدول المناوبة لشهر</div>
+            <div id="period-input-container">
+                <input type="text" id="hijri-month-input" class="month-input" placeholder="اكتب اسم الشهر..." onchange="handleMonthChange(this.value)">
+            </div>
+        </div>
+        <div class="controls no-print">
+            <div class="names-input">
+                <label>أسماء المعلمين/ات (اسم واحد في كل سطر):</label>
+                <textarea id="names-textarea" placeholder="مثال:&#10;فاطمة سعد محمد الأحمد&#10;نورة عبدالله صالح العلي"></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="extractNames()">استخراج الأسماء</button><button class="btn btn-danger" onclick="clearNames()">مسح الأسماء</button><button class="btn btn-success" onclick="printSchedule()">🖨️ طباعة الجدول</button><button class="btn btn-info" onclick="printStats()">📊 طباعة الإحصائيات</button><button class="btn btn-danger" onclick="clearData()">مسح بيانات الشهر</button><button class="btn btn-warning" onclick="backupData()">📥 نسخ احتياطي</button><button class="btn btn-info" onclick="restoreData()">📤 استعادة البيانات</button><button class="btn btn-danger" onclick="clearAllData()">⚠️ مسح جميع البيانات</button><input type="file" id="restoreFile" style="display:none;" accept=".txt">
+            </div>
+        </div>
+        <div class="table-container"><table class="main-table" id="main-table"></table></div>
+        <div class="footer">
+            <div class="signature-area"><div class="signature-box"><label>مدير/ة المدرسة</label><div class="signature-input"><input type="text" id="school-principal-signature" placeholder="الاسم والتوقيع" oninput="saveData()"></div></div></div>
+            <div class="copyright-section no-print"><a href="https://t.me/+SJnY9vPy7yo5YmI1" target="_blank" rel="noopener noreferrer"><img src="https://e.top4top.io/p_3463x5tj40.png" alt="شعار قناة رسم" class="footer-logo" onerror="this.style.display='none'"></a><p class="copyright-text">جميع الحقوق محفوظة لقناة رسم للتصميم والخدمات التعليمية 2025</p></div>
+        </div>
+    </div>
+    
+    <div id="hidden-chart-container"><canvas id="stats-chart"></canvas></div>
+
+    <script>
+        let statsChart = null;
+        const CHART_COLORS = ['rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)', 'rgba(75, 192, 192, 0.7)', 'rgba(255, 206, 86, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)', 'rgba(46, 204, 113, 0.7)', 'rgba(231, 76, 60, 0.7)'];
+        const CHART_BORDERS = ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)', 'rgba(46, 204, 113, 1)', 'rgba(231, 76, 60, 1)'];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default font for Chart.js
+            Chart.defaults.font.family = "'Cairo', sans-serif";
+            
+            const pledgeModal = document.getElementById('pledge-modal');
+            pledgeModal.innerHTML = `<div class="modal-content"><div class="modal-header"><div class="gif-container"><img src="https://k.top4top.io/p_35163lq2x1.gif" alt="تعهد" onerror="this.style.display='none'"></div><h2>تعهد</h2></div><p>أقر وأتعهد أمام الله أنني سأستخدم هذا الموقع للأغراض الشخصية فقط، ولن أستخدمه لأي غرض تجاري أو ربحي. كما أتعهد بعدم مشاركة رابط الموقع مع أي شخص آخر.</p><button id="agree-btn" class="btn btn-primary">أوافق وأبدأ</button></div>`;
+            const agreeBtn = document.getElementById('agree-btn');
+            const mainContent = document.getElementById('record-page');
+            const hasAgreed = localStorage.getItem('pledgeAgreed_dutyRoster_v15') === 'true';
+
+            if (!hasAgreed) {
+                pledgeModal.style.display = 'flex';
+                agreeBtn.onclick = function() {
+                    localStorage.setItem('pledgeAgreed_dutyRoster_v15', 'true');
+                    pledgeModal.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    initializePage();
+                };
+            } else {
+                mainContent.style.display = 'block';
+                initializePage();
+            }
+        });
+
+        function initializePage() {
+            loadGlobalData();
+            loadCurrentMonth();
+            loadData();
+        }
+        
+        function handleMonthChange(monthName) {
+            localStorage.setItem('currentDutyMonth', monthName.trim());
+            loadData();
+        }
+
+        function loadCurrentMonth() {
+            const monthInput = document.getElementById('hijri-month-input');
+            const savedMonth = localStorage.getItem('currentDutyMonth') || 'المحرّم';
+            monthInput.value = savedMonth;
+        }
+
+        function getTableHeaders() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const period1 = globalData.period1Header || 'الفترة الأولى';
+            const period2 = globalData.period2Header || 'الفترة الثانية';
+            return `<thead><tr><th colspan="3"><input type="text" class="header-input" value="${period1}" oninput="savePeriodHeader('period1Header', this.value)"></th><th colspan="3"><input type="text" class="header-input" value="${period2}" oninput="savePeriodHeader('period2Header', this.value)"></th></tr><tr class="sub-header"><th>التاريخ واليوم</th><th>اسم المعلم/ة المناوب/ة</th><th>التوقيع</th><th>التاريخ واليوم</th><th>اسم المعلم/ة المناوب/ة</th><th>التوقيع</th></tr></thead>`;
+        }
+        
+        function generateTable(names) {
+            const table = document.getElementById('main-table');
+            table.innerHTML = getTableHeaders() + '<tbody id="table-body"></tbody>';
+            const teacherOptionsHTML = '<option value="">-- اختر --</option>' + (names || []).map(name => `<option value="${name}">${name}</option>`).join('');
+            const tableBody = document.getElementById('table-body');
+            for (let i = 0; i < 20; i++) {
+                const row = tableBody.insertRow();
+                row.innerHTML = `<td><div class="date-cell"><input type="date" onchange="updateDateDisplay(this); saveData();"><span class="hijri-date-display"></span></div></td><td><select onchange="saveData()">${teacherOptionsHTML}</select></td><td><input type="text" oninput="saveData()"></td><td><div class="date-cell"><input type="date" onchange="updateDateDisplay(this); saveData();"><span class="hijri-date-display"></span></div></td><td><select onchange="saveData()">${teacherOptionsHTML}</select></td><td><input type="text" oninput="saveData()"></td>`;
+            }
+        }
+
+        function abbreviateName(fullName) {
+            const words = fullName.trim().split(/\s+/).filter(Boolean);
+            if (words.length <= 3) return words.join(' ');
+            return `${words[0]} ${words[1]} ${words[words.length - 1]}`;
+        }
+        
+        function extractNames() {
+            const names = document.getElementById('names-textarea').value.split('\n').map(line => line.trim()).filter(line => line !== '').map(abbreviateName);
+            if (names.length > 0) {
+                saveNames(names);
+                document.getElementById('names-textarea').value = '';
+                loadData(); 
+            }
+        }
+
+        function getPeriodKey() { 
+            const monthName = document.getElementById('hijri-month-input').value.trim();
+            return monthName ? `duty-roster-${monthName}` : null;
+        }
+
+        function saveData() {
+            const periodKey = getPeriodKey();
+            if(!periodKey) return;
+            const tableData = Array.from(document.querySelectorAll('#table-body tr')).map(row => [
+                row.cells[0].querySelector('input[type="date"]').value, row.cells[1].querySelector('select').value,
+                row.cells[2].querySelector('input[type="text"]').value, row.cells[3].querySelector('input[type="date"]').value,
+                row.cells[4].querySelector('select').value, row.cells[5].querySelector('input[type="text"]').value
+            ]);
+            localStorage.setItem(periodKey, JSON.stringify({
+                tableData,
+                signatures: { schoolPrincipal: document.getElementById('school-principal-signature')?.value }
+            }));
+        }
+        
+        function savePeriodHeader(key, value) {
+            let globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            globalData[key] = value;
+            localStorage.setItem('globalData', JSON.stringify(globalData));
+        }
+
+        function loadData() {
+            const names = getSavedNames();
+            generateTable(names);
+            const periodKey = getPeriodKey();
+            if(!periodKey) return;
+            const savedData = localStorage.getItem(periodKey);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                if(document.getElementById('school-principal-signature')) document.getElementById('school-principal-signature').value = data.signatures?.schoolPrincipal || '';
+                const rows = document.querySelectorAll('#table-body tr');
+                if (data.tableData) {
+                    data.tableData.forEach((rowData, rowIndex) => {
+                        const row = rows[rowIndex];
+                        if (row) {
+                            row.cells[0].querySelector('input[type="date"]').value = rowData[0] || '';
+                            row.cells[1].querySelector('select').value = rowData[1] || '';
+                            row.cells[2].querySelector('input[type="text"]').value = rowData[2] || '';
+                            row.cells[3].querySelector('input[type="date"]').value = rowData[3] || '';
+                            row.cells[4].querySelector('select').value = rowData[4] || '';
+                            row.cells[5].querySelector('input[type="text"]').value = rowData[5] || '';
+                            updateDateDisplay(row.cells[0].querySelector('input[type="date"]'));
+                            updateDateDisplay(row.cells[3].querySelector('input[type="date"]'));
+                        }
+                    });
+                }
+            }
+        }
+        
+        function calculateStats() {
+            const counts = Object.fromEntries(getSavedNames().map(name => [name, 0]));
+            const savedData = localStorage.getItem(getPeriodKey());
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                if (data.tableData) {
+                    data.tableData.forEach(row => {
+                        if (row[1] && counts.hasOwnProperty(row[1])) counts[row[1]]++;
+                        if (row[4] && counts.hasOwnProperty(row[4])) counts[row[4]]++;
+                    });
+                }
+            }
+            return Object.entries(counts).sort(([,a],[,b]) => b-a).reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+        }
+        
+        function getPrintStyles(isStats = false) {
+            const headerStyle = `.print-header-info{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;margin-bottom:20px; border-bottom: 4px solid; border-image: linear-gradient(to right, #28a745, #17a2b8) 1;}.print-header-info div{font-size:14px;font-weight:bold;}.print-header-info img{max-height:60px;}`;
+            const footerStyle = `.print-footer{margin-top:40px;padding-top:15px;text-align:left;font-size:14px;font-weight:bold; border-top: 4px solid; border-image: linear-gradient(to right, #28a745, #17a2b8) 1;}`;
+            
+            const statsStyle = `h1,h2{text-align:center;}table{width:100%;border-collapse:collapse;margin:20px 0; font-size: 10pt;}th,td{border:1px solid #ccc;padding:8px;text-align:center;}th{background-color:#f2f2f2 !important;color: #000 !important;}img{display:block;max-width:90%;margin:20px auto;}`;
+            const scheduleStyle = `.print-title-section{text-align:center;margin-bottom:20px;}.print-main-title{font-size:24px;font-weight:bold;}.print-month-title{font-size:20px;color:#333;}.print-table{width:100%;border-collapse:collapse;font-size:9.5pt;}.print-table th,.print-table td{border:1px solid #000 !important;padding:6px;text-align:center;vertical-align:middle;font-weight:bold;word-break:break-word;}.print-table th{background-color:#4a6a8a !important;color:white !important;}.print-table .sub-header th{background-color:#e9ecef !important;color:#333 !important;}.print-table td:nth-child(3),.print-table td:nth-child(6){width:15%;}`;
+            
+            return `<style>@page{size: A4 portrait;margin:1cm;}*{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}body{margin:0;background:white;direction:rtl;font-family:'Cairo',sans-serif;}${headerStyle}${footerStyle}${isStats ? statsStyle : scheduleStyle}</style>`;
+        }
+        
+        function getPrintHeaderHTML() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const logoHTML = document.querySelector('.header .logo') ? `<img src="${document.querySelector('.header .logo').src}" alt="logo">` : '';
+            return `<div class="print-header-info"><div>الإدارة: ${globalData.dept || '............'}<br>المدرسة: ${globalData.school || '............'}</div>${logoHTML}</div>`;
+        }
+
+        function printSchedule() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const titleSectionHTML = `<div class="print-title-section"><div class="print-main-title">جدول المناوبة الشهري</div><div class="print-month-title">لشهر ${document.getElementById('hijri-month-input').value}</div></div>`;
+            const period1 = globalData.period1Header || 'الفترة الأولى';
+            const period2 = globalData.period2Header || 'الفترة الثانية';
+            const tableHeaderHTML = `<thead><tr><th colspan="3">${period1}</th><th colspan="3">${period2}</th></tr><tr class="sub-header"><th>التاريخ</th><th>اسم المعلم/ة</th><th>التوقيع</th><th>التاريخ</th><th>اسم المعلم/ة</th><th>التوقيع</th></tr></thead>`;
+            let tableContentHTML = '';
+            document.querySelectorAll('#table-body tr').forEach(row => {
+                const dateInput1 = row.cells[0].querySelector('input[type="date"]');
+                const dateInput2 = row.cells[3].querySelector('input[type="date"]');
+                if (!dateInput1.value && !dateInput2.value) return;
+                tableContentHTML += `<tr><td>${formatHijriDateShort(dateInput1.value)}</td><td>${row.cells[1].querySelector('select').value}</td><td></td><td>${formatHijriDateShort(dateInput2.value)}</td><td>${row.cells[4].querySelector('select').value}</td><td></td></tr>`;
+            });
+            const footerHTML = `<div class="print-footer"><div>مدير/ة المدرسة:</div><br><div>${document.getElementById('school-principal-signature').value || '.........................'}</div></div>`;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><title>طباعة جدول المناوبة</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">${getPrintStyles()}</head><body>${getPrintHeaderHTML()}${titleSectionHTML}<table class="print-table">${tableHeaderHTML}<tbody>${tableContentHTML}</tbody></table>${footerHTML}</body></html>`);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 750);
+        }
+
+        function printStats() {
+            const stats = calculateStats();
+            const labels = Object.keys(stats);
+            const data = Object.values(stats);
+            const backgroundColors = labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]);
+            const borderColors = labels.map((_, i) => CHART_BORDERS[i % CHART_BORDERS.length]);
+            
+            if (statsChart) statsChart.destroy();
+            const canvas = document.getElementById('stats-chart');
+            statsChart = new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: { labels, datasets: [{ label: 'عدد المناوبات', data, backgroundColor: backgroundColors, borderColor: borderColors, borderWidth: 1 }] },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        onComplete: () => {
+                            const chartImage = canvas.toDataURL('image/png');
+                            let statsTableHTML = `<table style="width:100%; border-collapse:collapse;"><thead><tr><th>اسم المعلم/ة</th><th>عدد المناوبات</th></tr></thead><tbody>`;
+                            if(labels.length === 0){
+                                statsTableHTML += '<tr><td colspan="2">لا توجد بيانات لعرضها.</td></tr>';
+                            } else {
+                                for (const name in stats) {
+                                    statsTableHTML += `<tr><td>${name}</td><td>${stats[name]}</td></tr>`;
+                                }
+                            }
+                            statsTableHTML += '</tbody></table>';
+
+                            const titleHTML = `<h1>تقرير إحصائيات المناوبة لشهر ${document.getElementById('hijri-month-input').value}</h1>`;
+                            const printWindow = window.open('', '_blank');
+                            printWindow.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><title>طباعة الإحصائيات</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">${getPrintStyles(true)}</head><body>${getPrintHeaderHTML()}${titleHTML}${statsTableHTML}<h2>رسم بياني توضيحي</h2><img src="${chartImage}"></body></html>`);
+                            printWindow.document.close();
+                            setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 750);
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { font: { family: "'Cairo', sans-serif" } } }
+                    },
+                    scales: {
+                        x: { ticks: { font: { family: "'Cairo', sans-serif", weight: 'bold' } } },
+                        y: { ticks: { font: { family: "'Cairo', sans-serif", weight: 'bold' } } }
+                    }
+                }
+            });
+        }
+
+        function saveGlobalData() {
+            let globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            globalData.dept = document.getElementById('education-dept').value;
+            globalData.region = document.getElementById('education-region').value;
+            globalData.school = document.getElementById('school-name').value;
+            localStorage.setItem('globalData', JSON.stringify(globalData));
+        }
+
+        function loadGlobalData() {
+            const data = JSON.parse(localStorage.getItem('globalData'));
+            if (data) {
+                document.getElementById('education-dept').value = data.dept || '';
+                document.getElementById('education-region').value = data.region || '';
+                document.getElementById('school-name').value = data.school || '';
+            }
+        }
+        
+        function formatHijriDateWithDay(date) {
+            if (!date) return '';
+            try { return new Intl.DateTimeFormat('ar-SA-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace('،', ''); }
+            catch (e) { console.error("Error formatting Hijri date:", e); return ''; }
+        }
+
+        function formatHijriDateShort(dateString) {
+            if (!dateString) return '';
+            try {
+                const [year, month, day] = dateString.split('-').map(Number);
+                const date = new Date(Date.UTC(year, month - 1, day));
+                const formattedDate = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace(/\s/g, '');
+                return formattedDate.endsWith('هـ') ? formattedDate : formattedDate + 'هـ';
+            } catch (e) { console.error("Error formatting short Hijri date:", e); return ''; }
+        }
+        
+        function updateDateDisplay(dateInput) {
+            const dateValue = dateInput.value;
+            const displaySpan = dateInput.nextElementSibling;
+            if (!dateValue) { displaySpan.textContent = ''; return; }
+            const [year, month, day] = dateValue.split('-').map(Number);
+            displaySpan.textContent = formatHijriDateWithDay(new Date(Date.UTC(year, month - 1, day)));
+        }
+            
+        function saveNames(names) { localStorage.setItem('teacherNames', JSON.stringify(names)); }
+        function getSavedNames() { return JSON.parse(localStorage.getItem('teacherNames')) || []; }
+        function clearNames() { if (confirm('هل أنت متأكد من مسح جميع الأسماء المحفوظة؟')) { localStorage.removeItem('teacherNames'); loadData(); } }
+        function clearData() { if (confirm('هل أنت متأكد من مسح بيانات الشهر الحالي فقط؟')) { const key = getPeriodKey(); if(key) localStorage.removeItem(key); loadData(); } }
+        function clearAllData() { if (confirm('هل أنت متأكد من مسح جميع البيانات نهائياً؟')) { localStorage.clear(); location.reload(); } }
+        
+        function backupData() {
+            const dataToBackup = {};
+            Object.keys(localStorage).forEach(key => dataToBackup[key] = localStorage.getItem(key));
+            const dataStr = JSON.stringify(dataToBackup, null, 2);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([dataStr], { type: 'application/json' }));
+            a.download = `جدول_المناوبة_نسخة_احتياطية_${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click(); a.remove(); alert('تم حفظ النسخة الاحتياطية بنجاح.');
+        }
+        
+        function restoreData() {
+            const fileInput = document.getElementById('restoreFile');
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0]; if (!file) return;
+                if (confirm('سيتم استعادة البيانات وحذف جميع البيانات الحالية. هل أنت متأكد؟')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const restoredData = JSON.parse(event.target.result);
+                            localStorage.clear();
+                            Object.keys(restoredData).forEach(key => localStorage.setItem(key, restoredData[key]));
+                            alert('تم استعادة البيانات بنجاح.'); location.reload();
+                        } catch (error) { alert('فشل في استعادة البيانات. الملف غير صحيح.'); }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            fileInput.click();
+        }
+    </script>
+</body>
+</html>
