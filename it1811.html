@@ -15,13 +15,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-light) 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: flex-start; gap: 15px; }
+        .header { background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-light) 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: flex-start; gap: 15px; flex-wrap: wrap; }
         .input-section input { padding: 4px 8px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.95); color: #333; height: 28px; width: 260px; }
         .input-section { display: flex; flex-direction: column; gap: 2px; min-width: 280px; }
         .logo { width: 100px; height: auto; }
         .title-section { padding: 30px; text-align: center; background: var(--light-bg); border-bottom: 3px solid var(--primary-color); }
         .main-title { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px; }
-        .month-input { border: none; background: transparent; font-size: 26px; font-weight: 700; color: var(--primary-color); text-align: center; padding: 8px; border-bottom: 3px solid var(--primary-color); cursor: pointer; width: 300px; }
+        .month-input { border: none; background: transparent; font-size: 26px; font-weight: 700; color: var(--primary-color); text-align: center; padding: 8px; border-bottom: 3px solid var(--primary-color); cursor: pointer; width: 300px; max-width: 90%; }
         .controls { padding: 25px 30px; background: var(--light-bg); display: grid; grid-template-columns: 1fr auto auto; gap: 20px; align-items: start; }
         .names-input { grid-column: 1 / 2; }
         .duty-count-section { grid-column: 2 / 3; }
@@ -30,7 +30,7 @@
         .names-input textarea { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 16px; resize: vertical; min-height: 120px; transition: border-color 0.3s ease; }
         .names-input textarea:focus { outline: none; border-color: var(--primary-color); }
         .duty-count-section { display: flex; flex-direction: column; gap: 10px; }
-        .duty-count-input { display: flex; align-items: center; gap: 10px; }
+        .duty-count-input { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
         .duty-count-input label { font-weight: 600; white-space: nowrap; }
         .duty-count-input input { width: 60px; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); text-align: center; }
         .btn { padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -64,6 +64,41 @@
         #hidden-chart-container { display: none; }
         .loading-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .loading-modal-content { background: white; padding: 40px; border-radius: 10px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+
+        /* --- Responsive Design Media Queries --- */
+        @media (max-width: 992px) {
+            body {
+                padding: 10px;
+            }
+            .controls {
+                grid-template-columns: 1fr; /* Stack controls vertically */
+            }
+            .btn-group {
+                grid-template-columns: 1fr 1fr; /* Keep buttons side-by-side on tablets */
+            }
+            .table-container {
+                padding: 15px;
+            }
+            .main-table th, .main-table td {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .main-table td input, .main-table td select {
+                padding: 6px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+             .btn-group {
+                grid-template-columns: 1fr; /* Stack buttons vertically on phones */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -332,7 +367,6 @@
                                  <div id="modal-chart-container"></div>
                                </div>`;
             document.body.appendChild(modal);
-            // Move canvases to the visible modal to ensure rendering
             const modalChartContainer = document.getElementById('modal-chart-container');
             modalChartContainer.appendChild(document.getElementById('stats-chart-teachers'));
             modalChartContainer.appendChild(document.getElementById('stats-chart-status'));
@@ -341,7 +375,6 @@
         function hideLoadingModal() {
             const modal = document.getElementById('loading-modal');
             if (modal) {
-                // Move canvases back to their hidden container
                 const hiddenContainer = document.getElementById('hidden-chart-container');
                 hiddenContainer.appendChild(document.getElementById('stats-chart-teachers'));
                 hiddenContainer.appendChild(document.getElementById('stats-chart-status'));
@@ -351,8 +384,6 @@
         
         async function printStats() {
             showLoadingModal();
-            
-            // Allow a brief moment for the modal and canvases to become visible in the DOM
             await new Promise(resolve => setTimeout(resolve, 100));
 
             const { teacherCounts, executionStatus } = calculateStats();
@@ -360,6 +391,7 @@
             const generateChart = (canvasId, config) => {
                 return new Promise((resolve) => {
                     const canvas = document.getElementById(canvasId);
+                    if (!canvas) return resolve(null);
                     
                     if (config.type !== 'doughnut' && (!config.data.labels || config.data.labels.length === 0 || config.data.datasets.every(ds => ds.data.every(item => item === 0)))) {
                         return resolve(null);
@@ -421,78 +453,20 @@
         }
         
         // --- Helper and Utility Functions ---
-        function saveGlobalData() {
-            localStorage.setItem('globalData', JSON.stringify({
-                dept: document.getElementById('education-dept').value, school: document.getElementById('school-name').value
-            }));
-        }
-        function loadGlobalData() {
-            const data = JSON.parse(localStorage.getItem('globalData'));
-            if (data) {
-                document.getElementById('education-dept').value = data.dept || '';
-                document.getElementById('school-name').value = data.school || '';
-            }
-        }
-        function abbreviateName(fullName) {
-            const words = fullName.trim().split(/\s+/).filter(Boolean);
-            return words.length > 2 ? `${words[0]} ${words[1]} ${words[words.length - 1]}` : fullName;
-        }
-        function savePeriodHeader(key, value) {
-            let globalData = JSON.parse(localStorage.getItem('globalData')) || {};
-            globalData[key] = value;
-            localStorage.setItem('globalData', JSON.stringify(globalData));
-            updateDutyCountLabels();
-        }
-        function formatHijriDateWithDay(date) {
-            if (!date) return '';
-            try { return new Intl.DateTimeFormat('ar-SA-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace('،', ''); } catch (e) { return ''; }
-        }
-        function formatHijriDateShort(dateString) {
-            if (!dateString) return '';
-            try {
-                const date = new Date(dateString + 'T00:00:00Z');
-                const formatted = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date);
-                return formatted.replace(/\s/g, '');
-            } catch (e) { return ''; }
-        }
-        function updateDateDisplay(dateInput) {
-            const dateValue = dateInput.value;
-            const displaySpan = dateInput.nextElementSibling;
-            displaySpan.textContent = dateValue ? formatHijriDateWithDay(new Date(dateValue + 'T00:00:00Z')) : '';
-        }
+        function saveGlobalData() { localStorage.setItem('globalData', JSON.stringify({ dept: document.getElementById('education-dept').value, school: document.getElementById('school-name').value })); }
+        function loadGlobalData() { const data = JSON.parse(localStorage.getItem('globalData')); if (data) { document.getElementById('education-dept').value = data.dept || ''; document.getElementById('school-name').value = data.school || ''; } }
+        function abbreviateName(fullName) { const words = fullName.trim().split(/\s+/).filter(Boolean); return words.length > 2 ? `${words[0]} ${words[1]} ${words[words.length - 1]}` : fullName; }
+        function savePeriodHeader(key, value) { let globalData = JSON.parse(localStorage.getItem('globalData')) || {}; globalData[key] = value; localStorage.setItem('globalData', JSON.stringify(globalData)); updateDutyCountLabels(); }
+        function formatHijriDateWithDay(date) { if (!date) return ''; try { return new Intl.DateTimeFormat('ar-SA-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace('،', ''); } catch (e) { return ''; } }
+        function formatHijriDateShort(dateString) { if (!dateString) return ''; try { const date = new Date(dateString + 'T00:00:00Z'); const formatted = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date); return formatted.replace(/\s/g, ''); } catch (e) { return ''; } }
+        function updateDateDisplay(dateInput) { const dateValue = dateInput.value; const displaySpan = dateInput.nextElementSibling; displaySpan.textContent = dateValue ? formatHijriDateWithDay(new Date(dateValue + 'T00:00:00Z')) : ''; }
         function saveNames(names) { localStorage.setItem('teacherNames', JSON.stringify(names)); }
         function getSavedNames() { return JSON.parse(localStorage.getItem('teacherNames')) || []; }
         function clearNames() { if (confirm('هل أنت متأكد من مسح جميع الأسماء المحفوظة؟ سيؤثر هذا على جميع الجداول.')) { localStorage.removeItem('teacherNames'); generateTable(); } }
         function clearData() { if (confirm('هل أنت متأكد من مسح بيانات الشهر الحالي فقط؟')) { const key = getPeriodKey(); if(key) localStorage.removeItem(key); generateTable(); } }
         function clearAllData() { if (confirm('تحذير: سيتم مسح جميع البيانات نهائياً (أسماء، جداول، إعدادات). هل أنت متأكد؟')) { localStorage.clear(); location.reload(); } }
-        function backupData() {
-            const dataToBackup = {};
-            Object.keys(localStorage).forEach(key => dataToBackup[key] = localStorage.getItem(key));
-            const dataStr = JSON.stringify(dataToBackup, null, 2);
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([dataStr], { type: 'application/json' }));
-            a.download = `جدول_المناوبة_نسخة_احتياطية_${new Date().toISOString().slice(0, 10)}.txt`;
-            a.click(); a.remove(); alert('تم حفظ النسخة الاحتياطية بنجاح.');
-        }
-        function restoreData() {
-            const fileInput = document.getElementById('restoreFile');
-            fileInput.onchange = (e) => {
-                const file = e.target.files[0]; if (!file) return;
-                if (confirm('سيتم استعادة البيانات وحذف جميع البيانات الحالية. هل أنت متأكد؟')) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        try {
-                            const restoredData = JSON.parse(event.target.result);
-                            localStorage.clear();
-                            Object.keys(restoredData).forEach(key => localStorage.setItem(key, restoredData[key]));
-                            alert('تم استعادة البيانات بنجاح.'); location.reload();
-                        } catch (error) { alert('فشل في استعادة البيانات. الملف غير صحيح.'); }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            fileInput.click();
-        }
+        function backupData() { const dataToBackup = {}; Object.keys(localStorage).forEach(key => dataToBackup[key] = localStorage.getItem(key)); const dataStr = JSON.stringify(dataToBackup, null, 2); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dataStr], { type: 'application/json' })); a.download = `جدول_المناوبة_نسخة_احتياطية_${new Date().toISOString().slice(0, 10)}.txt`; a.click(); a.remove(); alert('تم حفظ النسخة الاحتياطية بنجاح.'); }
+        function restoreData() { const fileInput = document.getElementById('restoreFile'); fileInput.onchange = (e) => { const file = e.target.files[0]; if (!file) return; if (confirm('سيتم استعادة البيانات وحذف جميع البيانات الحالية. هل أنت متأكد؟')) { const reader = new FileReader(); reader.onload = (event) => { try { const restoredData = JSON.parse(event.target.result); localStorage.clear(); Object.keys(restoredData).forEach(key => localStorage.setItem(key, restoredData[key])); alert('تم استعادة البيانات بنجاح.'); location.reload(); } catch (error) { alert('فشل في استعادة البيانات. الملف غير صحيح.'); } }; reader.readAsText(file); } }; fileInput.click(); }
     </script>
 </body>
 </html>
