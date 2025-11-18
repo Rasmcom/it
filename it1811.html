@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المناوبة للمعلمين/ات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hijri@1.1.2/hijri.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c5aa0; --primary-dark: #1e3a5f; --header-dark: #16445b;
+            --header-light: #0f2a35; --light-bg: #f8f9fa; --border-color: #ddd;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-light) 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: flex-start; gap: 15px; }
+        .input-section input { padding: 4px 8px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.95); color: #333; height: 28px; width: 260px; }
+        .input-section { display: flex; flex-direction: column; gap: 2px; min-width: 280px; }
+        .logo { width: 100px; height: auto; }
+        .title-section { padding: 30px; text-align: center; background: var(--light-bg); border-bottom: 3px solid var(--primary-color); }
+        .main-title { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px; }
+        .month-input { border: none; background: transparent; font-size: 26px; font-weight: 700; color: var(--primary-color); text-align: center; padding: 8px; border-bottom: 3px solid var(--primary-color); cursor: pointer; width: 300px; }
+        .controls { padding: 25px 30px; background: var(--light-bg); display: grid; grid-template-columns: 1fr auto auto; gap: 20px; align-items: start; }
+        .names-input { grid-column: 1 / 2; }
+        .duty-count-section { grid-column: 2 / 3; }
+        .btn-group { grid-column: 3 / 4; }
+        .names-input label { display: block; margin-bottom: 12px; font-weight: 600; font-size: 16px; color: #333; }
+        .names-input textarea { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 16px; resize: vertical; min-height: 120px; transition: border-color 0.3s ease; }
+        .names-input textarea:focus { outline: none; border-color: var(--primary-color); }
+        .duty-count-section { display: flex; flex-direction: column; gap: 10px; }
+        .duty-count-input { display: flex; align-items: center; gap: 10px; }
+        .duty-count-input label { font-weight: 600; white-space: nowrap; }
+        .duty-count-input input { width: 60px; padding: 8px; border-radius: 5px; border: 1px solid var(--border-color); text-align: center; }
+        .btn { padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: white; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .table-container { padding: 30px; overflow-x: auto; }
+        .main-table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; }
+        .main-table th, .main-table td { border: 1px solid var(--border-color); padding: 8px; text-align: center; vertical-align: middle; }
+        .main-table th { font-weight: 700; background: #4a6a8a; color: white; }
+        .main-table .sub-header th { background-color: #e9ecef; color: #333; font-size: 12px; }
+        .main-table th input.header-input { background: transparent; color: white; border: none; font-size: inherit; font-weight: inherit; text-align: center; width: 100%; }
+        .main-table td input, .main-table td select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 14px; box-sizing: border-box; }
+        .duty-entry { display: flex; gap: 5px; align-items: center; }
+        .duty-entry:not(:last-child) { margin-bottom: 5px; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
+        .duty-entry .teacher-select { flex: 3; }
+        .duty-entry .status-select { flex: 2; }
+        .date-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .hijri-date-display { font-size: 12px; font-weight: 600; color: var(--primary-dark); min-height: 18px; }
+        .footer { padding: 30px; background: var(--light-bg); text-align: center; }
+        .signature-area { display: flex; justify-content: center; gap: 50px; margin-bottom: 30px; }
+        .signature-box label { display: block; font-weight: bold; margin-bottom: 10px; }
+        .signature-box input { width: 250px; padding: 8px; border: none; border-bottom: 2px solid var(--border-color); text-align: center; background: transparent; font-weight: bold; }
+        .copyright-section { display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .copyright-text { font-size: 14px; color: #555; font-weight: 600; }
+        .footer-logo { height: 50px; width: auto; }
+        #hidden-chart-container { display: none; }
+        .loading-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .loading-modal-content { background: white; padding: 40px; border-radius: 10px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container" id="record-page">
+        <div class="header no-print">
+            <img src="https://salogos.org/wp-content/uploads/2021/11/UntiTtled-1-1300x988.png" alt="شعار وزارة التعليم" class="logo" onerror="this.style.display='none'">
+            <div class="input-section">
+                <input type="text" id="education-dept" placeholder="الإدارة التعليمية" oninput="saveGlobalData()"><input type="text" id="school-name" placeholder="المدرسة" oninput="saveGlobalData()">
+            </div>
+        </div>
+        <div class="title-section">
+            <h1 class="main-title">جدول المناوبة لشهر <input type="text" id="hijri-month-input" class="month-input" placeholder="اكتب اسم الشهر..." onchange="handleMonthChange(this.value)"></h1>
+        </div>
+        <div class="controls no-print">
+            <div class="names-input">
+                <label for="names-textarea">أسماء المعلمين/ات (اسم واحد في كل سطر):</label>
+                <textarea id="names-textarea" placeholder="مثال:&#10;فاطمة سعد الأحمد&#10;نورة عبدالله العلي"></textarea>
+            </div>
+            <div class="duty-count-section">
+                <div class="duty-count-input">
+                    <label id="duty-label-period1" for="duty-count-period1">عدد المناوبين:</label>
+                    <input type="number" id="duty-count-period1" value="1" min="1" max="5" onchange="generateTable()">
+                </div>
+                <div class="duty-count-input">
+                    <label id="duty-label-period2" for="duty-count-period2">عدد المناوبين:</label>
+                    <input type="number" id="duty-count-period2" value="1" min="1" max="5" onchange="generateTable()">
+                </div>
+            </div>
+            <div class="btn-group">
+                 <button class="btn btn-primary" onclick="extractNames()">حفظ الأسماء</button>
+                 <button class="btn btn-danger" onclick="clearNames()">مسح الأسماء</button>
+                 <button class="btn btn-success" onclick="printSchedule()">🖨️ طباعة الجدول</button>
+                 <button class="btn btn-info" onclick="printStats()">📊 طباعة الإحصائيات</button>
+                 <button class="btn btn-danger" onclick="clearData()">مسح بيانات الشهر</button>
+                 <button class="btn btn-warning" onclick="backupData()">📥 نسخ احتياطي</button>
+                 <button class="btn btn-info" onclick="restoreData()">📤 استعادة</button>
+                 <button class="btn btn-danger" onclick="clearAllData()">⚠️ مسح الكل</button>
+                 <input type="file" id="restoreFile" style="display:none;" accept=".txt">
+            </div>
+        </div>
+        <div class="table-container"><table class="main-table" id="main-table"></table></div>
+        <div class="footer">
+            <div class="signature-area">
+                <div class="signature-box">
+                    <label>مدير/ة المدرسة</label>
+                    <input type="text" id="school-principal-signature" placeholder="الاسم والتوقيع" oninput="saveData()">
+                </div>
+            </div>
+            <div class="copyright-section no-print">
+                <a href="https://t.me/+SJnY9vPy7yo5YmI1" target="_blank" rel="noopener noreferrer"><img src="https://e.top4top.io/p_3463x5tj40.png" alt="شعار قناة رسم" class="footer-logo" onerror="this.style.display='none'"></a>
+                <p class="copyright-text">جميع الحقوق محفوظة لقناة رسم للتصميم والخدمات التعليمية 2025</p>
+            </div>
+        </div>
+    </div>
+    <div id="hidden-chart-container">
+        <canvas id="stats-chart-teachers" width="800" height="400"></canvas>
+        <canvas id="stats-chart-status" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        function initializePage() {
+            Chart.defaults.font.family = "'Cairo', sans-serif";
+            loadGlobalData();
+            loadCurrentMonth();
+            generateTable(); 
+        }
+
+        function handleMonthChange(monthName) {
+            localStorage.setItem('currentDutyMonth', monthName.trim());
+            generateTable();
+        }
+
+        function loadCurrentMonth() {
+            const monthInput = document.getElementById('hijri-month-input');
+            const savedMonth = localStorage.getItem('currentDutyMonth') || 'المحرّم';
+            monthInput.value = savedMonth;
+        }
+        
+        function updateDutyCountLabels() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const period1Header = globalData.period1Header || 'بداية الدوام';
+            const period2Header = globalData.period2Header || 'نهاية الدوام';
+            document.getElementById('duty-label-period1').textContent = `مناوبو (${period1Header}):`;
+            document.getElementById('duty-label-period2').textContent = `مناوبو (${period2Header}):`;
+        }
+
+        function getTableHeaders() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const period1 = globalData.period1Header || 'بداية الدوام';
+            const period2 = globalData.period2Header || 'نهاية الدوام';
+            return `<thead>
+                <tr>
+                    <th colspan="3"><input type="text" id="period1-header-input" class="header-input" value="${period1}" oninput="savePeriodHeader('period1Header', this.value)"></th>
+                    <th colspan="3"><input type="text" id="period2-header-input" class="header-input" value="${period2}" oninput="savePeriodHeader('period2Header', this.value)"></th>
+                </tr>
+                <tr class="sub-header">
+                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
+                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
+                </tr>
+            </thead>`;
+        }
+
+        function generateTable() {
+            const names = getSavedNames();
+            const table = document.getElementById('main-table');
+            table.innerHTML = getTableHeaders() + '<tbody id="table-body"></tbody>';
+            const teacherOptionsHTML = '<option value="">-- اختر --</option>' + (names || []).map(name => `<option value="${name}">${name}</option>`).join('');
+            const statusOptionsHTML = '<option value="">-</option><option value="منفذ">منفذ</option><option value="غير منفذ">غير منفذ</option>';
+            const tableBody = document.getElementById('table-body');
+            
+            const dutyCount1 = parseInt(document.getElementById('duty-count-period1').value) || 1;
+            const dutyCount2 = parseInt(document.getElementById('duty-count-period2').value) || 1;
+
+            for (let i = 0; i < 20; i++) {
+                const row = tableBody.insertRow();
+                let period1HTML = Array.from({length: dutyCount1}, () => `<div class="duty-entry"><select class="teacher-select" onchange="saveData()">${teacherOptionsHTML}</select><select class="status-select" onchange="saveData()">${statusOptionsHTML}</select></div>`).join('');
+                let period2HTML = Array.from({length: dutyCount2}, () => `<div class="duty-entry"><select class="teacher-select" onchange="saveData()">${teacherOptionsHTML}</select><select class="status-select" onchange="saveData()">${statusOptionsHTML}</select></div>`).join('');
+
+                row.innerHTML = `
+                    <td><div class="date-cell"><input type="date" onchange="updateDateDisplay(this); saveData();"><span class="hijri-date-display"></span></div></td>
+                    <td>${period1HTML}</td>
+                    <td><input type="text" oninput="saveData()"></td>
+                    <td><div class="date-cell"><input type="date" onchange="updateDateDisplay(this); saveData();"><span class="hijri-date-display"></span></div></td>
+                    <td>${period2HTML}</td>
+                    <td><input type="text" oninput="saveData()"></td>`;
+            }
+            updateDutyCountLabels();
+            loadData(); 
+        }
+
+        function extractNames() {
+            const names = document.getElementById('names-textarea').value.split('\n').map(line => line.trim()).filter(line => line).map(abbreviateName);
+            saveNames(names);
+            document.getElementById('names-textarea').value = '';
+            generateTable();
+        }
+
+        function getPeriodKey() {
+            const monthName = document.getElementById('hijri-month-input').value.trim();
+            return monthName ? `duty-roster-${monthName}` : null;
+        }
+
+        function saveData() {
+            const periodKey = getPeriodKey();
+            if (!periodKey) return;
+            const tableData = Array.from(document.querySelectorAll('#table-body tr')).map(row => {
+                const getPeriodData = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => ({
+                    name: entry.querySelector('.teacher-select').value,
+                    status: entry.querySelector('.status-select').value
+                }));
+                return {
+                    p1_date: row.cells[0].querySelector('input[type="date"]').value, p1_duties: getPeriodData(row.cells[1]), p1_sig: row.cells[2].querySelector('input[type="text"]').value,
+                    p2_date: row.cells[3].querySelector('input[type="date"]').value, p2_duties: getPeriodData(row.cells[4]), p2_sig: row.cells[5].querySelector('input[type="text"]').value,
+                };
+            });
+            localStorage.setItem(periodKey, JSON.stringify({
+                tableData,
+                signatures: { schoolPrincipal: document.getElementById('school-principal-signature').value }
+            }));
+        }
+        
+        function loadData() {
+            const periodKey = getPeriodKey();
+            if (!periodKey) return;
+            const savedData = JSON.parse(localStorage.getItem(periodKey));
+            if (savedData) {
+                document.getElementById('school-principal-signature').value = savedData.signatures?.schoolPrincipal || '';
+                const rows = document.querySelectorAll('#table-body tr');
+                savedData.tableData?.forEach((rowData, rowIndex) => {
+                    const row = rows[rowIndex];
+                    if (row) {
+                        row.cells[0].querySelector('input[type="date"]').value = rowData.p1_date || '';
+                        row.cells[2].querySelector('input[type="text"]').value = rowData.p1_sig || '';
+                        row.cells[3].querySelector('input[type="date"]').value = rowData.p2_date || '';
+                        row.cells[5].querySelector('input[type="text"]').value = rowData.p2_sig || '';
+                        const setPeriodData = (cell, duties) => {
+                            const entries = cell.querySelectorAll('.duty-entry');
+                            duties?.forEach((duty, i) => {
+                                if (entries[i]) {
+                                    entries[i].querySelector('.teacher-select').value = duty.name;
+                                    entries[i].querySelector('.status-select').value = duty.status;
+                                }
+                            });
+                        };
+                        setPeriodData(row.cells[1], rowData.p1_duties);
+                        setPeriodData(row.cells[4], rowData.p2_duties);
+                        updateDateDisplay(row.cells[0].querySelector('input[type="date"]'));
+                        updateDateDisplay(row.cells[3].querySelector('input[type="date"]'));
+                    }
+                });
+            }
+        }
+
+        function calculateStats() {
+            const teacherCounts = Object.fromEntries(getSavedNames().map(name => [name, 0]));
+            const executionStatus = { 'منفذ': 0, 'غير منفذ': 0 };
+            const savedData = JSON.parse(localStorage.getItem(getPeriodKey()));
+            savedData?.tableData?.forEach(row => {
+                const countDuties = (duties) => {
+                    duties?.forEach(duty => {
+                        if (duty.name && teacherCounts.hasOwnProperty(duty.name)) teacherCounts[duty.name]++;
+                        if (duty.status && executionStatus.hasOwnProperty(duty.status)) executionStatus[duty.status]++;
+                    });
+                };
+                countDuties(row.p1_duties);
+                countDuties(row.p2_duties);
+            });
+            return { teacherCounts, executionStatus };
+        }
+        
+        function getPrintStyles(isStats = false) {
+            const baseStyle = `@page{size: A4 portrait;margin:1cm;} *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;} body{direction:rtl;font-family:'Cairo',sans-serif;}`;
+            const headerFooterStyle = `.print-header-info{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;margin-bottom:20px; border-bottom: 2px solid #000;}.print-header-info div{font-size:14px;font-weight:bold;}.print-header-info img{max-height:60px;}.print-footer{margin-top:40px;text-align:left;font-size:14px;font-weight:bold;}`;
+            const statsStyle = `h1,h2{text-align:center;} .stats-container{display: grid; grid-template-columns: 1fr; gap: 40px;} table{width:100%;border-collapse:collapse;margin:20px 0; font-size: 10pt;}th,td{border:1px solid #ccc;padding:8px;text-align:center;}th{background-color:#f2f2f2 !important;}img{display:block;max-width:90%;margin:20px auto;}`;
+            const scheduleStyle = `.print-title{text-align:center;font-size:24px;font-weight:bold;margin-bottom:20px;} .print-table{width:100%;border-collapse:collapse;font-size:9.5pt;}.print-table th,.print-table td{border:1px solid #000 !important;padding:6px;text-align:center;vertical-align:middle;word-break:break-word;}.print-table th{background-color:#4a6a8a !important;color:white !important;}.print-table .sub-header th{background-color:#e9ecef !important;color:#333 !important;} .duty-entry-print{padding: 2px 0; text-align:center;} .duty-entry-print:not(:last-child){border-bottom: 1px dotted #ccc;}`;
+            return `<style>${baseStyle}${headerFooterStyle}${isStats ? statsStyle : scheduleStyle}</style>`;
+        }
+        
+        function getPrintHeaderHTML() {
+            const globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            const logoSrc = document.querySelector('.header .logo')?.src || '';
+            return `<div class="print-header-info"><div>الإدارة: ${globalData.dept || '............'}<br>المدرسة: ${globalData.school || '............'}</div><img src="${logoSrc}" alt="logo"></div>`;
+        }
+        
+        function getPrintableTableHeader() {
+            const period1Name = document.getElementById('period1-header-input').value;
+            const period2Name = document.getElementById('period2-header-input').value;
+            return `<thead>
+                <tr><th colspan="3">${period1Name}</th><th colspan="3">${period2Name}</th></tr>
+                <tr class="sub-header">
+                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
+                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
+                </tr>
+            </thead>`;
+        }
+
+        function printSchedule() {
+            const titleHTML = `<div class="print-title">جدول المناوبة لشهر ${document.getElementById('hijri-month-input').value}</div>`;
+            const tableHeaderHTML = getPrintableTableHeader();
+            let tableContentHTML = '';
+            document.querySelectorAll('#table-body tr').forEach(row => {
+                const date1 = row.cells[0].querySelector('input[type="date"]').value;
+                const date2 = row.cells[3].querySelector('input[type="date"]').value;
+                if (!date1 && !date2) return;
+                const getDutiesHTML = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => {
+                    const teacher = entry.querySelector('.teacher-select').value;
+                    return teacher ? `<div class="duty-entry-print">${teacher}</div>` : '<div class="duty-entry-print">&nbsp;</div>';
+                }).join('');
+                tableContentHTML += `<tr><td>${formatHijriDateShort(date1)}</td><td>${getDutiesHTML(row.cells[1])}</td><td></td><td>${formatHijriDateShort(date2)}</td><td>${getDutiesHTML(row.cells[4])}</td><td></td></tr>`;
+            });
+            const footerHTML = `<div class="print-footer">مدير/ة المدرسة: ${document.getElementById('school-principal-signature').value || '.........................'}</div>`;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><title>طباعة جدول المناوبة</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">${getPrintStyles()}</head><body>${getPrintHeaderHTML()}${titleHTML}<table class="print-table">${tableHeaderHTML}<tbody>${tableContentHTML}</tbody></table>${footerHTML}</body></html>`);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 750);
+        }
+
+        function showLoadingModal() {
+            const modal = document.createElement('div');
+            modal.id = 'loading-modal';
+            modal.className = 'loading-modal';
+            modal.innerHTML = `<div class="loading-modal-content">
+                                 <h2>جاري تجهيز تقرير الإحصائيات...</h2>
+                                 <div id="modal-chart-container"></div>
+                               </div>`;
+            document.body.appendChild(modal);
+            // Move canvases to the visible modal to ensure rendering
+            const modalChartContainer = document.getElementById('modal-chart-container');
+            modalChartContainer.appendChild(document.getElementById('stats-chart-teachers'));
+            modalChartContainer.appendChild(document.getElementById('stats-chart-status'));
+        }
+
+        function hideLoadingModal() {
+            const modal = document.getElementById('loading-modal');
+            if (modal) {
+                // Move canvases back to their hidden container
+                const hiddenContainer = document.getElementById('hidden-chart-container');
+                hiddenContainer.appendChild(document.getElementById('stats-chart-teachers'));
+                hiddenContainer.appendChild(document.getElementById('stats-chart-status'));
+                modal.remove();
+            }
+        }
+        
+        async function printStats() {
+            showLoadingModal();
+            
+            // Allow a brief moment for the modal and canvases to become visible in the DOM
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const { teacherCounts, executionStatus } = calculateStats();
+
+            const generateChart = (canvasId, config) => {
+                return new Promise((resolve) => {
+                    const canvas = document.getElementById(canvasId);
+                    
+                    if (config.type !== 'doughnut' && (!config.data.labels || config.data.labels.length === 0 || config.data.datasets.every(ds => ds.data.every(item => item === 0)))) {
+                        return resolve(null);
+                    }
+                     if (config.type === 'doughnut' && config.data.datasets[0].data.every(item => item === 0)) {
+                        return resolve(null);
+                    }
+                    
+                    new Chart(canvas.getContext('2d'), {
+                        ...config,
+                        options: { ...config.options, animation: { onComplete: (anim) => resolve(anim.chart.canvas.toDataURL('image/png')) } }
+                    });
+                });
+            };
+
+            const fontOptions = { font: { family: "'Cairo', sans-serif", weight: 'bold' }};
+            
+            const teacherChartConfig = {
+                type: 'bar',
+                data: { labels: Object.keys(teacherCounts).filter(key => teacherCounts[key] > 0), datasets: [{ label: 'عدد المناوبات', data: Object.values(teacherCounts).filter(val => val > 0), backgroundColor: "#36a2eb" }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { ticks: { ...fontOptions, stepSize: 1 } }, x: { ticks: fontOptions } }}
+            };
+
+            const statusChartConfig = {
+                type: 'doughnut',
+                data: { labels: ['منفذ', 'غير منفذ'], datasets: [{ data: [executionStatus['منفذ'], executionStatus['غير منفذ']], backgroundColor: ['#4bc0c0', '#ff6384'] }] },
+                options: { responsive: true, plugins: { legend: { labels: fontOptions } }}
+            };
+            
+            const chartTeachersImage = await generateChart('stats-chart-teachers', teacherChartConfig);
+            const chartStatusImage = await generateChart('stats-chart-status', statusChartConfig);
+
+            hideLoadingModal();
+
+            let teachersTableHTML = `<h2>إحصائيات المناوبة للمعلمين/ات</h2><table><thead><tr><th>اسم المعلم/ة</th><th>عدد المناوبات</th></tr></thead><tbody>`;
+            const sortedTeachers = Object.entries(teacherCounts).sort(([,a],[,b]) => b-a);
+            
+            if(sortedTeachers.filter(([, count]) => count > 0).length === 0) {
+                 teachersTableHTML += '<tr><td colspan="2">لا توجد بيانات لعرضها.</td></tr>';
+            } else {
+                sortedTeachers.forEach(([name, count]) => {
+                    if (count > 0) {
+                        teachersTableHTML += `<tr><td>${name}</td><td>${count}</td></tr>`;
+                    }
+                });
+            }
+            teachersTableHTML += '</tbody></table>';
+
+            const titleHTML = `<h1>تقرير إحصائيات المناوبة لشهر ${document.getElementById('hijri-month-input').value}</h1>`;
+            let printContent = `<div class="stats-container">
+                                    <div>${teachersTableHTML}${chartTeachersImage ? `<img src="${chartTeachersImage}">` : ''}</div>
+                                    <div><h2>إحصائيات نسبة التنفيذ</h2>${chartStatusImage ? `<img src="${chartStatusImage}">` : '<p style="text-align:center;">لا توجد بيانات تنفيذ لعرضها.</p>'}</div>
+                                </div>`;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><title>طباعة الإحصائيات</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">${getPrintStyles(true)}</head><body>${getPrintHeaderHTML()}${titleHTML}${printContent}</body></html>`);
+            printWindow.document.close();
+            setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 500);
+        }
+        
+        // --- Helper and Utility Functions ---
+        function saveGlobalData() {
+            localStorage.setItem('globalData', JSON.stringify({
+                dept: document.getElementById('education-dept').value, school: document.getElementById('school-name').value
+            }));
+        }
+        function loadGlobalData() {
+            const data = JSON.parse(localStorage.getItem('globalData'));
+            if (data) {
+                document.getElementById('education-dept').value = data.dept || '';
+                document.getElementById('school-name').value = data.school || '';
+            }
+        }
+        function abbreviateName(fullName) {
+            const words = fullName.trim().split(/\s+/).filter(Boolean);
+            return words.length > 2 ? `${words[0]} ${words[1]} ${words[words.length - 1]}` : fullName;
+        }
+        function savePeriodHeader(key, value) {
+            let globalData = JSON.parse(localStorage.getItem('globalData')) || {};
+            globalData[key] = value;
+            localStorage.setItem('globalData', JSON.stringify(globalData));
+            updateDutyCountLabels();
+        }
+        function formatHijriDateWithDay(date) {
+            if (!date) return '';
+            try { return new Intl.DateTimeFormat('ar-SA-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace('،', ''); } catch (e) { return ''; }
+        }
+        function formatHijriDateShort(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString + 'T00:00:00Z');
+                const formatted = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date);
+                return formatted.replace(/\s/g, '');
+            } catch (e) { return ''; }
+        }
+        function updateDateDisplay(dateInput) {
+            const dateValue = dateInput.value;
+            const displaySpan = dateInput.nextElementSibling;
+            displaySpan.textContent = dateValue ? formatHijriDateWithDay(new Date(dateValue + 'T00:00:00Z')) : '';
+        }
+        function saveNames(names) { localStorage.setItem('teacherNames', JSON.stringify(names)); }
+        function getSavedNames() { return JSON.parse(localStorage.getItem('teacherNames')) || []; }
+        function clearNames() { if (confirm('هل أنت متأكد من مسح جميع الأسماء المحفوظة؟ سيؤثر هذا على جميع الجداول.')) { localStorage.removeItem('teacherNames'); generateTable(); } }
+        function clearData() { if (confirm('هل أنت متأكد من مسح بيانات الشهر الحالي فقط؟')) { const key = getPeriodKey(); if(key) localStorage.removeItem(key); generateTable(); } }
+        function clearAllData() { if (confirm('تحذير: سيتم مسح جميع البيانات نهائياً (أسماء، جداول، إعدادات). هل أنت متأكد؟')) { localStorage.clear(); location.reload(); } }
+        function backupData() {
+            const dataToBackup = {};
+            Object.keys(localStorage).forEach(key => dataToBackup[key] = localStorage.getItem(key));
+            const dataStr = JSON.stringify(dataToBackup, null, 2);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([dataStr], { type: 'application/json' }));
+            a.download = `جدول_المناوبة_نسخة_احتياطية_${new Date().toISOString().slice(0, 10)}.txt`;
+            a.click(); a.remove(); alert('تم حفظ النسخة الاحتياطية بنجاح.');
+        }
+        function restoreData() {
+            const fileInput = document.getElementById('restoreFile');
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0]; if (!file) return;
+                if (confirm('سيتم استعادة البيانات وحذف جميع البيانات الحالية. هل أنت متأكد؟')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const restoredData = JSON.parse(event.target.result);
+                            localStorage.clear();
+                            Object.keys(restoredData).forEach(key => localStorage.setItem(key, restoredData[key]));
+                            alert('تم استعادة البيانات بنجاح.'); location.reload();
+                        } catch (error) { alert('فشل في استعادة البيانات. الملف غير صحيح.'); }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            fileInput.click();
+        }
+    </script>
+</body>
+</html>
