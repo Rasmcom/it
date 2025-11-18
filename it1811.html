@@ -65,40 +65,18 @@
         .loading-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .loading-modal-content { background: white; padding: 40px; border-radius: 10px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
 
-        /* --- Responsive Design Media Queries --- */
         @media (max-width: 992px) {
-            body {
-                padding: 10px;
-            }
-            .controls {
-                grid-template-columns: 1fr; /* Stack controls vertically */
-            }
-            .btn-group {
-                grid-template-columns: 1fr 1fr; /* Keep buttons side-by-side on tablets */
-            }
-            .table-container {
-                padding: 15px;
-            }
-            .main-table th, .main-table td {
-                padding: 6px;
-                font-size: 12px;
-            }
-            .main-table td input, .main-table td select {
-                padding: 6px;
-                font-size: 12px;
-            }
+            body { padding: 10px; }
+            .controls { grid-template-columns: 1fr; }
+            .btn-group { grid-template-columns: 1fr 1fr; }
+            .table-container { padding: 15px; }
+            .main-table th, .main-table td { padding: 6px; font-size: 12px; }
+            .main-table td input, .main-table td select { padding: 6px; font-size: 12px; }
         }
-
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 20px;
-            }
-             .btn-group {
-                grid-template-columns: 1fr; /* Stack buttons vertically on phones */
-            }
+            .header { flex-direction: column; gap: 20px; }
+            .btn-group { grid-template-columns: 1fr; }
         }
-
     </style>
 </head>
 <body>
@@ -148,7 +126,7 @@
                 </div>
             </div>
             <div class="copyright-section no-print">
-                <a href="https://t.me/+SJnY9vPy7yo5YmI1" target="_blank" rel="noopener noreferrer"><img src="https://e.top4top.io/p_3463x5tj40.png" alt="شعار قناة رسم" class="footer-logo" onerror="this.style.display='none'"></a>
+                <a href="https://t.me/+SJnYvPy7yo5YmI1" target="_blank" rel="noopener noreferrer"><img src="https://e.top4top.io/p_3463x5tj40.png" alt="شعار قناة رسم" class="footer-logo" onerror="this.style.display='none'"></a>
                 <p class="copyright-text">جميع الحقوق محفوظة لقناة رسم للتصميم والخدمات التعليمية 2025</p>
             </div>
         </div>
@@ -247,19 +225,13 @@
             const periodKey = getPeriodKey();
             if (!periodKey) return;
             const tableData = Array.from(document.querySelectorAll('#table-body tr')).map(row => {
-                const getPeriodData = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => ({
-                    name: entry.querySelector('.teacher-select').value,
-                    status: entry.querySelector('.status-select').value
-                }));
+                const getPeriodData = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => ({ name: entry.querySelector('.teacher-select').value, status: entry.querySelector('.status-select').value }));
                 return {
                     p1_date: row.cells[0].querySelector('input[type="date"]').value, p1_duties: getPeriodData(row.cells[1]), p1_sig: row.cells[2].querySelector('input[type="text"]').value,
                     p2_date: row.cells[3].querySelector('input[type="date"]').value, p2_duties: getPeriodData(row.cells[4]), p2_sig: row.cells[5].querySelector('input[type="text"]').value,
                 };
             });
-            localStorage.setItem(periodKey, JSON.stringify({
-                tableData,
-                signatures: { schoolPrincipal: document.getElementById('school-principal-signature').value }
-            }));
+            localStorage.setItem(periodKey, JSON.stringify({ tableData, signatures: { schoolPrincipal: document.getElementById('school-principal-signature').value } }));
         }
         
         function loadData() {
@@ -278,12 +250,7 @@
                         row.cells[5].querySelector('input[type="text"]').value = rowData.p2_sig || '';
                         const setPeriodData = (cell, duties) => {
                             const entries = cell.querySelectorAll('.duty-entry');
-                            duties?.forEach((duty, i) => {
-                                if (entries[i]) {
-                                    entries[i].querySelector('.teacher-select').value = duty.name;
-                                    entries[i].querySelector('.status-select').value = duty.status;
-                                }
-                            });
+                            duties?.forEach((duty, i) => { if (entries[i]) { entries[i].querySelector('.teacher-select').value = duty.name; entries[i].querySelector('.status-select').value = duty.status; } });
                         };
                         setPeriodData(row.cells[1], rowData.p1_duties);
                         setPeriodData(row.cells[4], rowData.p2_duties);
@@ -295,20 +262,31 @@
         }
 
         function calculateStats() {
-            const teacherCounts = Object.fromEntries(getSavedNames().map(name => [name, 0]));
+            const teacherStats = {};
+            getSavedNames().forEach(name => { teacherStats[name] = { total: 0, executed: 0, notExecuted: 0 }; });
             const executionStatus = { 'منفذ': 0, 'غير منفذ': 0 };
             const savedData = JSON.parse(localStorage.getItem(getPeriodKey()));
+
             savedData?.tableData?.forEach(row => {
                 const countDuties = (duties) => {
                     duties?.forEach(duty => {
-                        if (duty.name && teacherCounts.hasOwnProperty(duty.name)) teacherCounts[duty.name]++;
-                        if (duty.status && executionStatus.hasOwnProperty(duty.status)) executionStatus[duty.status]++;
+                        if (duty.name && teacherStats.hasOwnProperty(duty.name)) {
+                            teacherStats[duty.name].total++;
+                            if (duty.status === 'منفذ') {
+                                teacherStats[duty.name].executed++;
+                            } else if (duty.status === 'غير منفذ') {
+                                teacherStats[duty.name].notExecuted++;
+                            }
+                        }
+                        if (duty.status && executionStatus.hasOwnProperty(duty.status)) {
+                            executionStatus[duty.status]++;
+                        }
                     });
                 };
                 countDuties(row.p1_duties);
                 countDuties(row.p2_duties);
             });
-            return { teacherCounts, executionStatus };
+            return { teacherStats, executionStatus };
         }
         
         function getPrintStyles(isStats = false) {
@@ -328,13 +306,7 @@
         function getPrintableTableHeader() {
             const period1Name = document.getElementById('period1-header-input').value;
             const period2Name = document.getElementById('period2-header-input').value;
-            return `<thead>
-                <tr><th colspan="3">${period1Name}</th><th colspan="3">${period2Name}</th></tr>
-                <tr class="sub-header">
-                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
-                    <th>التاريخ</th><th>المناوب/ة وحالة التنفيذ</th><th>التوقيع</th>
-                </tr>
-            </thead>`;
+            return `<thead><tr><th colspan="3">${period1Name}</th><th colspan="3">${period2Name}</th></tr><tr class="sub-header"><th>التاريخ</th><th>المناوب/ة</th><th>التوقيع</th><th>التاريخ</th><th>المناوب/ة</th><th>التوقيع</th></tr></thead>`;
         }
 
         function printSchedule() {
@@ -345,10 +317,7 @@
                 const date1 = row.cells[0].querySelector('input[type="date"]').value;
                 const date2 = row.cells[3].querySelector('input[type="date"]').value;
                 if (!date1 && !date2) return;
-                const getDutiesHTML = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => {
-                    const teacher = entry.querySelector('.teacher-select').value;
-                    return teacher ? `<div class="duty-entry-print">${teacher}</div>` : '<div class="duty-entry-print">&nbsp;</div>';
-                }).join('');
+                const getDutiesHTML = (cell) => Array.from(cell.querySelectorAll('.duty-entry')).map(entry => { const teacher = entry.querySelector('.teacher-select').value; return teacher ? `<div class="duty-entry-print">${teacher}</div>` : '<div class="duty-entry-print">&nbsp;</div>'; }).join('');
                 tableContentHTML += `<tr><td>${formatHijriDateShort(date1)}</td><td>${getDutiesHTML(row.cells[1])}</td><td></td><td>${formatHijriDateShort(date2)}</td><td>${getDutiesHTML(row.cells[4])}</td><td></td></tr>`;
             });
             const footerHTML = `<div class="print-footer">مدير/ة المدرسة: ${document.getElementById('school-principal-signature').value || '.........................'}</div>`;
@@ -362,10 +331,7 @@
             const modal = document.createElement('div');
             modal.id = 'loading-modal';
             modal.className = 'loading-modal';
-            modal.innerHTML = `<div class="loading-modal-content">
-                                 <h2>جاري تجهيز تقرير الإحصائيات...</h2>
-                                 <div id="modal-chart-container"></div>
-                               </div>`;
+            modal.innerHTML = `<div class="loading-modal-content"><h2>جاري تجهيز تقرير الإحصائيات...</h2><div id="modal-chart-container"></div></div>`;
             document.body.appendChild(modal);
             const modalChartContainer = document.getElementById('modal-chart-container');
             modalChartContainer.appendChild(document.getElementById('stats-chart-teachers'));
@@ -386,32 +352,26 @@
             showLoadingModal();
             await new Promise(resolve => setTimeout(resolve, 100));
 
-            const { teacherCounts, executionStatus } = calculateStats();
+            const { teacherStats, executionStatus } = calculateStats();
 
             const generateChart = (canvasId, config) => {
                 return new Promise((resolve) => {
                     const canvas = document.getElementById(canvasId);
                     if (!canvas) return resolve(null);
-                    
-                    if (config.type !== 'doughnut' && (!config.data.labels || config.data.labels.length === 0 || config.data.datasets.every(ds => ds.data.every(item => item === 0)))) {
-                        return resolve(null);
-                    }
-                     if (config.type === 'doughnut' && config.data.datasets[0].data.every(item => item === 0)) {
-                        return resolve(null);
-                    }
-                    
-                    new Chart(canvas.getContext('2d'), {
-                        ...config,
-                        options: { ...config.options, animation: { onComplete: (anim) => resolve(anim.chart.canvas.toDataURL('image/png')) } }
-                    });
+                    if (config.type !== 'doughnut' && (!config.data.labels || config.data.labels.length === 0 || config.data.datasets.every(ds => ds.data.every(item => item === 0)))) { return resolve(null); }
+                    if (config.type === 'doughnut' && config.data.datasets[0].data.every(item => item === 0)) { return resolve(null); }
+                    new Chart(canvas.getContext('2d'), { ...config, options: { ...config.options, animation: { onComplete: (anim) => resolve(anim.chart.canvas.toDataURL('image/png')) } } });
                 });
             };
 
             const fontOptions = { font: { family: "'Cairo', sans-serif", weight: 'bold' }};
             
+            const teacherNamesWithDuties = Object.keys(teacherStats).filter(key => teacherStats[key].total > 0);
+            const teacherTotals = teacherNamesWithDuties.map(name => teacherStats[name].total);
+
             const teacherChartConfig = {
                 type: 'bar',
-                data: { labels: Object.keys(teacherCounts).filter(key => teacherCounts[key] > 0), datasets: [{ label: 'عدد المناوبات', data: Object.values(teacherCounts).filter(val => val > 0), backgroundColor: "#36a2eb" }] },
+                data: { labels: teacherNamesWithDuties, datasets: [{ label: 'إجمالي المناوبات', data: teacherTotals, backgroundColor: "#36a2eb" }] },
                 options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { ticks: { ...fontOptions, stepSize: 1 } }, x: { ticks: fontOptions } }}
             };
 
@@ -426,15 +386,15 @@
 
             hideLoadingModal();
 
-            let teachersTableHTML = `<h2>إحصائيات المناوبة للمعلمين/ات</h2><table><thead><tr><th>اسم المعلم/ة</th><th>عدد المناوبات</th></tr></thead><tbody>`;
-            const sortedTeachers = Object.entries(teacherCounts).sort(([,a],[,b]) => b-a);
+            let teachersTableHTML = `<h2>إحصائيات المناوبة للمعلمين/ات</h2><table><thead><tr><th>اسم المعلم/ة</th><th>إجمالي المناوبات</th><th>منفذ</th><th>غير منفذ</th></tr></thead><tbody>`;
+            const sortedTeachers = Object.entries(teacherStats).sort(([,a],[,b]) => b.total - a.total);
             
-            if(sortedTeachers.filter(([, count]) => count > 0).length === 0) {
-                 teachersTableHTML += '<tr><td colspan="2">لا توجد بيانات لعرضها.</td></tr>';
+            if(sortedTeachers.filter(([, stats]) => stats.total > 0).length === 0) {
+                 teachersTableHTML += '<tr><td colspan="4">لا توجد بيانات لعرضها.</td></tr>';
             } else {
-                sortedTeachers.forEach(([name, count]) => {
-                    if (count > 0) {
-                        teachersTableHTML += `<tr><td>${name}</td><td>${count}</td></tr>`;
+                sortedTeachers.forEach(([name, stats]) => {
+                    if (stats.total > 0) {
+                        teachersTableHTML += `<tr><td>${name}</td><td>${stats.total}</td><td>${stats.executed}</td><td>${stats.notExecuted}</td></tr>`;
                     }
                 });
             }
@@ -452,13 +412,28 @@
             setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 500);
         }
         
-        // --- Helper and Utility Functions ---
         function saveGlobalData() { localStorage.setItem('globalData', JSON.stringify({ dept: document.getElementById('education-dept').value, school: document.getElementById('school-name').value })); }
         function loadGlobalData() { const data = JSON.parse(localStorage.getItem('globalData')); if (data) { document.getElementById('education-dept').value = data.dept || ''; document.getElementById('school-name').value = data.school || ''; } }
         function abbreviateName(fullName) { const words = fullName.trim().split(/\s+/).filter(Boolean); return words.length > 2 ? `${words[0]} ${words[1]} ${words[words.length - 1]}` : fullName; }
         function savePeriodHeader(key, value) { let globalData = JSON.parse(localStorage.getItem('globalData')) || {}; globalData[key] = value; localStorage.setItem('globalData', JSON.stringify(globalData)); updateDutyCountLabels(); }
         function formatHijriDateWithDay(date) { if (!date) return ''; try { return new Intl.DateTimeFormat('ar-SA-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date).replace('،', ''); } catch (e) { return ''; } }
-        function formatHijriDateShort(dateString) { if (!dateString) return ''; try { const date = new Date(dateString + 'T00:00:00Z'); const formatted = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' }).format(date); return formatted.replace(/\s/g, ''); } catch (e) { return ''; } }
+        
+        function formatHijriDateShort(dateString) {
+            if (!dateString) return '';
+            try {
+                const date = new Date(dateString + 'T00:00:00Z');
+                const formatter = new Intl.DateTimeFormat('ar-SA-u-nu-latn', { day: 'numeric', month: 'numeric', year: 'numeric', calendar: 'islamic-umalqura', timeZone: 'UTC' });
+                const parts = formatter.formatToParts(date);
+                const day = parts.find(p => p.type === 'day')?.value;
+                const month = parts.find(p => p.type === 'month')?.value;
+                const year = parts.find(p => p.type === 'year')?.value.split(' ')[0];
+                if (day && month && year) {
+                    return `${day}/${month}/${year} هـ`;
+                }
+                return dateString; // Fallback
+            } catch (e) { return dateString; }
+        }
+
         function updateDateDisplay(dateInput) { const dateValue = dateInput.value; const displaySpan = dateInput.nextElementSibling; displaySpan.textContent = dateValue ? formatHijriDateWithDay(new Date(dateValue + 'T00:00:00Z')) : ''; }
         function saveNames(names) { localStorage.setItem('teacherNames', JSON.stringify(names)); }
         function getSavedNames() { return JSON.parse(localStorage.getItem('teacherNames')) || []; }
