@@ -1,581 +1,435 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ملف الإنجاز الإداري - فلانة بنت فلان</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-  <style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>يوم التأسيس السعودي | 1727م</title>
+    
+    <!-- استدعاء خطوط عربية فاخرة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================
+           الهوية البصرية والمتغيرات
+           ======================== */
+        :root {
+            --color-sand: #f4f1ea;       /* رملي/عاجي */
+            --color-coffee: #4b3621;     /* بني قهوة */
+            --color-sage: #8da399;       /* أخضر هادئ */
+            --color-copper: #b87333;     /* نحاسي */
+            --color-gold: #c5a059;       /* ذهبي مطفي */
+            --font-head: 'El Messiri', sans-serif;
+            --font-body: 'Amiri', serif;
+            --transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            box-sizing: border-box;
+            background-color: var(--color-coffee);
+            font-family: var(--font-body);
+            color: var(--color-sand);
+            overflow: hidden; /* منع التمرير العمودي */
+            height: 100vh;
+            width: 100vw;
         }
-        .section-card {
-            transition: all 0.4s ease;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
+
+        /* طبقة الخامة الورقية (Noise Texture) */
+        .texture {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.4;
+        }
+
+        /* حاوية السلايدات */
+        .deck-container {
             position: relative;
+            width: 100%;
+            height: 100%;
         }
-        .section-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        .dropdown-content {
-            display: none;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-        .dropdown-content.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .dropdown-item {
-            transition: all 0.2s ease;
-            border-radius: 8px;
-            margin: 4px 0;
-        }
-        .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-        .text-content {
-            display: none;
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid;
-        }
-        .text-content.active {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .header-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .card-pattern {
+
+        /* السلايد */
+        .slide {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0.1;
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.6' fill-rule='evenodd'%3E%3Cpath d='M20 20c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10zm10 0c0-5.5-4.5-10-10-10s-10 4.5-10 10 4.5 10 10 10 10-4.5 10-10z'/%3E%3C/g%3E%3C/svg%3E");
+            top: 0; right: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.1);
+            transition: var(--transition);
+            z-index: 1;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* التعتيم على الصور للقراءة */
+        .slide::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(75, 54, 33, 0.9), rgba(46, 74, 61, 0.7));
+            z-index: -1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            z-index: 10;
+        }
+
+        /* النصوص والمحتوى */
+        .content {
+            z-index: 20;
+            text-align: center;
+            max-width: 900px;
+            padding: 20px;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: transform 0.8s ease 0.3s, opacity 0.8s ease 0.3s;
+        }
+
+        .slide.active .content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        h1 { font-family: var(--font-head); font-size: 4.5rem; color: var(--color-gold); margin-bottom: 0.5rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        h2 { font-family: var(--font-head); font-size: 3rem; color: var(--color-sand); margin-bottom: 1.5rem; }
+        p, li { font-size: 1.6rem; line-height: 1.8; color: #f0f0f0; }
+        
+        .small-text { font-size: 1.1rem; color: var(--color-copper); letter-spacing: 1px; font-weight: bold; display: block; margin-top: 10px; }
+
+        /* الأزرار الفخمة */
+        .btn {
+            display: inline-block;
+            padding: 12px 35px;
+            margin: 10px;
+            background: transparent;
+            border: 2px solid var(--color-gold);
+            color: var(--color-gold);
+            font-family: var(--font-head);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .btn:hover { background: var(--color-gold); color: var(--color-coffee); }
+        .btn-primary { background: var(--color-gold); color: var(--color-coffee); }
+        .btn-primary:hover { background: var(--color-sand); border-color: var(--color-sand); }
+
+        /* العناصر المخصصة (Timeline, Grid, etc) */
+        ul { list-style: none; }
+        
+        .timeline { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+        .timeline-item { border-right: 3px solid var(--color-copper); padding-right: 15px; text-align: right; }
+        .timeline-year { color: var(--color-gold); font-family: var(--font-head); font-size: 1.8rem; font-weight: bold; }
+        
+        .icons-grid { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; }
+        .icon-box { text-align: center; }
+        .icon-circle { width: 70px; height: 70px; border: 2px solid var(--color-sand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 10px; background: rgba(0,0,0,0.3); }
+
+        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .gallery img { width: 100%; height: 150px; object-fit: cover; border: 1px solid var(--color-gold); transition: 0.3s; }
+        .gallery img:hover { transform: scale(1.05); }
+
+        .comparison { display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; text-align: right; }
+        .comp-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; width: 300px; }
+        .comp-title { color: var(--color-gold); font-size: 1.5rem; font-family: var(--font-head); margin-bottom: 5px; }
+
+        /* أدوات التحكم (Navigation) */
+        .controls { position: absolute; bottom: 30px; left: 0; width: 100%; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; z-index: 100; pointer-events: none; }
+        .controls * { pointer-events: auto; }
+        
+        .nav-arrows button { background: none; border: 1px solid var(--color-sand); color: var(--color-sand); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: 0.3s; margin: 0 5px; }
+        .nav-arrows button:hover { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-coffee); }
+
+        .pagination { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--color-gold); transform: scale(1.4); }
+        .slide-counter { margin-right: 15px; font-family: var(--font-head); font-size: 1.2rem; }
+
+        .autoplay-btn { position: absolute; top: 30px; left: 40px; z-index: 100; background: transparent; border: 1px solid var(--color-sage); color: var(--color-sage); padding: 5px 15px; cursor: pointer; font-family: var(--font-body); }
+
+        /* استجابة للجوال */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; } h2 { font-size: 1.8rem; }
+            .timeline, .comparison, .icons-grid { flex-direction: column; gap: 1rem; align-items: center; }
+            .gallery { grid-template-columns: repeat(2, 1fr); }
+            .comp-box { width: 100%; }
+            .content { padding: 15px; }
+            .controls { padding: 0 15px; }
         }
     </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- </head>
- <body class="min-h-screen">
-  <header class="text-white py-16 px-4 shadow-2xl relative overflow-hidden" style="background: linear-gradient(135deg, #8B2792 0%, #DA1B4F 50%, #B8355A 100%);">
-   <div class="header-pattern absolute inset-0"></div>
-   <div class="container mx-auto text-center relative z-10">
-    <div class="flex justify-center mb-6">
-     <div class="w-48 h-48 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden shadow-xl"><img src="https://h.top4top.io/p_3594sdrv60.gif" alt="ملف الإنجاز الإداري" class="w-full h-full object-cover">
-     </div>
+</head>
+<body>
+
+    <div class="texture"></div>
+
+    <button class="autoplay-btn" id="autoplayBtn" onclick="toggleAutoplay()">تشغيل تلقائي ▶</button>
+
+    <div class="deck-container">
+        <!-- Slide 1 -->
+        <div class="slide active" id="s1" style="background-image: url('https://images.unsplash.com/photo-1574679822180-87779c614461?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h1>يوم التأسيس</h1>
+                <h2>يوم بدينا</h2>
+                <span class="small-text">22 فبراير • 1727م</span>
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="nextSlide()">ابدأ الرحلة</button>
+                    <button class="btn">استكشف الهوية</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide" id="s2" style="background-image: url('https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>لماذا نحتفي؟</h2>
+                <ul>
+                    <li>◈ جذور راسخة</li>
+                    <li>◈ وحدة واستقرار</li>
+                    <li>◈ امتداد دولة</li>
+                </ul>
+                <span class="small-text" style="margin-top: 2rem;">ذكرى تأسيس الدولة السعودية الأولى عام 1727م</span>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide" id="s3" style="background-image: url('https://images.unsplash.com/photo-1582239420658-9634a34b4c73?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>يوم التأسيس × اليوم الوطني</h2>
+                <div class="comparison">
+                    <div class="comp-box" style="border-right: 4px solid var(--color-gold);">
+                        <div class="comp-title">يوم التأسيس</div>
+                        <div style="font-weight:bold; margin-bottom:5px;">22 فبراير 1727م</div>
+                        <p style="font-size:1.2rem;">تأسيس الدولة السعودية الأولى</p>
+                    </div>
+                    <div class="comp-box" style="border-right: 4px solid var(--color-sage);">
+                        <div class="comp-title" style="color:var(--color-sage)">اليوم الوطني</div>
+                        <div style="font-weight:bold; margin-bottom:5px;">23 سبتمبر 1932م</div>
+                        <p style="font-size:1.2rem;">توحيد المملكة العربية السعودية</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide" id="s4" style="background-image: url('https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>محطات من التاريخ</h2>
+                <div class="timeline">
+                    <div class="timeline-item"><div class="timeline-year">1446م</div><p style="font-size:1.2rem">تأسيس الدرعية</p></div>
+                    <div class="timeline-item"><div class="timeline-year">1727م</div><p style="font-size:1.2rem">تأسيس الدولة الأولى</p></div>
+                    <div class="timeline-item"><div class="timeline-year">1824م</div><p style="font-size:1.2rem">تأسيس الدولة الثانية</p></div>
+                    <div class="timeline-item"><div class="timeline-year">1932م</div><p style="font-size:1.2rem">توحيد المملكة</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide" id="s5" style="background-image: url('https://images.unsplash.com/photo-1534234828563-025a1b2e3913?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>رموز يوم بدينا</h2>
+                <div class="icons-grid">
+                    <div class="icon-box"><div class="icon-circle">🚩</div><p style="font-size:1.2rem">الراية</p></div>
+                    <div class="icon-box"><div class="icon-circle">🌴</div><p style="font-size:1.2rem">النخلة</p></div>
+                    <div class="icon-box"><div class="icon-circle">🐎</div><p style="font-size:1.2rem">الخيل العربي</p></div>
+                    <div class="icon-box"><div class="icon-circle">🦅</div><p style="font-size:1.2rem">الصقر</p></div>
+                    <div class="icon-box"><div class="icon-circle">⛺</div><p style="font-size:1.2rem">السوق</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide" id="s6" style="background-image: url('https://images.unsplash.com/photo-1605642993074-b4a11270222f?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>تفاصيل تُشبهنا</h2>
+                <p>تراثٌ حيّ… وحكاية وطن</p>
+                <div class="gallery">
+                    <img src="https://images.unsplash.com/photo-1589820296156-2454bb8a4d50?w=400" alt="تراث">
+                    <img src="https://images.unsplash.com/photo-1559899268-6f6eb5e63443?w=400" alt="خيول">
+                    <img src="https://images.unsplash.com/photo-1516216628859-9bccecab13ca?w=400" alt="قهوة">
+                    <img src="https://images.unsplash.com/photo-1580665552098-5c4e4708343f?w=400" alt="نخيل">
+                    <img src="https://images.unsplash.com/photo-1590076215667-875d4ef2d743?w=400" alt="باب قديم">
+                    <img src="https://images.unsplash.com/photo-1465408502395-585897e7b308?w=400" alt="صحراء">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide" id="s7" style="background-image: url('https://images.unsplash.com/photo-1563811567364-44b7f8c1f0b0?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h2>كيف نحتفي؟</h2>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:right; max-width:500px; margin:0 auto;">
+                    <p style="font-size:1.3rem">• لوحة تراثية</p>
+                    <p style="font-size:1.3rem">• مسابقة معرفة</p>
+                    <p style="font-size:1.3rem">• ركن القهوة السعودية</p>
+                    <p style="font-size:1.3rem">• سرد حكايات</p>
+                    <p style="font-size:1.3rem">• لبس تراثي</p>
+                    <p style="font-size:1.3rem">• إنشاد وطني</p>
+                </div>
+                <button class="btn btn-primary" style="margin-top:20px;">تحميل أفكار جاهزة</button>
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide" id="s8" style="background-image: url('https://images.unsplash.com/photo-1473186578172-c141e6798cf4?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <h1>من هنا… بدينا</h1>
+                <p style="margin: 20px 0;">نحتفي بالماضي لنصنع المستقبل.</p>
+                <div>
+                    <button class="btn btn-primary">شاهد القصة</button>
+                    <button class="btn">مشاركة الصفحة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide" id="s9" style="background-image: url('https://images.unsplash.com/photo-1574679822180-87779c614461?q=80&w=1920&auto=format&fit=crop');">
+            <div class="content">
+                <div style="width:120px; height:120px; border:3px solid var(--color-gold); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-family:var(--font-head); font-size:1.5rem; color:var(--color-gold);">الشعار</div>
+                <div style="font-size:1.2rem; margin-bottom:20px;">
+                    <a href="#" style="color:var(--color-sand); text-decoration:none; margin:0 10px;">سياسة الاستخدام</a> |
+                    <a href="#" style="color:var(--color-sand); text-decoration:none; margin:0 10px;">تواصل</a> |
+                    <a href="#" style="color:var(--color-sand); text-decoration:none; margin:0 10px;">مصادر</a>
+                </div>
+                <span class="small-text">© يوم التأسيس – تصميم ويب بأسلوب عرض</span>
+            </div>
+        </div>
+
     </div>
-    <h1 class="text-5xl md:text-6xl font-bold mb-4">ملف الإنجاز الإداري</h1>
-    <h2 class="text-3xl md:text-4xl font-semibold mb-6" style="color: #FDCED9;">فلانة بنت فلان</h2>
-    <p class="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">ملف شامل يوثق الإنجازات والخبرات المهنية في مجال العمل الإداري</p>
-    <div class="mt-8 bg-white bg-opacity-20 rounded-full px-8 py-3 inline-block shadow-lg"><span class="font-bold text-xl">5</span> أقسام رئيسية تشمل جميع جوانب العمل الإداري
+
+    <!-- التحكم -->
+    <div class="controls">
+        <div class="nav-arrows">
+            <button onclick="nextSlide()">&#10095;</button> <!-- سهم يمين (معكوس للـ RTL) -->
+            <button onclick="prevSlide()">&#10094;</button> <!-- سهم يسار -->
+        </div>
+        
+        <div class="pagination" id="pagination">
+            <span class="slide-counter"><span id="currNum">1</span>/9</span>
+            <!-- Dots ستضاف بالجافاسكربت -->
+        </div>
     </div>
-   </div>
-   <div class="absolute bottom-0 left-0 w-full h-3" style="background: linear-gradient(90deg, #8B2792 0%, #DA1B4F 50%, #B8355A 100%);"></div>
-  </header>
-  <main class="container mx-auto py-12 px-4">
-   <section class="mb-16">
-    <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 relative inline-block mx-auto"><span class="relative z-10">أقسام ملف الإنجاز</span> <span class="absolute bottom-0 left-0 w-full h-4 opacity-50 -z-10" style="background-color: #FDD3DB;"></span></h2>
-    <div class="space-y-8"><!-- القسم الأول: عن المساعد الإداري -->
-     <div class="w-full">
-      <div class="section-card shadow-xl p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #FDCED9 0%, #f8c2cc 100%);" onclick="toggleDropdown('section1')">
-       <div class="card-pattern"></div>
-       <div class="relative z-10">
-        <div class="flex items-center justify-center mb-4">
-         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center ml-3 shadow-lg"><img src="https://i.top4top.io/p_35947kg8j1.gif" alt="عن المساعد الإداري" class="w-10 h-10">
-         </div>
-         <h3 class="text-2xl font-bold text-gray-800">عن المساعد الإداري</h3>
-        </div>
-        <p class="text-gray-700 mb-6 text-center leading-relaxed">التعريف بالشخصية المهنية والخلفية الوظيفية</p>
-        <div class="flex items-center justify-between">
-         <div class="text-sm bg-white bg-opacity-70 px-4 py-2 rounded-full text-gray-800 font-semibold">
-          4 عناصر
-         </div>
-         <div class="text-gray-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-transform" id="arrow1" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- القائمة المنسدلة للقسم الأول -->
-      <div id="dropdown1" class="dropdown-content mt-4">
-       <div class="bg-white rounded-xl shadow-lg p-6 border-t-4" style="border-color: #FDCED9;">
-        <h3 class="text-2xl font-bold mb-6" style="color: #AE2F83;">عن المساعد الإداري</h3>
-        <div class="space-y-4">
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">السيرة الذاتية</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="showTextContent('word-content')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">كلمة المساعد الإداري</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="showTextContent('vision-content')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الرؤية والرسالة والقيم</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">بيانات التواصل الرسمية</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-        </div>
-       </div><!-- محتوى كلمة المساعد الإداري -->
-       <div id="word-content" class="text-content" style="border-color: #FDCED9;">
-        <h4 class="text-xl font-bold mb-4" style="color: #AE2F83;">كلمة المساعد الإداري</h4>
-        <div class="text-gray-700 leading-relaxed space-y-4">
-         <p class="font-semibold text-center mb-4">بسم الله الرحمن الرحيم</p>
-         <p>أؤمن أن الإدارة الفعّالة تبدأ من تنظيمٍ مُحكَم وخدمةٍ راقية للمستفيدين، وتنتهي بـ تحسينٍ مستمر يصنع فارقًا ملموسًا في بيئة العمل. أحرصُ على أن تكون كل معاملةٍ مُوثّقة، وكل موعدٍ مُلتزمًا به، وكل إجراءٍ واضح المسار، مع الاستفادة القصوى من التقنيات الحديثة لتسريع الإنجاز ورفع جودة المخرجات.</p>
-         <p>هدفي اليومي أن أكون شريكًا موثوقًا في نجاح المدرسة/الإدارة؛ أُيسّر التواصل، وأدعم اتخاذ القرار ببيانات دقيقة، وأحافظ على سرية المعلومات، وأقدم تجربة إدارية مهنية تُشعر الجميع بالاهتمام.</p>
-         <p>وأتعهد—بعون الله—بالاستمرار في تطوير مهاراتي وأدواتي، وبناء ثقافة عمل تتسم بالانضباط، والشفافية، والعمل بروح الفريق؛ لنحقق معًا بيئة عملٍ أكثر كفاءة وجودة وتأثيرًا.</p>
-        </div>
-       </div><!-- محتوى الرؤية والرسالة والقيم -->
-       <div id="vision-content" class="text-content" style="border-color: #FDCED9;">
-        <h4 class="text-xl font-bold mb-4" style="color: #AE2F83;">الرؤية والرسالة والقيم</h4>
-        <div class="text-gray-700 leading-relaxed space-y-6">
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">الرؤية:</h5>
-          <p>أن تكون إدارة مسانِدة موثوقة وذكية تُنجِز بسرعة، وتوثّق بدقة، وتُسهل العمل للجميع.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">الرسالة:</h5>
-          <p>تقديم خدمات إدارية عالية الجودة تستند إلى إجراءات واضحة وتقنيات حديثة، مع مراعاة السرية، ورضا المستفيد، والتحسين المستمر.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-3" style="color: #AE2F83;">القيم:</h5>
-          <ul class="space-y-2 mr-6">
-           <li><strong>الموثوقية:</strong> إنجاز صحيح أول مرة، وبالوقت المتفق عليه.</li>
-           <li><strong>خدمة المستفيد:</strong> الاستماع الفعال، الاستجابة السريعة، والوضوح.</li>
-           <li><strong>الانضباط:</strong> احترام الأنظمة والمواعيد وتتبّع المهام بدقة.</li>
-           <li><strong>التحسين المستمر:</strong> مراجعة دورية للإجراءات وقياس الأثر.</li>
-           <li><strong>السرية وحماية البيانات:</strong> صون المعلومات والالتزام بسياسات الخصوصية.</li>
-           <li><strong>الابتكار المسؤول:</strong> تبنّي التقنية والذكاء الاصطناعي بوعي وضوابط واضحة.</li>
-          </ul>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div><!-- القسم الثاني: معلومات ومبادئ عامة -->
-     <div class="w-full">
-      <div class="section-card shadow-xl p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #E3C5B2 0%, #ddbea8 100%);" onclick="toggleDropdown('section2')">
-       <div class="card-pattern"></div>
-       <div class="relative z-10">
-        <div class="flex items-center justify-center mb-4">
-         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center ml-3 shadow-lg"><img src="https://j.top4top.io/p_3594iucl32.gif" alt="معلومات ومبادئ عامة" class="w-10 h-10">
-         </div>
-         <h3 class="text-2xl font-bold text-gray-800">معلومات ومبادئ عامة</h3>
-        </div>
-        <p class="text-gray-700 mb-6 text-center leading-relaxed">الأسس والمبادئ التي تحكم العمل الإداري</p>
-        <div class="flex items-center justify-between">
-         <div class="text-sm bg-white bg-opacity-70 px-4 py-2 rounded-full text-gray-800 font-semibold">
-          4 عناصر
-         </div>
-         <div class="text-gray-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-transform" id="arrow2" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- القائمة المنسدلة للقسم الثاني -->
-      <div id="dropdown2" class="dropdown-content mt-4">
-       <div class="bg-white rounded-xl shadow-lg p-6 border-t-4" style="border-color: #E3C5B2;">
-        <h3 class="text-2xl font-bold mb-6" style="color: #AE2F83;">معلومات ومبادئ عامة</h3>
-        <div class="space-y-4">
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الجدارات الأساسية (تنظيم، تواصل، تقنية، دقة)</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="showTextContent('definition-content')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">تعريف ملف الإنجاز وأهدافه</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="showTextContent('ethics-content')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">أخلاقيات العمل الإداري</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="showTextContent('job-description-content')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الوصف الوظيفي للمساعد الإداري</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-           </svg>
-          </div>
-         </div>
-        </div>
-       </div><!-- محتوى تعريف ملف الإنجاز وأهدافه -->
-       <div id="definition-content" class="text-content" style="border-color: #E3C5B2;">
-        <h4 class="text-xl font-bold mb-4" style="color: #AE2F83;">تعريف ملف الإنجاز وأهدافه</h4>
-        <div class="text-gray-700 leading-relaxed space-y-6">
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">التعريف:</h5>
-          <p>ملف الإنجاز الإداري هو سجل مهني منظّم يوثّق المهام والخطط والتقارير والشواهد ذات العلاقة بالأداء الإداري، بهدف إبراز القيمة المضافة ورفع جودة العمل.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-3" style="color: #AE2F83;">الأهداف:</h5>
-          <ul class="space-y-2 mr-6">
-           <li><strong>التوثيق:</strong> حفظ الأعمال والإجراءات والمعاملات بمرجعيات واضحة.</li>
-           <li><strong>التحسين:</strong> تحليل الأداء لتحديد فرص التطوير ومعالجة التحديات.</li>
-           <li><strong>التقويم الذاتي:</strong> متابعة التقدّم وفق مؤشرات قياس بسيطة وواضحة.</li>
-           <li><strong>المواءمة:</strong> ربط الأعمال بأهداف الجهة التعليمية وسياساتها.</li>
-           <li><strong>دعم القرار:</strong> توفير بيانات موجزة ودقيقة تسهّل المتابعة والاعتماد.</li>
-           <li><strong>الجاهزية للتدقيق:</strong> تسليم نسخ موثّقة ومنظّمة عند الحاجة.</li>
-          </ul>
-         </div>
-        </div>
-       </div><!-- محتوى أخلاقيات العمل الإداري -->
-       <div id="ethics-content" class="text-content" style="border-color: #E3C5B2;">
-        <h4 class="text-xl font-bold mb-4" style="color: #AE2F83;">أخلاقيات العمل الإداري</h4>
-        <div class="text-gray-700 leading-relaxed">
-         <ul class="space-y-3 mr-6">
-          <li>• الالتزام بالأنظمة والتعليمات واحترام التسلسل الإداري.</li>
-          <li>• النزاهة والعدالة في التعامل مع جميع المستفيدين دون تمييز.</li>
-          <li>• حفظ السرية وحماية البيانات وعدم مشاركتها إلا وفق الصلاحيات.</li>
-          <li>• الدقة في المعلومات والمراسلات، وتحمّل المسؤولية عن المحتوى.</li>
-          <li>• احترام الوقت والمواعيد وموثوقية التسليم.</li>
-          <li>• الشفافية في التواصل والوضوح في الإرشادات والتعليمات.</li>
-          <li>• تجنب تضارب المصالح والإفصاح عند الاشتباه.</li>
-          <li>• الحفاظ على الممتلكات العامة والموارد التقنية وحسن استخدامها.</li>
-          <li>• التعلم والتطوير المستمر وطلب التغذية الراجعة لتحسين الأداء.</li>
-         </ul>
-        </div>
-       </div><!-- محتوى الوصف الوظيفي للمساعد الإداري -->
-       <div id="job-description-content" class="text-content" style="border-color: #E3C5B2;">
-        <h4 class="text-xl font-bold mb-4" style="color: #AE2F83;">الوصف الوظيفي للمساعد الإداري</h4>
-        <div class="text-gray-700 leading-relaxed space-y-6">
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">الهدف العام:</h5>
-          <p>دعم الأعمال الإدارية والتشغيلية عبر تنظيم المراسلات، تنسيق الجداول، إعداد المحاضر، الأرشفة، وخدمة المستفيدين بما يضمن انسيابية الإجراءات وجودة المخرجات.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-3" style="color: #AE2F83;">المسؤوليات الأساسية:</h5>
-          <ul class="space-y-2 mr-6">
-           <li>• استقبال المراسلات (صادر/وارد) وتسجيلها وتتبع إنجازها.</li>
-           <li>• تنسيق المواعيد والاجتماعات وإعداد جداول الأعمال ومحاضرها.</li>
-           <li>• أرشفة المستندات ورقيًا ورقميًا وتطبيق سياسات التسمية والحفظ.</li>
-           <li>• إعداد تقارير موجزة (أسبوعية/شهرية) ورفع المؤشرات الأساسية.</li>
-           <li>• خدمة المستفيدين (استقبال، توجيه، متابعة الطلبات).</li>
-           <li>• دعم تنفيذ الخطط الإدارية ومتابعة المهام حتى الإقفال.</li>
-           <li>• تنسيق اللوجستيات (قاعات، عُهد، صيانة) بالتعاون مع الجهات المعنية.</li>
-           <li>• استخدام التطبيقات المكتبية والسحابية وإدارتها بكفاءة.</li>
-          </ul>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">العلاقات الوظيفية:</h5>
-          <p>يرفع لمدير/وكيل الجهة، ويتعامل مع الأقسام الداخلية والجهات الخارجية وفق تفويض محدد.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">الصلاحيات:</h5>
-          <p>ضمن ما يُفوض به رسميًا في المراسلات، الحجز، الاعتماد الأولي للنماذج، والاطلاع المقيّد على البيانات.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">المتطلبات والكفاءات:</h5>
-          <p>إتقان مهارات التنظيم والتواصل، وإجادة منتجات Office/Google Workspace، والقدرة على الأرشفة الرقمية، والالتزام بالدقة وحماية البيانات.</p>
-         </div>
-         <div>
-          <h5 class="font-bold text-lg mb-2" style="color: #AE2F83;">مؤشرات أداء (أمثلة):</h5>
-          <p>زمن إنجاز المعاملة، دقة الأرشفة (% بدون أخطاء)، التزام المواعيد، اكتمال محاضر الاجتماعات، ورضا المستفيدين.</p>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div><!-- القسم الثالث: العمل الإداري -->
-     <div class="w-full">
-      <div class="section-card shadow-xl p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #D189B4 0%, #c77ba7 100%);" onclick="toggleDropdown('section3')">
-       <div class="card-pattern"></div>
-       <div class="relative z-10">
-        <div class="flex items-center justify-center mb-4">
-         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center ml-3 shadow-lg"><img src="https://j.top4top.io/p_3594iucl32.gif" alt="العمل الإداري" class="w-10 h-10">
-         </div>
-         <h3 class="text-2xl font-bold text-white">العمل الإداري</h3>
-        </div>
-        <p class="text-white mb-6 text-center leading-relaxed opacity-90">المهام والمسؤوليات والأنشطة الإدارية</p>
-        <div class="flex items-center justify-between">
-         <div class="text-sm bg-white bg-opacity-30 px-4 py-2 rounded-full text-white font-semibold">
-          6 عناصر
-         </div>
-         <div class="text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-transform" id="arrow3" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- القائمة المنسدلة للقسم الثالث -->
-      <div id="dropdown3" class="dropdown-content mt-4">
-       <div class="bg-white rounded-xl shadow-lg p-6 border-t-4" style="border-color: #D189B4;">
-        <h3 class="text-2xl font-bold mb-6" style="color: #AE2F83;">العمل الإداري</h3>
-        <div class="space-y-4">
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">المهام والمسؤوليات</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">أهداف العمل الحالي (الميثاق)</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">توثيق إنجاز الهدف الأول</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">توثيق إنجاز الهدف الثاني</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">توثيق إنجاز الهدف الثالث</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">توثيق إنجاز الهدف الرابع</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div><!-- القسم الرابع: التنمية المهنية -->
-     <div class="w-full">
-      <div class="section-card shadow-xl p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #A82D7F 0%, #B35D8E 100%);" onclick="toggleDropdown('section4')">
-       <div class="card-pattern"></div>
-       <div class="relative z-10">
-        <div class="flex items-center justify-center mb-4">
-         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center ml-3 shadow-lg"><img src="https://k.top4top.io/p_3594lizjq3.gif" alt="التنمية المهنية" class="w-10 h-10">
-         </div>
-         <h3 class="text-2xl font-bold text-white">التنمية المهنية</h3>
-        </div>
-        <p class="text-white mb-6 text-center leading-relaxed opacity-90">التطوير المستمر والنمو المهني</p>
-        <div class="flex items-center justify-between">
-         <div class="text-sm bg-white bg-opacity-30 px-4 py-2 rounded-full text-white font-semibold">
-          3 عناصر
-         </div>
-         <div class="text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-transform" id="arrow4" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- القائمة المنسدلة للقسم الرابع -->
-      <div id="dropdown4" class="dropdown-content mt-4">
-       <div class="bg-white rounded-xl shadow-lg p-6 border-t-4" style="border-color: #A82D7F;">
-        <h3 class="text-2xl font-bold mb-6" style="color: #AE2F83;">التنمية المهنية</h3>
-        <div class="space-y-4">
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الدورات والورش (حضور)</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">شهادات الشكر والتقدير</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الخطة التطويرية الشخصية</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div><!-- القسم الخامس: جوانب التميّز -->
-     <div class="w-full">
-      <div class="section-card shadow-xl p-8 relative overflow-hidden" style="background: linear-gradient(135deg, #630B4F 0%, #89476B 100%);" onclick="toggleDropdown('section5')">
-       <div class="card-pattern"></div>
-       <div class="relative z-10">
-        <div class="flex items-center justify-center mb-4">
-         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center ml-3 shadow-lg"><img src="https://b.top4top.io/p_3594sxxtp6.gif" alt="جوانب التميّز" class="w-10 h-10">
-         </div>
-         <h3 class="text-2xl font-bold text-white">جوانب التميّز</h3>
-        </div>
-        <p class="text-white mb-6 text-center leading-relaxed opacity-90">الإنجازات المتميزة والمبادرات الإبداعية</p>
-        <div class="flex items-center justify-between">
-         <div class="text-sm bg-white bg-opacity-30 px-4 py-2 rounded-full text-white font-semibold">
-          3 عناصر
-         </div>
-         <div class="text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform transition-transform" id="arrow5" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-         </div>
-        </div>
-       </div>
-      </div><!-- القائمة المنسدلة للقسم الخامس -->
-      <div id="dropdown5" class="dropdown-content mt-4">
-       <div class="bg-white rounded-xl shadow-lg p-6 border-t-4" style="border-color: #630B4F;">
-        <h3 class="text-2xl font-bold mb-6" style="color: #AE2F83;">جوانب التميّز</h3>
-        <div class="space-y-4">
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">المبادرات</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الإنجازات والمشاركات</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-         <div class="dropdown-item p-4 cursor-pointer" onclick="window.open('#', '_blank')">
-          <div class="flex items-center justify-between"><span class="font-semibold text-gray-800">الخاتمة</span>
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-           </svg>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section>
-  </main>
-  <footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-10 px-4 relative overflow-hidden">
-   <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-300 via-purple-400 to-indigo-500"></div>
-   <div class="container mx-auto">
-    <div class="flex justify-center mb-6"><img src="https://h.top4top.io/p_3453yqc3h0.png" alt="رسم" class="h-16">
-    </div>
-    <div class="border-t border-gray-700 mt-8 pt-8 text-center">
-     <p class="text-gray-400">جميع الحقوق محفوظة لقناة رسم للتصميم والخدمات التعليمية © 2025</p>
-    </div>
-   </div>
-  </footer>
-  <script>
-        function toggleDropdown(sectionId) {
-            // إخفاء جميع القوائم المنسدلة
-            const allDropdowns = document.querySelectorAll('.dropdown-content');
-            const allArrows = document.querySelectorAll('[id^="arrow"]');
-            const allTextContents = document.querySelectorAll('.text-content');
-            
-            allDropdowns.forEach(dropdown => {
-                if (dropdown.id !== `dropdown${sectionId.slice(-1)}`) {
-                    dropdown.classList.remove('active');
-                }
-            });
-            
-            allArrows.forEach(arrow => {
-                if (arrow.id !== `arrow${sectionId.slice(-1)}`) {
-                    arrow.style.transform = 'rotate(0deg)';
-                }
+
+    <script>
+        // إعدادات المتغيرات
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('pagination');
+        const currNumDisplay = document.getElementById('currNum');
+        const totalSlides = slides.length;
+        let isAutoplay = false;
+        let autoplayInterval;
+        let lastWheelTime = 0;
+
+        // تهيئة العرض
+        function init() {
+            // إنشاء النقاط
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
             });
 
-            // إخفاء جميع النصوص
-            allTextContents.forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // تبديل حالة القائمة المحددة
-            const targetDropdown = document.getElementById(`dropdown${sectionId.slice(-1)}`);
-            const targetArrow = document.getElementById(`arrow${sectionId.slice(-1)}`);
-            
-            if (targetDropdown.classList.contains('active')) {
-                targetDropdown.classList.remove('active');
-                targetArrow.style.transform = 'rotate(0deg)';
-            } else {
-                targetDropdown.classList.add('active');
-                targetArrow.style.transform = 'rotate(180deg)';
-                
-                // التمرير إلى القائمة المنسدلة
-                setTimeout(() => {
-                    targetDropdown.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start',
-                        inline: 'nearest'
-                    });
-                }, 100);
+            // Deep Link Check
+            if (window.location.hash) {
+                const id = window.location.hash.replace('#s', '');
+                const index = parseInt(id) - 1;
+                if (!isNaN(index) && index >= 0 && index < totalSlides) {
+                    currentSlide = index;
+                }
             }
+            updateUI();
         }
 
-        function showTextContent(contentId) {
-            // إخفاء جميع النصوص الأخرى
-            const allTextContents = document.querySelectorAll('.text-content');
-            allTextContents.forEach(content => {
-                if (content.id !== contentId) {
-                    content.classList.remove('active');
-                }
+        function updateUI() {
+            // تحديث السلايدات
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) slide.classList.add('active');
             });
-            
-            // إظهار النص المحدد
-            const targetContent = document.getElementById(contentId);
-            if (targetContent.classList.contains('active')) {
-                targetContent.classList.remove('active');
-            } else {
-                targetContent.classList.add('active');
-                
-                // التمرير إلى النص
-                setTimeout(() => {
-                    targetContent.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start',
-                        inline: 'nearest'
-                    });
-                }, 100);
-            }
+
+            // تحديث النقاط
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // تحديث العداد والرابط
+            currNumDisplay.innerText = currentSlide + 1;
+            history.replaceState(null, null, `#s${currentSlide + 1}`);
         }
 
-        // تأثيرات الحركة عند التحميل
-        window.addEventListener('load', function() {
-            const cards = document.querySelectorAll('.section-card');
-            
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'all 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 150);
-            });
+        // وظائف التنقل
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateUI();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateUI();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateUI();
+        }
+
+        // أحداث لوحة المفاتيح
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide(); // RTL: اليمين ينتقل للتالي
+            if (e.key === 'ArrowLeft') prevSlide();
         });
+
+        // عجلة الماوس (Debounce)
+        window.addEventListener('wheel', (e) => {
+            const now = Date.now();
+            if (now - lastWheelTime < 1000) return;
+            lastWheelTime = now;
+            
+            if (e.deltaY > 0) nextSlide();
+            else prevSlide();
+        });
+
+        // السحب (Swipe) للجوال
+        let touchStart = 0;
+        let touchEnd = 0;
+        document.addEventListener('touchstart', e => touchStart = e.changedTouches.screenX);
+        document.addEventListener('touchend', e => {
+            touchEnd = e.changedTouches.screenX;
+            if (touchStart - touchEnd > 50) prevSlide(); // سحب لليسار
+            if (touchEnd - touchStart > 50) nextSlide(); // سحب لليمين
+        });
+
+        // التشغيل التلقائي
+        function toggleAutoplay() {
+            const btn = document.getElementById('autoplayBtn');
+            isAutoplay = !isAutoplay;
+            if (isAutoplay) {
+                btn.innerText = "إيقاف ⏸";
+                autoplayInterval = setInterval(nextSlide, 6000);
+            } else {
+                btn.innerText = "تشغيل تلقائي ▶";
+                clearInterval(autoplayInterval);
+            }
+        }
+
+        init();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'999dfcbaa38fb535',t:'MTc2MjM2Mjg2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
